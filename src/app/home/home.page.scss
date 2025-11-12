@@ -1,0 +1,268 @@
+.yellow-header {
+  --background: #FFD700;
+  --color: #000000;
+  background-color: #FFD300;
+  box-shadow: none;
+  z-index: 0;
+  ion-toolbar {
+    --background: #FFD300 !important;
+    --color: #000000;
+    padding: 0;
+    height: 240px;
+    padding-top: 20px;
+  }
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 16px 8px 16px;
+}
+
+.header-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #000000;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-button {
+  --color: #000000;
+  margin: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+
+.search-bar {
+  --background: #ffffff;
+  --border-radius: 30px;
+  --box-shadow: none;
+  --placeholder-color: black;
+  padding: 8px 16px 12px 16px;
+  
+  .searchbar-input {
+    font-size: 14px;
+  }
+}
+
+.category-buttons {
+  display: flex;
+  gap: 8px;
+  padding: 6px 16px 16px 16px;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+.category-button {
+  --border-radius: 20px;
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-top: 5px;
+  --padding-bottom: 5px;
+  min-height: 30px;
+  margin: 0;
+  font-size:10px;
+  white-space: nowrap;
+  
+  &.selected {
+    --background: #000000;
+    --color: #ffffff;
+    --border-color: #000000;
+  }
+  
+  &:not(.selected) {
+    --background: transparent;
+    --color: #000000;
+    --border-color: #000000;
+    --border-width: 1px;
+    --border-style: solid;
+  }
+}
+
+.recipe-content {
+  background: #ffffff;
+  height: 100%;
+}
+
+.recipe-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  height: 100%;
+  margin-top: -56px;
+    z-index: 9;
+    position: relative;
+}
+
+.main-recipe-card {
+  flex: 1;
+  background: #000000;
+  border-radius: 42px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.recipe-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+}
+
+.recipe-title {
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 400;
+  margin: 0;
+  width: 60%;
+}
+
+.favorite-count {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: #ffffff;
+  font-size: 14px;
+  
+  ion-icon {
+    font-size: 18px;
+  }
+}
+
+.recipe-image-container {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+}
+
+.recipe-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.side-cards {
+  display: flex;
+  flex-direction: row;
+  gap: 12px;
+  width: auto;
+  height: 120px;
+}
+
+.side-card {
+  flex: 1;
+  background: #000000;
+  border-radius: 30px;
+  min-height: 120px;
+}
+
+/* Sidebar Styles */
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 9998;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+
+  &.active {
+    opacity: 1;
+    visibility: visible;
+  }
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 280px;
+  height: 100%;
+  background-color: #ffffff;
+  z-index: 9999;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+  overflow-y: auto;
+
+  &.open {
+    transform: translateX(0);
+  }
+
+  .sidebar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 16px;
+    border-bottom: 1px solid #e8e8e8;
+    background-color: #FFD300;
+
+    h2 {
+      margin: 0;
+      font-size: 22px;
+      font-weight: bold;
+      color: #000000;
+    }
+
+    .close-button {
+      --color: #000000;
+      margin: 0;
+      --padding-start: 0;
+      --padding-end: 0;
+
+      ion-icon {
+        font-size: 28px;
+      }
+    }
+  }
+
+  .sidebar-content {
+    padding: 16px 0;
+
+    .sidebar-item {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 16px 20px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      color: #000000;
+
+      &:hover {
+        background-color: #f5f5f5;
+      }
+
+      ion-icon {
+        font-size: 24px;
+        color: var(--primary-color);
+      }
+
+      span {
+        font-size: 16px;
+        font-weight: 500;
+      }
+    }
+  }
+}

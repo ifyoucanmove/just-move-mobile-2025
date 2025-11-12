@@ -1,0 +1,131 @@
+import { Injectable, inject } from '@angular/core';
+import { Auth, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User } from '@angular/fire/auth';
+import { doc, Firestore, setDoc } from '@angular/fire/firestore';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class AuthService {
+  private auth = inject(Auth);
+  private firestore = inject(Firestore);
+  currentUser: User | null = null;
+  private authStateReady: Promise<User | null>;
+  private authStateResolver?: (user: User | null) => void;
+
+  constructor(){
+    // Create a promise that resolves when auth state is determined
+    this.authStateReady = new Promise((resolve) => {
+      this.authStateResolver = resolve;
+    });
+
+    // Listen to auth state changes
+    this.auth.onAuthStateChanged((user) => {
+      if(user){
+        console.log('User found', user);
+        this.currentUser = user;
+      }else{
+        console.log('No user found');
+        this.currentUser = null;
+      }
+      // Resolve the promise on first auth state change
+      if (this.authStateResolver) {
+        this.authStateResolver(user);
+        this.authStateResolver = undefined; // Clear resolver after first use
+      }
+    });
+  }
+
+  /**
+   * Wait for auth state to be determined
+   * This should be called before checking currentUser
+   */
+  async waitForAuthState(): Promise<User | null> {
+    return this.authStateReady;
+  }
+
+
+  async signInWithEmailAndPassword(email: string, password: string) {
+    try {
+      const userCredential = await signInWithEmailAndPassword(this.auth, email, password);
+      return userCredential;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async signUpWithEmailAndPassword(email: string, password: string, name: string) {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+      //add user to firestore in new function
+      console.log(userCredential.user);
+      let result = await this.addUserToFirestore(userCredential.user,'email',false, email, name);
+   
+      //send email verification
+      await sendEmailVerification(userCredential.user);
+      return result;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async addUserToFirestore(user: any,login:string, verified: boolean,email: string, name: string) {
+    try {
+      const dateNow = new Date();
+      const data: any = {
+        uid: user.uid,
+        email: email || null,
+        fname:name,
+        lname:'',
+        photoURL: user.photoURL || null,
+        dateCreated: dateNow,
+        dateEdited: dateNow,
+        loginType: login,
+        status: 'missing-payment-method',
+        roles: {
+          subscriber: true,
+          editor: false,
+          admin: false
+        }
+      };
+      //merge data with existing data if exists using merge: true
+      await setDoc(doc(this.firestore, 'users', user.uid), data, { merge: true });
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async signOut() {
+    try {
+      await signOut(this.auth);
+      this.currentUser = null;
+      //clear auth state resolver
+      this.authStateResolver = undefined;
+      //reload page
+     
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async sendPasswordResetEmail(email: string) {
+    try {
+      await sendPasswordResetEmail(this.auth, email);
+      return true;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //get current user
+  async getCurrentUser() {
+    try {
+      const user = this.auth.currentUser;
+      return user;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+}

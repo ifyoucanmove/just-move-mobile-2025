@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Just Move Supplement</string>
+    <string name="title_activity_main">Just Move Supplement</string>
+    <string name="package_name">com.justmove.supplement</string>
+    <string name="custom_url_scheme">com.justmove.supplement</string>
+</resources>

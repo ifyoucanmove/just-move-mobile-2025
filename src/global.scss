@@ -1,0 +1,243 @@
+/*
+ * App Global CSS
+ * ----------------------------------------------------------------------------
+ * Put style rules here that you want to apply globally. These styles are for
+ * the entire app and not just one component. Additionally, this file can be
+ * used as an entry point to import other CSS/Sass files to be included in the
+ * output CSS.
+ * For more information on global stylesheets, visit the documentation:
+ * https://ionicframework.com/docs/layout/global-stylesheets
+ */
+
+/* Core CSS required for Ionic components to work properly */
+@import "@ionic/angular/css/core.css";
+
+/* Basic CSS for apps built with Ionic */
+@import "@ionic/angular/css/normalize.css";
+@import "@ionic/angular/css/structure.css";
+@import "@ionic/angular/css/typography.css";
+@import "@ionic/angular/css/display.css";
+
+/* Optional CSS utils that can be commented out */
+@import "@ionic/angular/css/padding.css";
+@import "@ionic/angular/css/float-elements.css";
+@import "@ionic/angular/css/text-alignment.css";
+@import "@ionic/angular/css/text-transformation.css";
+@import "@ionic/angular/css/flex-utils.css";
+
+/**
+ * Ionic Dark Mode
+ * -----------------------------------------------------
+ * For more info, please see:
+ * https://ionicframework.com/docs/theming/dark-mode
+ */
+
+/* @import "@ionic/angular/css/palettes/dark.always.css"; */
+/* @import "@ionic/angular/css/palettes/dark.class.css"; */
+/* @import '@ionic/angular/css/palettes/dark.system.css'; */
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+
+/* Safe Area Handling */
+ion-app {
+    --ion-safe-area-top: env(safe-area-inset-top, 0px);
+    --ion-safe-area-bottom: env(safe-area-inset-bottom, 0px);
+    --ion-safe-area-left: env(safe-area-inset-left, 0px);
+    --ion-safe-area-right: env(safe-area-inset-right, 0px);
+  }
+  
+  
+  
+  /* Content Padding */
+  ion-content {
+    --padding-top: var(--ion-safe-area-top);
+    --padding-bottom: var(--ion-safe-area-bottom);
+    --padding-left: var(--ion-safe-area-left);
+    --padding-right: var(--ion-safe-area-right);
+  }
+  ion-tab{
+    padding-top: var(--ion-safe-area-top);
+    padding-bottom: var(--ion-safe-area-bottom);
+    padding-left: var(--ion-safe-area-left);
+    padding-right: var(--ion-safe-area-right);
+  }
+  
+  /* Global Safe Area Classes */
+  .safe-area-top {
+    padding-top: var(--ion-safe-area-top, 0);
+  }
+  
+  .safe-area-bottom {
+    padding-bottom: var(--ion-safe-area-bottom, 0);
+  }
+  
+  .safe-area-left {
+    padding-left: var(--ion-safe-area-left, 0);
+  }
+  
+  .safe-area-right {
+    padding-right: var(--ion-safe-area-right, 0);
+  }
+  
+  .safe-area-all {
+    padding-top: var(--ion-safe-area-top, 0);
+    padding-bottom: var(--ion-safe-area-bottom, 0);
+    padding-left: var(--ion-safe-area-left, 0);
+    padding-right: var(--ion-safe-area-right, 0);
+  }
+  
+  /* Viewport meta tag support for safe areas */
+  @supports (padding: max(0px)) {
+    .safe-area-top {
+      padding-top: max(var(--ion-safe-area-top, 0), env(safe-area-inset-top, 0));
+    }
+    
+    .safe-area-bottom {
+      padding-bottom: max(var(--ion-safe-area-bottom, 0), env(safe-area-inset-bottom, 0));
+    }
+    
+    .safe-area-left {
+      padding-left: max(var(--ion-safe-area-left, 0), env(safe-area-inset-left, 0));
+    }
+    
+    .safe-area-right {
+      padding-right: max(var(--ion-safe-area-right, 0), env(safe-area-inset-right, 0));
+    }
+  }
+  
+  /* Additional safe area handling for different devices */
+  /* iPhone X and newer with notch */
+  @supports (padding: env(safe-area-inset-top)) {
+    ion-app {
+      padding-top: env(safe-area-inset-top);
+      padding-bottom: env(safe-area-inset-bottom);
+      padding-left: env(safe-area-inset-left);
+      padding-right: env(safe-area-inset-right);
+    }
+  }
+  
+  /* Android devices with different notch configurations */
+  @media screen and (max-width: 480px) {
+     ion-content {
+      --padding-top: max(var(--ion-safe-area-top), 20px);
+      --padding-bottom: max(var(--ion-safe-area-bottom), 10px);
+    } 
+  }
+  
+  /* Ensure content doesn't overlap with system UI */
+  ion-content {
+    contain: layout style paint;
+  }
+  
+  /* Fix for devices with dynamic island or punch hole cameras */
+  @supports (padding: env(safe-area-inset-top)) {
+    .dynamic-island-safe {
+      padding-top: env(safe-area-inset-top);
+    }
+  }
+
+:root{
+    --primary-color: #004FFF;
+    --secondary-color: #00DFD3;
+    --tertiary-color: lightgray;  //lightgray
+    --light-gray-color: #e8e8e8;
+    --black-color: #000000; 
+    --white-color: #ffffff;
+}
+
+*{
+    font-family: 'Poppins', sans-serif;
+}
+
+/* Form Input Wrapper for Gradient Border */
+.form-input-wrapper {
+    position: relative;
+    margin-bottom: 16px;
+    border-radius: 30px;
+    background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    padding: 3px;
+    
+    .form-input {
+        --background: white;
+        --border-width: 0;
+        --border-radius: 30px;
+        --padding-start: 12px;
+        --padding-end: 16px;
+        --padding-top: 12px;
+        --padding-bottom: 16px;
+        --color: var(--black-color);
+        margin: 0;
+        width: 100%;
+        
+        .native-input {
+            font-size: 16px;
+        }
+        
+        &::part(native) {
+            border-radius: 30px;
+        }
+        
+        &::part(container) {
+            border-radius: 30px;
+        }
+    }
+}
+
+/* Primary Button Styles */
+.primary-button {
+    --background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+    --border-radius: 30px;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    --color: white;
+    --font-weight: bold;
+    margin-top: 8px;
+    width: 100%;
+    height: 46px;
+    font-size: 20px;
+    font-weight: 600;
+    text-transform: none;
+    
+    &::part(native) {
+        border-radius: 30px;
+    }
+}
+
+/* Toast Styles - Top Right Position */
+.success-toast,
+.error-toast,
+.info-toast {
+    --width: auto;
+    --min-width: 250px;
+    --max-width: 90%;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    font-family: 'Poppins', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.success-toast {
+    --background: #10b981;
+    --color: #ffffff;
+}
+
+.error-toast {
+    --background: #ef4444;
+    --color: #ffffff;
+}
+
+.info-toast {
+    --background: var(--primary-color);
+    --color: #ffffff;
+}
+
+/* Override Ionic toast position for top right */
+ion-toast.toast-top-right {
+    top: calc(var(--ion-safe-area-top, 0) + 10px) !important;
+    right: 16px !important;
+    left: auto !important;
+    transform: translateX(0) !important;
+    margin: 0 !important;
+}

@@ -1,0 +1,7 @@
+{
+  "name": "Just Move Supplement",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}

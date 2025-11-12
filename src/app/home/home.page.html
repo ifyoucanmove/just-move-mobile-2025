@@ -1,0 +1,85 @@
+<!-- Sidebar -->
+<div class="sidebar-overlay" [class.active]="isSidebarOpen" (click)="toggleSidebar()"></div>
+<div class="sidebar" [class.open]="isSidebarOpen">
+  <div class="sidebar-header">
+    <h2>Menu</h2>
+    <ion-button fill="clear" class="close-button" (click)="toggleSidebar()">
+      <ion-icon name="close-outline"></ion-icon>
+    </ion-button>
+  </div>
+  <div class="sidebar-content">
+    <div class="sidebar-item" (click)="navigateTo('/home')">
+      <ion-icon name="home-outline"></ion-icon>
+      <span>Home</span>
+    </div>
+    <div class="sidebar-item" (click)="navigateTo('/products')">
+      <ion-icon name="beer-outline"></ion-icon>
+      <span>Recipes</span>
+    </div>
+    <div class="sidebar-item" (click)="navigateTo('/products')">
+      <ion-icon name="heart-outline"></ion-icon>
+      <span>Favorites</span>
+    </div>
+    <div class="sidebar-item" (click)="navigateTo('/products')">
+      <ion-icon name="search-outline"></ion-icon>
+      <span>Search</span>
+    </div>
+    <!-- logout -->
+    <div class="sidebar-item" (click)="logout()">
+      <ion-icon name="log-out-outline"></ion-icon>
+      <span>Logout</span>
+    </div>
+    <!-- logout -->
+  </div>
+</div>
+
+<ion-header [translucent]="false" class="yellow-header">
+  <ion-toolbar color="transparent">
+    <div class="header-content">
+      <ion-title class="header-title">Most Popular Recipes</ion-title>
+      <ion-button fill="clear" class="menu-button" (click)="toggleSidebar()">
+        <ion-icon name="menu-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
+      </ion-button>
+    </div>
+    <ion-searchbar 
+      placeholder="Search Recipes" 
+      class="search-bar"
+      [showClearButton]="false">
+    </ion-searchbar>
+    <div class="category-buttons">
+      <ion-button 
+        *ngFor="let category of categories" 
+        [class.selected]="selectedCategory === category"
+        class="category-button"
+        [fill]="selectedCategory === category ? 'solid' : 'outline'">
+        {{ category }}
+      </ion-button>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+  <div class="recipe-content">
+  <div class="recipe-container">
+    <div class="main-recipe-card" (click)="goToProductDetail()">
+      <div class="recipe-header">
+        <h2 class="recipe-title">Chocolate Banana Shake</h2>
+        <div class="favorite-count">
+          <ion-icon name="heart-outline"></ion-icon>
+          <span>{{ favoriteCount }}</span>
+        </div>
+      </div>
+      <div class="recipe-image-container">
+        <ion-img 
+          src="assets/images/beverage.png" 
+          alt="Chocolate Banana Shake"
+          class="recipe-image">
+        </ion-img>
+      </div>
+    </div>
+    
+    <div class="side-cards">
+      <div class="side-card"></div>
+      <div class="side-card"></div>
+    </div>
+  </div>
+  </div>
