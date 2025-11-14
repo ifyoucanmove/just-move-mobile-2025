@@ -13,7 +13,7 @@ export class Common {
    * @param message - Success message to display
    * @param duration - Duration in milliseconds (default: 3000)
    */
-  async showSuccessToast(message: string, duration: number = 3000) {
+  async showSuccessToast(message: string, duration: number = 30000) {
     const toast = await this.toastController.create({
       message: message,
       duration: duration,

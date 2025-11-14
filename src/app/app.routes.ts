@@ -38,9 +38,7 @@ export const routes: Routes = [
   },
   {
     path: 'forgot-password',
-    loadComponent: () => import('./forget-password/forget-password.page').then( m => m.ForgetPasswordPage),
-    canActivate: [authenticationGuard]
-  },
+    loadComponent: () => import('./forget-password/forget-password.page').then( m => m.ForgetPasswordPage) },
   {
     path: '**',
     redirectTo: 'welcome',

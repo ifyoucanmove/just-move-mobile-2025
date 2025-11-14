@@ -24,7 +24,7 @@ Products with all amazing recipes
         </ion-text>
       </ion-col>
     </ion-row>
-    <ion-row class="mt-4 mb-4" > 
+    <ion-row class="mt-2 mb-2" > 
       <ion-col size="12">
         <div class="auth-form ">
           <form [formGroup]="signupForm">
@@ -74,7 +74,7 @@ Products with all amazing recipes
               <ion-text color="danger" *ngIf="confirmPasswordControl?.errors?.['passwordMismatch'] && !confirmPasswordControl?.errors?.['required'] && confirmPasswordControl?.value && passwordControl?.value">Passwords do not match</ion-text>
             </div>
             
-            <ion-button class="primary-button mt-4"
+            <ion-button class="primary-button mt-2"
             (click)="signup()"
             [disabled]="signupForm.invalid"
             type="submit">Sign Up</ion-button>

@@ -37,7 +37,8 @@ export class HomePage {
   favoriteCount = 113;
   isSidebarOpen = false;
 
-  constructor(public router:Router, public authService:AuthService, private common:Common) {}
+  constructor(public router:Router, public authService:AuthService, private common:Common) {
+  }
   
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;

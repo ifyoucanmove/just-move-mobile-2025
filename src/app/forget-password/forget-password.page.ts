@@ -5,6 +5,7 @@ import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/stan
 import { SharedModule } from '../shared/shared/shared-module';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
+import { Common } from '../services/common';
 
 @Component({
   selector: 'app-forget-password',
@@ -17,12 +18,18 @@ export class ForgetPasswordPage implements OnInit {
 
   forgetPasswordForm!:FormGroup;
   constructor(public router:Router,public location:Location,
-    public fb:FormBuilder,public authService:AuthService) { }
+    public common:Common,
+    public fb:FormBuilder,public authService:AuthService) {
+      this.forgetPasswordForm = this.fb.group({
+        email: ['', Validators.required]
+      });
+     }
 
-  ngOnInit() {
-    this.forgetPasswordForm = this.fb.group({
-      email: ['', Validators.required]
-    });
+ async ngOnInit() {
+    const user = await this.authService.waitForAuthState();
+    if(user){
+      this.router.navigate(['/home']);
+    }
   }
 
   goToSignin() {
@@ -38,9 +45,16 @@ export class ForgetPasswordPage implements OnInit {
         let result = await this.authService.sendPasswordResetEmail(this.forgetPasswordForm.value.email);
         if(result){
           this.router.navigate(['/signin']);
+          this.common.showSuccessToast('Password reset email sent');
         }
-      }catch(error){
+      }catch(error:any){
         console.log(error);
+      
+        if(error.code === 'auth/invalid-email'){
+          this.common.showErrorToast('Invalid email');
+        }
+        else{
+          this.common.showErrorToast('Failed to send password reset email');        }
       }
     }else{
       console.log('Form is not valid');
