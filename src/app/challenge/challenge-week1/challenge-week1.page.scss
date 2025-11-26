@@ -1,0 +1,58 @@
+.quotation-img {
+    height: 16px;
+    width: 16px;
+  }
+  .info-card {
+    --background: rgba(0, 232, 156, 0.3);
+    padding: 10px;
+    div {
+      margin: 15px 0;
+    }
+  }
+  .day-card {
+  margin: 16px 0 8px;
+  
+    .text-div{
+      background: rgb(226,255,253);
+      background: radial-gradient(circle, rgba(226,255,253,1) 0%, rgba(192,247,243,1) 54%);
+  border-radius: 15px;
+  padding: 20px 10px ;
+    }
+  }
+  
+  .main-div{
+    padding-top: 5px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  .left-div{
+    padding: 0 10px;
+    h2 {
+      font-weight: 900 !important;
+      font-size: 16px;
+      margin-bottom: 3px !important;
+      line-height: 16px;
+      margin-top: 3px;
+    }
+  }
+  .c-div{
+    padding: 0px 10px 0;
+    text-align: right;
+    .mr-2{
+      font-weight: 700;
+      font-size: 15px;
+    }
+    span{
+      color: var(--ion-color-success);
+      span{
+        color: var(--ion-color-success);
+      }
+    }
+  }
+  }
+  img{
+    border-radius: 20px;
+  
+  }
+  .ad-card{
+    margin-top: 40px !important;
+  }

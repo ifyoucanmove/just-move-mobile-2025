@@ -1,0 +1,50 @@
+.text-div{
+    background: rgb(226,255,253);
+    background: radial-gradient(circle, rgba(226,255,253,1) 0%, rgba(192,247,243,1) 54%);
+border-radius: 15px;
+padding: 20px 10px ;
+  }
+
+  .video-div{
+      margin-top: 20px;
+    padding: 0 10px;
+    h2 {
+      font-weight: 900 !important;
+      font-size: 16px;
+      margin-bottom: 3px !important;
+      line-height: 16px;
+      margin-top: 10px;
+    }
+    video{
+        border-radius: 25px;
+        width: 100%;
+      
+      }
+      div{
+          padding-left: 10px;
+      }
+  }
+
+  .detail-div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .btns-div2 {
+    margin-top: 16px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    padding: 0 16px;
+    flex-direction: column;
+
+    margin-bottom: 20px;
+
+    p{
+        font-size: 17px;
+        text-decoration: underline;
+        font-weight: 900;
+        color: var(--ion-color-secondary);
+      }
+  }

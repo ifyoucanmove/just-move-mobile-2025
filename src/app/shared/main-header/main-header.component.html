@@ -1,0 +1,70 @@
+<div>
+  <ion-toolbar>
+    <ng-container *ngIf="headerType == 1">
+      <ion-img
+        data-e2e="burger-menu"
+        *ngIf="buttonType == 'menu'"
+        (click)="toggleMenu()"
+        style="margin-left: 10px"
+        slot="start"
+        src="assets/images/side-menu.webp"
+      >
+      </ion-img>
+      <ion-back-button
+        *ngIf="buttonType == 'back'"
+        style="--icon-font-size: 32px"
+        slot="start"
+      ></ion-back-button>
+
+
+      <ion-back-button
+      *ngIf="buttonType == 'back-default'"
+      style="--icon-font-size: 32px"
+      slot="start"
+      [defaultHref]="backUrl"
+    ></ion-back-button>
+
+
+    <ng-container *ngIf="buttonType == 'back-icon'">
+    <ion-icon
+    [name]="backIcon"
+    style="font-size: 32px; margin-top: 20px;"
+    slot="start"
+    (click)="backClicked()"
+  ></ion-icon>
+  <span (click)="backClicked()" *ngIf="platform === 'ios'" style="font-size: 16px; margin-top: 20px; display: flex;">Back</span>
+</ng-container>
+
+    <!--   <ion-img
+        *ngIf="isLogged"
+        (click)="favoriteClicked()"
+        slot="end"
+        src="assets/images/heart.webp"
+      >
+      </ion-img>
+      <ion-img
+        *ngIf="isLogged"
+        (click)="searchClicked()"
+        slot="end"
+        src="assets/images/search.webp"
+      >
+      </ion-img> -->
+    </ng-container>
+  </ion-toolbar>
+  <ion-toolbar>
+    <h1>{{ title }}</h1>
+    <ng-container *ngIf="headerType == 2">
+      <ion-button
+        style="margin-right: 5px"
+        [style.margin-left]="platform == 'android' ? '10px' : '0'"
+        (click)="dismiss()"
+        color="light"
+        slot="end"
+        icon-only
+        size="small"
+      >
+        <ion-icon name="close"></ion-icon>
+      </ion-button>
+    </ng-container>
+  </ion-toolbar>
+</div>

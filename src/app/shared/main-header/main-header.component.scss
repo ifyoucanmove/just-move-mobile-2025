@@ -1,0 +1,21 @@
+div {
+    background: #000 url("../../../assets/images/top-nav-menu.webp") no-repeat
+      center center / 100%;
+    h1 {
+      margin: 12px 10px 12px 10px;
+      text-align: center;
+    }
+  }
+  ion-img {
+    margin-top: 20px;
+    margin-right: 8px;
+    width: 30px;
+    height: 30px;
+  }
+  ion-back-button {
+    margin-top: 20px;
+  }
+  ion-toolbar {
+    --background: transparent !important;
+  }
+  

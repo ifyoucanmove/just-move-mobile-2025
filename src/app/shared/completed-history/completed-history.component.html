@@ -1,0 +1,42 @@
+<ion-header>
+  <app-main-header title="Completed History" [headerType]="2"></app-main-header>
+</ion-header>
+
+
+<ion-content>
+<h1> Workout :<span style="color: var(--ion-color-secondary);" > {{title}}</span> </h1>
+  <ion-card *ngFor="let completed of completedData" >
+   <div class="main-container">
+   <div>
+    <h3> <b>Date</b> : {{completed.date.toDate() | date}}</h3>
+    <h3><b>Duration</b> : {{completed.durationMinutes}} Minutes</h3>
+   </div>
+   <div class="div2" >
+    <ion-button (click)="editData(completed)" *ngIf="completed.energyData" color="warning" size="small" >Edit</ion-button>
+    <ion-button (click)="deleteClicked(completed.id)"  color="danger" size="small" >Delete</ion-button>
+   </div>
+   </div>
+
+    <ion-row *ngIf="completed.energyData" class="mood-div">
+      <ion-col size="6" class="div1" >
+        <p class="p1" > <b>Before</b> </p>
+        <p class="p2" > <b>Energy</b> : {{completed.energyData.beforeEnergy}} </p>
+        <p class="p3" > <b>Mood</b> :  {{moods[completed.energyData?.beforeMood]}} </p>
+      </ion-col>
+
+      <ion-col size="6" class="div2">
+        <p class="p1" > <b>After</b> </p>
+        <p class="p2" > <b>Energy</b> : {{completed.energyData.afterEnergy}}</p>
+        <p class="p3" > <b>Mood</b> : {{ moods[completed.energyData?.afterMood]}} </p>
+      </ion-col>
+    </ion-row>
+
+    <!-- <div class="btn-div" >
+      <ion-button color="warning" size="small" >Edit</ion-button>
+      <ion-button color="danger" size="small" >Delete</ion-button>
+    </div> -->
+
+  </ion-card>
+
+
+</ion-content>

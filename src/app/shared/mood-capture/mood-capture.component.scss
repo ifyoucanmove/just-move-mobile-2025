@@ -1,0 +1,128 @@
+ion-content {
+    --padding-top: 16px;
+    --padding-bottom: 16px;
+  }
+  
+  ion-list-header {
+    padding-top: 16px;
+    font-size: 18px;
+    font-weight: 600;
+  }
+  
+  .energy-container {
+    --padding-start: 8px;
+    --padding-end: 8px;
+  }
+  
+  .energy-grid {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    padding: 8px 0;
+    
+    .energy-button {
+      flex: 1;
+      margin: 0;
+      height: 44px;
+      font-size: 16px;
+      font-weight: 600;
+      
+      &.button-solid {
+        --box-shadow: none;
+      }
+      &.ion-focused,
+      &:hover {
+        --background-hover: var(--background);
+        --background-focused: var(--background);
+        --color-focused: var(--color);
+        opacity: 0.9;
+      }
+  
+      &.button-outline.ion-focused,
+      &.button-outline:hover {
+        --background-hover: transparent;
+        --background-focused: transparent;
+        --color-focused: var(--color);
+        opacity: 0.8;
+      }
+    }
+
+    ion-button{
+        --background : none;
+        background: none;
+    }
+  }
+  
+  .mood-container {
+    --padding-start: 8px;
+    --padding-end: 8px;
+  }
+  
+  .mood-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+    gap: 12px;
+    width: 100%;
+    padding: 8px 0;
+  }
+  
+  .mood-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 14px 8px 6px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    
+    &.selected {
+      background: var(--ion-color-light);
+      border: 2px solid var(--ion-color-secondary);
+    }
+    
+    .mood-emoji {
+      font-size: 28px;
+      margin-bottom: 4px;
+    }
+    
+    .mood-label {
+      font-size: 12px;
+    }
+  }
+  
+  ion-footer ion-toolbar {
+    padding: 8px;
+  }
+
+  .title{
+    color: var(--ion-color-secondary);
+    font-size: 21px;
+    font-weight: 900 !important;
+    padding-left: 16px;
+    margin: 5px 0 0;
+  }
+
+  .sub-title{
+    font-weight: 900;
+    font-size: 18px;
+  }
+
+
+  ion-footer{
+
+.btn-container{
+    margin: 8px 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    flex-direction: column;
+    gap: 2px;
+}
+
+    ion-button{
+        width: 90%;
+        --background : none;
+        background: none;
+        font-weight: 900;
+    }
+  }

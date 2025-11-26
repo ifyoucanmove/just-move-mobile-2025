@@ -1,0 +1,79 @@
+<ion-header>
+  <app-main-header [headerType]="1" [title]="title" buttonType="back-icon"></app-main-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h1 class="ion-text-center">Cool Down</h1>
+  <strong>
+    NOTE: Please WARM UP before your challenge workout and COOL DOWN / Stretch
+    after workout by choosing any of our mobility and stretch videos in MOVE
+    (online gym)
+  </strong>
+
+
+  <h2 style="margin-top: 20px;" class="sub-head1 text-center">Cool Down</h2>
+  <video (play)="videoPlayed('Cool Down')"  width="100%" height="auto" controls controlsList="nodownload" oncontextmenu="return false;"
+  poster="https://s3.amazonaws.com/move_cloudfront/MOVE+Videos+2021/Thumbnails/CoolDown1.png">
+  <source src="https://s3.amazonaws.com/move_cloudfront/Challenges/Materials/Cool_Down.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+<div class="btns-div">
+  <ion-button
+    id="cooldown-mark-complete-btn"
+    *ngIf="!isVideoCompleted('Cool Down'+ ' - ' + this.title)"
+    (click)="markAsComplete('Cool Down', 12)"
+    style="width: 60vw !important;"
+  >
+    Complete
+  </ion-button>
+  <ion-button
+    id="challenge-day-mark-complete-again-btn"
+    *ngIf="isVideoCompleted('Cool Down' + ' - ' + this.title)"
+    style="width: 60vw !important;"
+    (click)="markAsComplete('Cool Down', 12)"
+    ><ion-badge color="light" style="margin-right: 10px">
+      {{getMaxWatchCount('Cool Down' + ' - ' + this.title)}}
+    </ion-badge>
+    Complete
+  </ion-button>
+</div>
+<div *ngIf="isVideoCompleted('Cool Down' + ' - ' + this.title)" class="btns-div">
+  <p (click)="completedHistory('Cool Down' + ' - ' + this.title)" >Completed History</p>
+</div>
+
+
+
+
+  <h2 style="margin-top: 20px;" class="sub-head1 text-center">Cool Down 2</h2>
+  <video (play)="videoPlayed('Cool Down 2')" width="100%" height="auto" controls controlsList="nodownload" oncontextmenu="return false;"
+  poster="https://s3.amazonaws.com/move_cloudfront/MOVE+Videos+2021/Thumbnails/Cooldown_2.png">
+  <source src="https://s3.amazonaws.com/move_cloudfront/Challenges/Materials/cool_down_2.mp4" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
+<div class="btns-div">
+  <ion-button
+    id="cooldown2-mark-complete-btn"
+    *ngIf="!isVideoCompleted('Cool Down 2'+ ' - ' + this.title)"
+    (click)="markAsComplete('Cool Down 2', 17)"
+    style="width: 60vw !important;"
+  >
+    Complete
+  </ion-button>
+  <ion-button
+    id="cooldown2-mark-complete-again-btn"
+    *ngIf="isVideoCompleted('Cool Down 2' + ' - ' + this.title)"
+    style="width: 60vw !important;"
+    (click)="markAsComplete('Cool Down 2', 12)"
+    ><ion-badge color="light" style="margin-right: 10px">
+      {{getMaxWatchCount('Cool Down 2' + ' - ' + this.title)}}
+    </ion-badge>
+    Complete
+  </ion-button>
+</div>
+<div *ngIf="isVideoCompleted('Cool Down 2' + ' - ' + this.title)" class="btns-div">
+  <p (click)="completedHistory('Cool Down 2' + ' - ' + this.title)" >Completed History</p>
+</div>
+  
+
+</ion-content>
+

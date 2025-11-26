@@ -1,0 +1,469 @@
+<ion-header>
+  <app-main-header
+    [headerType]="1"
+    [title]="title"
+    buttonType="back-icon"
+  ></app-main-header>
+</ion-header>
+
+
+<ion-content class="ion-padding">
+  <h1 class="ion-text-center">Warmup & Tips</h1>
+  <div class="text-div">
+    NOTE: Please WARM UP before your challenge workout and COOL DOWN / Stretch
+    after workout by choosing any of our mobility and stretch videos in MOVE
+    (online gym)
+  </div>
+
+  <div *ngIf="challengeId != 'summer-ready-may2022'">
+    <div class="video-div">
+      <video
+        style="margin-top: 0px"
+        width="100%"
+        height="auto"
+        controls
+        controlsList="nodownload"
+        oncontextmenu="return false;"
+        (play)="videoPlayed('Warm-up Dance Flow')"
+        poster="https://s3.amazonaws.com/move_cloudfront/MOVE+Videos+2021/Thumbnails/Warmup_DanceFlow.png"
+      >
+        <source
+          src="https://s3.amazonaws.com/move_cloudfront/Challenges/Materials/warmup_dance_flow.mp4"
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
+
+      <div>
+      <div class="detail-div">
+        <div>
+          <h2>Warm-up Dance Flow</h2>
+        <p>5 Minutes</p>
+        </div>
+        <div class="btn-div">
+
+          <ion-button
+          *ngIf="!isVideoCompleted('Warm-up Dance Flow'+ ' - ' + this.title)"
+          (click)="markAsComplete('Warm-up Dance Flow', 5)"
+        >
+          Complete
+        </ion-button>
+        <ion-button
+          *ngIf="isVideoCompleted('Warm-up Dance Flow' + ' - ' + this.title)"
+          (click)="markAsComplete('Warm-up Dance Flow', 5)"
+          ><ion-badge color="light" style="margin-right: 10px">
+            {{getMaxWatchCount('Warm-up Dance Flow' + ' - ' + this.title)}}
+          </ion-badge>
+          Complete
+        </ion-button>
+
+        </div>
+      </div>
+      <div *ngIf="isVideoCompleted('Warm-up Dance Flow' + ' - ' + this.title)" class="btns-div2">
+        <p (click)="completedHistory('Warm-up Dance Flow' + ' - ' + this.title)" >Completed History</p>
+      </div>
+    </div>
+    </div>
+
+    <div class="video-div">
+      <video
+        width="100%"
+        height="auto"
+        controls
+        controlsList="nodownload"
+        oncontextmenu="return false;"
+        (play)="videoPlayed('Cardio Blast Warm-Up')"
+        poster="https://s3.amazonaws.com/move_cloudfront/MOVE+Videos+2021/Thumbnails/Warmup_CardioBlast.png"
+      >
+        <source
+          src="https://s3.amazonaws.com/move_cloudfront/Challenges/Materials/cardio_blast_warmup.mp4"
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
+      <div>
+      <div class="detail-div">
+        <div>
+          <h2>Cardio Blast Warm-Up</h2>
+          <p>6 Minutes</p>
+        </div>
+        <div class="btn-div">
+        
+          <ion-button
+          *ngIf="!isVideoCompleted('Cardio Blast Warm-Up'+ ' - ' + this.title)"
+          (click)="markAsComplete('Cardio Blast Warm-Up', 6)"
+        >
+          Complete
+        </ion-button>
+        <ion-button
+          *ngIf="isVideoCompleted('Cardio Blast Warm-Up' + ' - ' + this.title)"
+          (click)="markAsComplete('Cardio Blast Warm-Up', 6)"
+          ><ion-badge color="light" style="margin-right: 10px">
+            {{getMaxWatchCount('Cardio Blast Warm-Up' + ' - ' + this.title)}}
+          </ion-badge>
+          Complete
+        </ion-button>
+
+        </div>
+      </div>
+      <div  *ngIf="isVideoCompleted('Cardio Blast Warm-Up' + ' - ' + this.title)" class="btns-div2">
+        <p (click)="completedHistory('Cardio Blast Warm-Up' + ' - ' + this.title)" >Completed History</p>
+      </div>
+    </div>
+    </div>
+
+    <div class="video-div">
+      <video
+        width="100%"
+        height="auto"
+        controls
+        controlsList="nodownload"
+        (play)="videoPlayed('Regular Warm-Up')"
+        oncontextmenu="return false;"
+        poster="https://s3.amazonaws.com/move_cloudfront/MOVE+Videos+2021/Thumbnails/RegularWarmup.png"
+      >
+        <source
+          src="https://s3.amazonaws.com/move_cloudfront/Challenges/Materials/Regular_warmup.mp4"
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
+ 
+    <div>
+      <div class="detail-div" >
+        <div>
+          <h2>Regular Warm-Up</h2>
+          <p>5 Minutes</p>
+        </div>
+        <div class="btn-div">
+       
+          <ion-button
+          *ngIf="!isVideoCompleted('Regular Warm-Up'+ ' - ' + this.title)"
+          (click)="markAsComplete('Regular Warm-Up', 5)"
+        >
+          Complete
+        </ion-button>
+        <ion-button
+          *ngIf="isVideoCompleted('Regular Warm-Up' + ' - ' + this.title)"
+          (click)="markAsComplete('Regular Warm-Up', 5)"
+          ><ion-badge color="light" style="margin-right: 10px">
+            {{getMaxWatchCount('Regular Warm-Up' + ' - ' + this.title)}}
+          </ion-badge>
+          Complete
+        </ion-button>
+
+        </div>
+       </div>
+       <div *ngIf="isVideoCompleted('Regular Warm-Up' + ' - ' + this.title)" class="btns-div2">
+        <p (click)="completedHistory('Regular Warm-Up' + ' - ' + this.title)" >Completed History</p>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="video-div">
+      <video
+        width="100%"
+        height="auto"
+        controls
+        controlsList="nodownload"
+        (play)="videoPlayed('Mobility Warm-Up')"
+        oncontextmenu="return false;"
+        poster="https://s3.amazonaws.com/move_cloudfront/MOVE+Videos+2021/Thumbnails/WarmUp_Mobility.png"
+      >
+        <source
+          src="https://s3.amazonaws.com/move_cloudfront/Challenges/Materials/Warmup+_mobility.mp4"
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
+
+
+      <div>
+      <div class="detail-div" >
+        <div>
+          <h2>Mobility Warm-Up</h2>
+          <p>4 Minutes</p>
+        </div>
+        <div class="btn-div">
+        
+          <ion-button
+          *ngIf="!isVideoCompleted('Mobility Warm-Up'+ ' - ' + this.title)"
+          (click)="markAsComplete('Mobility Warm-Up', 4)"
+        >
+          Complete
+        </ion-button>
+        <ion-button
+          *ngIf="isVideoCompleted('Mobility Warm-Up' + ' - ' + this.title)"
+          (click)="markAsComplete('Mobility Warm-Up', 4)"
+          ><ion-badge color="light" style="margin-right: 10px">
+            {{getMaxWatchCount('Mobility Warm-Up' + ' - ' + this.title)}}
+          </ion-badge>
+          Complete
+        </ion-button>
+
+        </div>
+       </div>
+       <div   *ngIf="isVideoCompleted('Mobility Warm-Up' + ' - ' + this.title)" class="btns-div2">
+        <p (click)="completedHistory('Mobility Warm-Up' + ' - ' + this.title)" >Completed History</p>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="video-div">
+      <video
+        width="100%"
+        height="auto"
+        controls
+        (play)="videoPlayed('Dance Warm-Up')"
+        controlsList="nodownload"
+        oncontextmenu="return false;"
+        poster="https://s3.amazonaws.com/move_cloudfront/MOVE+Videos+2021/Thumbnails/Warmup_Dance.png"
+      >
+        <source
+          src="https://s3.amazonaws.com/move_cloudfront/Challenges/Materials/Warmup_Dance.mp4"
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
+
+      <div>
+      <div class="detail-div" >
+        <div>
+          <h2>Dance Warm-Up</h2>
+          <p>4 Minutes</p>
+        </div>
+        <div class="btn-div">
+       
+          <ion-button
+          *ngIf="!isVideoCompleted('Dance Warm-Up'+ ' - ' + this.title)"
+          (click)="markAsComplete('Dance Warm-Up', 4)"
+        >
+          Complete
+        </ion-button>
+        <ion-button
+          *ngIf="isVideoCompleted('Dance Warm-Up' + ' - ' + this.title)"
+          (click)="markAsComplete('Dance Warm-Up', 4)"
+          ><ion-badge color="light" style="margin-right: 10px">
+            {{getMaxWatchCount('Dance Warm-Up' + ' - ' + this.title)}}
+          </ion-badge>
+          Complete
+        </ion-button>
+
+
+        </div>
+       </div>
+       <div  *ngIf="isVideoCompleted('Dance Warm-Up' + ' - ' + this.title)" class="btns-div2">
+        <p (click)="completedHistory('Dance Warm-Up' + ' - ' + this.title)" >Completed History</p>
+      </div>
+    </div>
+    </div>
+  </div>
+
+  <div *ngIf="challengeId == 'summer-ready-may2022'">
+    <div class="video-div">
+      <video
+        width="100%"
+        height="100%"
+        controls
+        (play)="videoPlayed('Warm-up 1')"
+        controlsList="nodownload"
+        oncontextmenu="false;"
+        poster="https://s3.amazonaws.com/move_cloudfront/Challenges/Summer_Ready/Thumbnails/SR_Warmup1.png"
+      >
+        <source
+          src="https://s3.amazonaws.com/move_cloudfront/Challenges/Summer_Ready/Videos/SR_Warm_Up_1.mp4"
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
+
+
+      <div>
+      <div class="detail-div" >
+        <div>
+          <h2>Warm-up 1</h2>
+        <p>4 Minutes</p>
+        </div>
+        <div class="btn-div">
+        
+          <ion-button
+          *ngIf="!isVideoCompleted('Warm-up 1'+ ' - ' + this.title)"
+          (click)="markAsComplete('Warm-up 1', 4)"
+        >
+          Complete
+        </ion-button>
+        <ion-button
+          *ngIf="isVideoCompleted('Warm-up 1' + ' - ' + this.title)"
+          (click)="markAsComplete('Warm-up 1', 4)"
+          ><ion-badge color="light" style="margin-right: 10px">
+            {{getMaxWatchCount('Warm-up 1' + ' - ' + this.title)}}
+          </ion-badge>
+          Complete
+        </ion-button>
+
+
+        </div>
+       </div>
+       <div  *ngIf="isVideoCompleted('Warm-up 1' + ' - ' + this.title)" class="btns-div2">
+        <p (click)="completedHistory('Warm-up 1' + ' - ' + this.title)" >Completed History</p>
+      </div>
+    </div>
+
+
+    </div>
+
+    <div class="video-div">
+      <video
+        width="100%"
+        height="100%"
+        controls
+        controlsList="nodownload"
+        oncontextmenu="false;"
+        (play)="videoPlayed('Warm-up 2')"
+        poster="https://s3.amazonaws.com/move_cloudfront/Challenges/Summer_Ready/Thumbnails/SR_Warmup2.png"
+      >
+        <source
+          src="https://s3.amazonaws.com/move_cloudfront/Challenges/Summer_Ready/Videos/SR_Warm_Up_2.mp4"
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
+
+
+      <div>
+      <div class="detail-div" >
+        <div>
+          <h2>Warm-up 2</h2>
+          <p>4 Minutes</p>
+        </div>
+        <div class="btn-div">
+        
+          <ion-button
+          *ngIf="!isVideoCompleted('Warm-up 2'+ ' - ' + this.title)"
+          (click)="markAsComplete('Warm-up 2', 4)"
+        >
+          Complete
+        </ion-button>
+        <ion-button
+          *ngIf="isVideoCompleted('Warm-up 2' + ' - ' + this.title)"
+          (click)="markAsComplete('Warm-up 2', 4)"
+          ><ion-badge color="light" style="margin-right: 10px">
+            {{getMaxWatchCount('Warm-up 2' + ' - ' + this.title)}}
+          </ion-badge>
+          Complete
+        </ion-button>
+
+        </div>
+       </div>
+       <div  *ngIf="isVideoCompleted('Warm-up 2' + ' - ' + this.title)" class="btns-div2">
+        <p (click)="completedHistory('Warm-up 2' + ' - ' + this.title)" >Completed History</p>
+      </div>
+    </div>
+
+    </div>
+
+    <div class="video-div">
+      <video
+        width="100%"
+        height="100%"
+        controls
+        controlsList="nodownload"
+        oncontextmenu="false;"
+        (play)="videoPlayed('Warm-up 3')"
+        poster="https://s3.amazonaws.com/move_cloudfront/Challenges/Summer_Ready/Thumbnails/SR_Warmup3.png"
+      >
+        <source
+          src="https://s3.amazonaws.com/move_cloudfront/Challenges/Summer_Ready/Videos/SR_Warm_Up_3.mp4"
+          type="video/mp4"
+        />
+        Your browser does not support the video tag.
+      </video>
+    </div>
+
+    <div>
+    <div class="detail-div" >
+      <div>
+        <h2>Warm-up 3</h2>
+        <p>4 Minutes</p>
+      </div>
+      <div class="btn-div">
+      
+        <ion-button
+        *ngIf="!isVideoCompleted('Warm-up 3'+ ' - ' + this.title)"
+        (click)="markAsComplete('Warm-up 3', 4)"
+      >
+        Complete
+      </ion-button>
+      <ion-button
+        *ngIf="isVideoCompleted('Warm-up 3' + ' - ' + this.title)"
+        (click)="markAsComplete('Warm-up 3', 4)"
+        ><ion-badge color="light" style="margin-right: 10px">
+          {{getMaxWatchCount('Warm-up 3' + ' - ' + this.title)}}
+        </ion-badge>
+        Complete
+      </ion-button>
+
+
+      </div>
+     </div>
+     <div *ngIf="isVideoCompleted('Warm-up 3' + ' - ' + this.title)" class="btns-div2">
+      <p (click)="completedHistory('Warm-up 3' + ' - ' + this.title)" >Completed History</p>
+    </div>
+  </div>
+
+
+  </div>
+
+  <div class="video-div">
+    <video
+      width="100%"
+      height="auto"
+      controls
+      controlsList="nodownload"
+      oncontextmenu="return false;"
+      (play)="videoPlayed('Challenge Moves Tips')"
+      poster=""
+    >
+      <source
+        src="https://s3.amazonaws.com/move_cloudfront/Challenges/TRAP+N+TONE+Challenge/Trap+N+Tone+tricks/Challenge+Moves+tips.mp4"
+        type="video/mp4"
+      />
+      Your browser does not support the video tag.
+    </video>
+
+    <div>
+    <div class="detail-div" >
+      <div>
+        <h2>Challenge Moves Tips</h2>
+        <p>1 Minute</p>
+      </div>
+      <div class="btn-div">
+      
+        <ion-button
+        *ngIf="!isVideoCompleted('Challenge Moves Tips'+ ' - ' + this.title)"
+        (click)="markAsComplete('Challenge Moves Tips', 1)"
+      >
+        Complete
+      </ion-button>
+      <ion-button
+        *ngIf="isVideoCompleted('Challenge Moves Tips' + ' - ' + this.title)"
+        (click)="markAsComplete('Challenge Moves Tips', 1)"
+        ><ion-badge color="light" style="margin-right: 10px">
+          {{getMaxWatchCount('Challenge Moves Tips' + ' - ' + this.title)}}
+        </ion-badge>
+        Complete
+      </ion-button>
+
+
+      </div>
+     </div>
+     <div *ngIf="isVideoCompleted('Challenge Moves Tips' + ' - ' + this.title)" class="btns-div2">
+      <p (click)="completedHistory('Challenge Moves Tips' + ' - ' + this.title)" >Completed History</p>
+    </div>
+  </div>
+
+
+  </div>
+</ion-content>

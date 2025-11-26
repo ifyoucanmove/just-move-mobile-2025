@@ -1,0 +1,158 @@
+<ion-content>
+  <form [formGroup]="workoutForm">
+    <!-- Before Workout Section -->
+    <ion-list>
+     <h2 *ngIf="type == 'workout'" class="title" >Before Workout</h2>
+     <h2  *ngIf="type == 'day'" class="title" >Start of Day</h2>
+
+      <ion-item lines="none">
+        <ion-label class="sub-title" >Energy Level (1-5)</ion-label>
+      </ion-item>
+
+      <ion-item lines="none" class="energy-container">
+        <div class="energy-grid">
+          <ion-button
+            *ngFor="let level of energyLevels"
+            [ngStyle]="
+              workoutForm.get('beforeEnergy')?.value === level
+                ? {
+                    '--background': getEnergyColor(level),
+                    '--background-hover': getEnergyColor(level),
+                    '--color': '#ffffff'
+                  }
+                : {
+                    '--color': getEnergyColor(level),
+                    '--border-color': getEnergyColor(level)
+                  }
+            "
+            [fill]="
+              workoutForm.get('beforeEnergy')?.value === level
+                ? 'solid'
+                : 'outline'
+            "
+            (click)="selectEnergyLevel('beforeEnergy', level)"
+            class="energy-button"
+          >
+            {{ level }}
+          </ion-button>
+        </div>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-label class="sub-title">Mood</ion-label>
+      </ion-item>
+
+      <ion-item lines="none" class="mood-container">
+        <div class="mood-grid">
+          <div
+            *ngFor="let mood of moods"
+            class="mood-item"
+            [class.selected]="
+              workoutForm.get('beforeMood')?.value === mood.value
+            "
+            (click)="selectMood('beforeMood', mood.value)"
+          >
+            <span class="mood-emoji">{{ mood.emoji }}</span>
+            <span class="mood-label">{{ mood.label }}</span>
+          </div>
+        </div>
+      </ion-item>
+    </ion-list>
+
+    <!-- After Workout Section -->
+    <ion-list>
+      <h2 *ngIf="type == 'workout'" style="margin-top: 30px;" class="title" >After Workout</h2>
+      <h2 *ngIf="type == 'day'" style="margin-top: 30px;" class="title" >End of Day</h2>
+
+      <ion-item lines="none">
+        <ion-label class="sub-title">Energy Level (1-5)</ion-label>
+      </ion-item>
+
+      <ion-item lines="none" class="energy-container">
+        <div class="energy-grid">
+          <ion-button
+            *ngFor="let level of energyLevels"
+            [ngStyle]="
+              workoutForm.get('afterEnergy')?.value === level
+                ? {
+                    '--background': getEnergyColor(level),
+                    '--background-hover': getEnergyColor(level),
+                    '--color': '#ffffff'
+                  }
+                : {
+                    '--color': getEnergyColor(level),
+                    '--border-color': getEnergyColor(level)
+                  }
+            "
+            [fill]="
+              workoutForm.get('afterEnergy')?.value === level
+                ? 'solid'
+                : 'outline'
+            "
+            (click)="selectEnergyLevel('afterEnergy', level)"
+            class="energy-button"
+          >
+            {{ level }}
+          </ion-button>
+        </div>
+      </ion-item>
+
+      <ion-item lines="none">
+        <ion-label class="sub-title">Mood</ion-label>
+      </ion-item>
+
+      <ion-item lines="none" class="mood-container">
+        <div class="mood-grid">
+          <div
+            *ngFor="let mood of moods"
+            class="mood-item"
+            [class.selected]="
+              workoutForm.get('afterMood')?.value === mood.value
+            "
+            (click)="selectMood('afterMood', mood.value)"
+          >
+            <span class="mood-emoji">{{ mood.emoji }}</span>
+            <span class="mood-label">{{ mood.label }}</span>
+          </div>
+        </div>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>
+
+<ion-footer>
+
+
+  <div class="btn-container" *ngIf="type == 'workout'" >
+    <ion-button
+    *ngIf="!data"
+    fill="outline"
+    (click)="continueWithoutSaving()"
+  >
+  
+    Complete Without Saving
+  </ion-button>
+
+  <ion-button
+  [disabled]="!workoutForm.valid"
+  (click)="data ? update() : onSubmit()"
+  color="secondary"
+>
+  {{ data ? "Update" : "Save & Complete" }} 
+</ion-button>
+
+  </div>
+
+  <div *ngIf="type == 'day'" class="btn-container"  >
+    <ion-button
+    fill="outline"
+    (click)="saveDayData()"
+  >
+    Submit
+  </ion-button>
+
+
+
+  </div>
+
+</ion-footer>

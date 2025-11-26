@@ -266,3 +266,55 @@
     }
   }
 }
+ 
+
+
+
+ion-content {
+  ion-item {
+    border: none;
+    border-radius: 10px;
+    border-width: 1px;
+    border-color: #cccccc;
+    margin-top: 5px;
+    --padding-bottom : 5px;
+    .l2{
+      font-size: 14px;
+      white-space: initial !important;
+    }
+    .l1{
+      font-weight: 900;
+      margin-bottom: 5px;
+      font-size: 18px;
+    }
+  }
+}
+.flex-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+ion-card{
+  margin: 16px 16px;
+}
+.btns-div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
+.skeleteon-thumbnail{
+  height: 20vw; width: 100%; --border-radius : 10px;
+}
+.button-item{
+  padding: 0px 16px 10px 0;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  ion-button{
+    height: 35px;
+    font-size: 15px;
+  }
+}

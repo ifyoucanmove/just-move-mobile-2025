@@ -1,0 +1,257 @@
+<ion-header>
+  <app-main-header
+    [headerType]="1"
+    buttonType="back-icon"
+    [title]="title"
+  ></app-main-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-img
+    style="margin: 10px 0"
+    *ngIf="promoImage"
+    [src]="promoImage"
+    class="ion-img-round"
+  ></ion-img>
+
+  <br />
+  <h2 class="ion-text-center"><b>Welcome to DAY {{ id }}</b></h2>
+  <div *ngIf="allWatchDataLoaded" class="watch-container">
+    <div
+      [ngClass]="isDayVideoWatched(i+getWeekFirstDayNumber())?'primary-bg':'medium-bg'"
+      *ngFor="let loop of [].constructor(getNoOfDaysInWeek()); let i=index "
+    >
+      <p>{{getDayWatchCount(i+getWeekFirstDayNumber())}}</p>
+    </div>
+  </div>
+
+  <hr />
+  <strong>
+    NOTE: Please WARM UP before your challenge workout and COOL DOWN / Stretch
+    after workout by choosing any of our mobility and stretch videos in MOVE
+    (online gym)
+  </strong>
+  <br />
+  <hr />
+
+  <ion-card *ngIf="message" class="info-card">
+    <ion-img
+      class="quotation-img"
+      src="assets/icons/right-quotation.svg"
+    ></ion-img>
+    <div [innerHTML]="message"></div>
+    <ion-img
+      class="quotation-img"
+      src="assets/icons/right-quotation.svg"
+    ></ion-img>
+  </ion-card>
+
+  <div
+    *ngIf="duration || equipment.length > 0"
+    style="padding: 10px 16px"
+    class="eqipment-div"
+  >
+    <p *ngIf="equipment.length > 0" style="margin-bottom: 5px">
+      <strong>Equipment</strong>
+    </p>
+    <ul>
+      <li *ngFor="let equipment of equipment">{{equipment}}</li>
+    </ul>
+    <p *ngIf="duration">
+      <strong>Duration</strong> : {{getDuration(duration)}}
+    </p>
+  </div>
+
+
+  <div class="btns-div" *ngIf="this.video1 && !this.hideVideo " >
+    
+
+    <ng-container>
+      <div *ngIf="!checkFavorites(id)">
+        <ion-button id="single-category-add-favorite-btn" (click)="addToFavList()"
+        
+          >
+          <ion-icon name="heart-outline"></ion-icon> &nbsp;
+          Add to favorite</ion-button
+        >
+      </div>
+      <div *ngIf="checkFavorites(id)">
+        <ion-button id="single-category-remove-favorite-btn" (click)="removeFromFavList()">
+          <ion-icon name="heart"></ion-icon> &nbsp;
+          Favorited
+        </ion-button>
+      </div>
+    </ng-container>
+    <ion-button
+    id="challenge-day-chromecast-btn1"
+    (click)="PlayOnChromeCast(video1)"
+  >
+    <ion-img
+      style="width: 18px; margin-right: 8px"
+      src="assets/icons/cast.png"
+    ></ion-img>
+    Cast
+  </ion-button>
+
+  </div>
+
+  <div class="video-div" *ngIf="!this.hideVideo ">
+    <h2  *ngIf="videoTitle1">{{videoTitle1}}</h2>
+    <video
+    *ngIf="this.video1"
+    (play)="onVideoPlay()"
+      [poster]="dayImage"
+      width="100%"
+      height="100%"
+      controls
+      controlsList="nodownload"
+    >
+      <source src="{{ this.video1 }}" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="ion-text-center" *ngIf="!this.video1">Video coming soon...</div>
+
+
+
+   
+   
+  </div>
+
+  <div class="btns-div">
+    <ion-button
+    id="challenge-day-mark-complete-btn"
+    *ngIf="!isCompleted"
+    (click)="markAsComplete()"
+    style="width: 60vw !important;"
+  >
+    Complete
+  </ion-button>
+  <ion-button
+    id="challenge-day-mark-complete-again-btn"
+    *ngIf="isCompleted"
+    style="width: 60vw !important;"
+    (click)="markAsComplete()"
+    ><ion-badge color="light" style="margin-right: 10px">
+      {{getMaxWatchCount()}}
+    </ion-badge>
+    Complete
+  </ion-button>
+   
+  </div>
+  <div *ngIf="isCompleted" class="btns-div2">
+    <p (click)="completedHistory()" >Completed History</p>
+  </div>
+
+
+  <div class="video-div" *ngIf="this.video2 && !this.hideVideo">
+    <h2  *ngIf="videoTitle2">{{videoTitle2}}</h2>
+    <video
+    (play)="onVideoPlay()"
+      [poster]="dayImage"
+      width="100%"
+      height="100%"
+      controls
+      controlsList="nodownload"
+    >
+      <source src="{{ this.video2 }}" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="btns-div">
+      <ion-button
+        id="challenge-day-chromecast-btn2"
+        (click)="PlayOnChromeCast(video2)"
+      >
+      <ion-img
+      style="width: 18px; margin-right: 8px"
+      src="assets/icons/cast.png"
+    ></ion-img>
+        Cast 
+      </ion-button>
+    </div>
+  </div>
+  
+
+  <div class="video-div" *ngIf="this.video3 && !this.hideVideo">
+    <h2  *ngIf="videoTitle3">{{videoTitle3}}</h2>
+    <video
+    (play)="onVideoPlay()"
+      [poster]="dayImage"
+      width="100%"
+      height="100%"
+      controls
+      controlsList="nodownload"
+    >
+      <source src="{{ this.video3 }}" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+    <div class="btns-div" >
+      <ion-button
+        id="challenge-day-chromecast-btn2"
+        (click)="PlayOnChromeCast(video3)"
+      >
+      <ion-img
+      style="width: 18px; margin-right: 8px"
+      src="assets/icons/cast.png"
+    ></ion-img>
+        Cast 
+      </ion-button>
+    </div>
+  </div>
+
+
+  <div *ngIf=" dayDatas?.byoCombo1Id"  class="combo-div">
+    <h2>BYO Combo</h2>
+    <h1 class="text-h" >{{dayDatas?.byoCombo1Name}}</h1>
+
+    <div class="btn-div">
+      <ion-button (click)="viewWorkouts(dayDatas?.byoCombo1Id)" class="transparent-btn" color="primary" fill="outline" >See Workouts</ion-button>
+      <ion-button *ngIf="!isComboDetailsLoading"  (click)="playCombo(dayDatas.byoCombo1Id, dayDatas.byoCombo1Name)" >Play Combo</ion-button>
+      <ion-button *ngIf="isComboDetailsLoading"  (click)="playCombo(dayDatas.byoCombo1Id, dayDatas.byoCombo1Name)" >
+    <!--   <ion-spinner></ion-spinner> -->
+      </ion-button>
+    </div>
+  </div>
+
+  
+
+  <div *ngIf=" dayDatas?.byoCombo2Id"  class="combo-div">
+    <h2>BYO Combo</h2>
+    <h1 class="text-h" >{{dayDatas.byoCombo2Name}}</h1>
+
+    <div class="btn-div">
+      <ion-button (click)="viewWorkouts(dayDatas.byoCombo2Id)" class="transparent-btn" color="primary" fill="outline" >See Workouts</ion-button>
+      <ion-button *ngIf="!isComboDetailsLoading"  (click)="playCombo(dayDatas.byoCombo2Id, dayDatas.byoCombo2Name)" >Play Combo</ion-button>
+      <ion-button *ngIf="isComboDetailsLoading"  (click)="playCombo(dayDatas.byoCombo2Id, dayDatas.byoCombo2Name)" >
+     <!--  <ion-spinner></ion-spinner> -->
+      </ion-button>
+    </div>
+  </div>
+
+
+  <div class="btns-div" style="margin: 20px 0 8px;">
+    <ion-button
+      color="primary"
+      id="challenge-day-chromecast-btn1"
+      (click)="goToDayPage(this.id, 1)"
+      fill="outline"
+    >
+      <ion-icon name="caret-back-outline"></ion-icon>
+      &nbsp; Previous
+    </ion-button>
+    <ion-button
+      color="primary"
+      fill="outline"
+      id="challenge-day-mark-complete-btn"
+      (click)="goToDayPage(this.id, 2)"
+    >
+      Next &nbsp;
+      <ion-icon name="caret-forward-outline"></ion-icon>
+    </ion-button>
+  </div>
+  <div *ngIf="!this.hideVideo && this.video1">
+    * Warning: There's explicit language in some videos
+    <br />
+  </div>
+
+  <div *ngIf="watchDataLoaded" class="btns-div"></div>
+</ion-content>

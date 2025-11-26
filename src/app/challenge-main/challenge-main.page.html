@@ -1,0 +1,68 @@
+<ion-header>
+  <app-main-header
+    [headerType]="1"
+    buttonType="back-icon"
+    [title]="title"
+
+  ></app-main-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher> -->
+ <!--  <div class="btns-div" *ngIf="status != 'active'">
+    <ion-button (click)="openSubscribeModal()">
+      <ion-icon name="sync"></ion-icon> &nbsp; Subscribe
+    </ion-button>
+  </div> -->
+  @for (challenge of challengeDatas.slice(0, 1); track challenge.id) {
+  <ion-card   (click)="challengeClicked(challenge)">
+    <img
+      (load)="challenge.loaded=true"
+      [hidden]="!challenge.loaded"
+      [src]="challenge.dashBannerUrl"
+    />
+    @if(!challenge.loaded) {
+    <div  [hidden]="challenge.loaded">
+      <ion-thumbnail class="skeleteon-thumbnail" slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-thumbnail>
+    </div>
+  }
+    <ion-item lines="none" detail="true">
+      <ion-list>
+        <ion-text class="l1" color="primary">{{challenge.dashTitle}}</ion-text>
+        <ion-label class="l2"
+          ><b>Number of Days :</b> {{challenge.totalDays}}
+        </ion-label>
+      <!--   <ion-label class="l2" *ngIf="cat == 'current-and-upcoming'"
+          ><b>Start Date :</b> {{challenge.upload01Starts.toDate() | date:
+          'mediumDate'}}
+        </ion-label> -->
+      </ion-list>
+    
+   
+
+   <!--    <ion-badge
+        slot="end"
+        *ngIf="isChallengeActive(challenge)  && is7Days(challenge.id) "
+        color="warning"
+      >
+        7 Days</ion-badge
+      >
+      <ion-icon
+        slot="end"
+        *ngIf="!isChallengeActive(challenge, challenge._isMiniChallenge)"
+        color="danger"
+        name="lock-closed"
+      ></ion-icon> -->
+    </ion-item>
+   
+  </ion-card>
+}
+
+<!--   <div class="flex-div" *ngIf="allActiveChallenges.length == 0 ">
+    <p>No challenges to show</p>
+  </div> -->
+</ion-content>

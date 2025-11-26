@@ -1,0 +1,72 @@
+<ion-header>
+  <app-main-header [headerType]="1" [title]="title" buttonType="back-icon"></app-main-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <app-week-selector value="1"></app-week-selector>
+  <div *ngIf="watchDataLoaded" class="watch-container">
+    <div
+      [ngClass]="isDayVideoWatched(i+1)?'primary-bg':'medium-bg'"
+      *ngFor="let loop of [].constructor(7); let i=index "
+    >
+      <p>{{getDayWatchCount(i+1)}}</p>
+    </div>
+  </div>
+  <h2 style="margin: 10px 0 10px">It's time, Team!</h2>
+  <ion-card class="info-card">
+    <ion-img
+      class="quotation-img"
+      src="assets/icons/right-quotation.svg"
+    ></ion-img>
+    <div *ngIf="this.week1Message" [innerHTML]="this.week1Message"></div>
+    <ion-img
+      class="quotation-img"
+      src="assets/icons/right-quotation.svg"
+    ></ion-img>
+  </ion-card>
+
+
+  <ng-container>
+    <div
+      (click)="this.goToDayPage(i + 1)"
+      *ngFor="let day of days; let i=index"
+      class="day-card"
+    >
+    <img  *ngIf="getChallengeImage(i)"
+    (load)="getChallenge(i).loaded=true"
+    [hidden]="!getChallenge(i).loaded"
+    [src]="getChallengeImage(i)"
+  />
+  <div *ngIf="!getChallenge(i).loaded" [hidden]="getChallenge(i).loaded">
+    <ion-thumbnail class="skeleteon-thumbnail" slot="start">
+      <ion-skeleton-text animated></ion-skeleton-text>
+    </ion-thumbnail>
+  </div>
+      <div class="main-div">
+        <div class="left-div">
+          <h2 *ngIf="daysOfTheWeek">
+         <span *ngIf="!isPastChallenge" >   Day {{getChallenge(i).day}} - {{daysOfTheWeek[i]}}</span>
+         <span *ngIf="isPastChallenge" >   Day {{getChallenge(i).day}} </span>
+         <span></span>
+          </h2>
+          <p *ngIf="getChallenge(i).url">
+            {{getChallenge(i).durationMinutes}} Minutes
+          </p>
+        </div>
+
+        <div class="c-div" *ngIf="isDayVideoWatched(i+1)">
+          <span class="mr-2 text-success"
+            >Completed
+            <span *ngIf="getDayWatchCount(i+1) > 1"
+              >({{getDayWatchCount(i+1) }})</span
+            ></span
+          >
+          <p *ngIf="getDayWatchDate(i+1) !== null" class="text-secondary">
+            {{getDayWatchDate(i+1).toDate() | date}}
+          </p>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+</ion-content>

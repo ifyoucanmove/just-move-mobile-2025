@@ -1,0 +1,236 @@
+<ion-header>
+  <app-main-header
+    [headerType]="1"
+    buttonType="back-icon"
+    [title]="title"
+
+  ></app-main-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div class="video-div"  *ngIf="challengeDatas.previewVideo1">
+    <h2  *ngIf="challengeDatas.previewVideo1">Challenge Preview</h2>
+  <video
+  #videoElement
+    (play)="onVideoPlay()"
+    [poster]="posterUrl"
+    width="100%"
+    height="100%"
+    controls
+    controlsList="nodownload"
+    playsinline
+    webkit-playsinline
+  >
+    <source src="{{ this.challengeDatas.previewVideo1 }}" type="video/mp4" />
+    Your browser does not support the video tag.
+  </video>
+  
+</div>
+
+  <ion-item
+    routerLink="/tabs/challenge/introduction"
+    lines="none"
+    detail="true"
+  >
+    <ion-label color="primary">Introduction & Guidelines</ion-label>
+  </ion-item>
+
+  <ion-item
+    *ngIf="challengeDatas && (challengeDatas.previewVideo2 || challengeDatas.previewVideo3    )"
+    routerLink="/tabs/challenge/preview"
+    lines="none"
+    detail="true"
+  >
+    <ion-label color="primary">Challenge Preview</ion-label>
+  </ion-item>
+
+  <ion-item
+  (click)="addMeasurement()"
+  lines="none"
+  detail="true"
+>
+  <ion-label color="primary">Measurements</ion-label>
+</ion-item>
+
+  <ion-item
+    *ngIf="showChallenge && showMaterials"
+    routerLink="/tabs/challenge/challenge-material"
+    lines="none"
+    detail="true"
+  >
+    <ion-label color="primary">Challenge Materials</ion-label>
+  </ion-item>
+
+  <ion-item
+    *ngIf="showChallenge && showMaterials"
+    routerLink="/tabs/challenge/media-upload"
+    lines="none"
+    detail="true"
+  >
+    <ion-label color="primary" data-e2e="photo-video-upload"
+      >Photo / Video Upload</ion-label
+    >
+  </ion-item>
+  <ion-item
+    *ngIf="showChallenge && (this.showMaterials || (isMiniChallenge && showWeek1Menu))"
+    routerLink="/challenge/challenge-tip-tricks"
+    lines="none"
+    detail="true"
+  >
+    <ion-label color="primary">Warmup & Tips</ion-label>
+  </ion-item>
+  <ion-item
+    *ngIf="showChallenge && (this.showMaterials || (isMiniChallenge && showWeek1Menu)) "
+    routerLink="/challenge/challenge-cool-downs"
+    lines="none"
+    detail="true"
+  >
+    <ion-label color="primary">Cool Down</ion-label>
+  </ion-item>
+
+  <ion-item
+  routerLink="/tabs/challenge/calendar"
+  lines="none"
+  detail="true"
+>
+  <ion-label color="primary">Calendar</ion-label>
+  <ion-badge slot="end" color="success">New</ion-badge>
+</ion-item>
+
+  <ion-item
+    *ngIf="showWeek1Menu && showChallenge"
+    routerLink="/challenge/challenge-week1"
+    lines="none"
+    detail="true"
+  >
+    <ion-label color="primary">
+      {{!isMiniChallenge? "Week 1" : "Mini Challenge"}}
+    </ion-label>
+    <div slot="end" *ngIf="watchDataLoaded" class="watch-container-item">
+      <div
+        [ngClass]="isDayVideoWatched(i+1)?'primary-bg':'medium-bg'"
+        *ngFor="let loop of [].constructor(7); let i=index "
+      >
+        <p>{{getDayWatchCount(i+1)}}</p>
+      </div>
+    </div>
+  </ion-item>
+
+  <!--  -->
+
+  <!--  -->
+  <ion-item
+    *ngIf="showWeek2Menu && showChallenge"
+    (click)="weekClicked(2)"
+    lines="none"
+    detail="true"
+  >
+    <ion-label color="primary">Week 2</ion-label>
+    <div
+      slot="end"
+      *ngIf="!isMiniSubscription && watchDataLoaded"
+      class="watch-container-item"
+    >
+      <div
+        [ngClass]="isDayVideoWatched(i+8)?'primary-bg':'medium-bg'"
+        *ngFor="let loop of [].constructor(7); let i=index "
+      >
+        <p>{{getDayWatchCount(i+8)}}</p>
+      </div>
+    </div>
+    <ion-icon
+      slot="end"
+      *ngIf="isMiniSubscription"
+      color="danger"
+      name="lock-closed"
+    ></ion-icon>
+  </ion-item>
+  <ion-item
+    *ngIf="showWeek3Menu && showChallenge"
+    (click)="weekClicked(3)"
+    lines="none"
+    detail="true"
+  >
+    <ion-label color="primary">Week 3</ion-label>
+    <div
+      slot="end"
+      *ngIf="!isMiniSubscription && watchDataLoaded"
+      class="watch-container-item"
+    >
+      <div
+        [ngClass]="isDayVideoWatched(i+15)?'primary-bg':'medium-bg'"
+        *ngFor="let loop of [].constructor(7); let i=index "
+      >
+        <p>{{getDayWatchCount(i+15)}}</p>
+      </div>
+    </div>
+    <ion-icon
+      slot="end"
+      *ngIf="isMiniSubscription"
+      color="danger"
+      name="lock-closed"
+    ></ion-icon>
+  </ion-item>
+  <ion-item
+    *ngIf="showWeek4Menu && showChallenge && weekCount >= 4"
+    (click)="weekClicked(4)"
+    lines="none"
+    detail="true"
+  >
+    <ion-label color="primary">Week 4</ion-label>
+    <div
+      slot="end"
+      *ngIf="!isMiniSubscription && watchDataLoaded"
+      class="watch-container-item"
+    >
+      <div
+        [ngClass]="isDayVideoWatched(i+22)?'primary-bg':'medium-bg'"
+        *ngFor="let loop of [].constructor(week4DayCount); let i=index "
+      >
+        <p>{{getDayWatchCount(i+22)}}</p>
+      </div>
+    </div>
+    <ion-icon
+      slot="end"
+      *ngIf="isMiniSubscription"
+      color="danger"
+      name="lock-closed"
+    ></ion-icon>
+  </ion-item>
+  <ion-item
+    *ngIf="showWeek5Menu && showChallenge && weekFinalDayCount > 0"
+    (click)="weekClicked(5)"
+    lines="none"
+    detail="true"
+  >
+    <ion-label color="primary">Week 5</ion-label>
+    <div
+      slot="end"
+      *ngIf="!isMiniSubscription && watchDataLoaded"
+      class="watch-container-item"
+    >
+      <div
+        [ngClass]="isDayVideoWatched(i+29)?'primary-bg':'medium-bg'"
+        *ngFor="let loop of [].constructor(weekFinalDayCount); let i=index "
+      >
+        <p>{{getDayWatchCount(i+29)}}</p>
+      </div>
+      <ion-icon
+        slot="end"
+        *ngIf="isMiniSubscription"
+        color="danger"
+        name="lock-closed"
+      ></ion-icon>
+    </div>
+  </ion-item>
+  <ion-item
+    *ngIf="showChallenge && this.showWeek4Menu"
+    routerLink="/tabs/challenge/feedback"
+    lines="none"
+    detail="true"
+  >
+    <ion-label color="primary">Feedback</ion-label>
+  </ion-item>
+
+</ion-content>
