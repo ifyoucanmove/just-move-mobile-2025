@@ -1,0 +1,115 @@
+<ion-header>
+  <app-main-header [headerType]="1" buttonType="back-icon" [title]="title"></app-main-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h1 class="ion-text-center">Challenge Materials</h1>
+
+
+  <ion-card *ngIf="this.materialPDFImage1">
+
+    <img #item  (load)="loaded = true"
+    [hidden]="!loaded" [src]="materialPDFImage1" />
+    <div
+    style="width: 100%;"
+    *ngIf="!loaded" [hidden]="loaded"
+      >
+      <ion-thumbnail    class="skeleteon-thumbnail"  slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-thumbnail>
+    </div>
+
+
+    <h1>{{materialPDFTitle1}}</h1>
+    <ion-button
+      id="challenge-materail1-download"
+      (click)="openUrl(materialPDFUrl1, materialPDFTitle1)"
+      mode="ios"
+    >
+      Click to Download
+    </ion-button>
+  </ion-card>
+  <ion-card *ngIf="this.materialPDFImage2">
+    <img #item2 (load)="loaded2 = true"
+    [hidden]="!loaded2" [src]="materialPDFImage2" />
+    <div
+    style="width: 100%;"
+    *ngIf="!loaded2" [hidden]="loaded2"
+      >
+      <ion-thumbnail    class="skeleteon-thumbnail"  slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-thumbnail>
+    </div>
+    <h1>{{materialPDFTitle2}}</h1>
+    <ion-button
+      id="challenge-materail2-download"
+      (click)="openUrl(materialPDFUrl2, materialPDFTitle2)"
+      mode="ios"
+    >
+      Click to Download
+    </ion-button>
+  </ion-card>
+  <ion-card *ngIf="this.materialPDFImage3">
+    <img #item3  (load)="loaded3 = true"
+    [hidden]="!loaded3"  [src]="materialPDFImage3" />
+    <div
+     style="width: 100%;"
+     *ngIf="!loaded3" [hidden]="loaded3"
+      >
+      <ion-thumbnail    class="skeleteon-thumbnail"  slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-thumbnail>
+    </div>
+    <h1>{{materialPDFTitle3}}</h1>
+    <ion-button
+      id="challenge-materail3-download"
+      (click)="openUrl(materialPDFUrl3, materialPDFTitle3)"
+      mode="ios"
+    >
+      Click to Download
+    </ion-button>
+  </ion-card>
+
+  <ion-card *ngIf="this.materialPDFImage4">
+    <img #item4  (load)="loaded4 = true"
+    [hidden]="!loaded4" [src]="materialPDFImage4" />
+    <div
+     style="width: 100%;"
+     *ngIf="!loaded4" [hidden]="loaded4"
+      >
+      <ion-thumbnail    class="skeleteon-thumbnail"  slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-thumbnail>
+    </div>
+    <h1>{{materialPDFTitle4}}</h1>
+    <ion-button
+      id="challenge-materail4-download"
+      (click)="openUrl(materialPDFUrl4, materialPDFTitle4)"
+      mode="ios"
+    >
+      Click to Download
+    </ion-button>
+  </ion-card>
+
+
+  <ion-card *ngIf="this.materialPDFImage5">
+    <img #item5  (load)="loaded5 = true"
+    [hidden]="!loaded5" [src]="materialPDFImage5" />
+    <div
+     style="width: 100%;"
+     *ngIf="!loaded5" [hidden]="loaded5"
+      >
+      <ion-thumbnail    class="skeleteon-thumbnail"  slot="start">
+        <ion-skeleton-text animated></ion-skeleton-text>
+      </ion-thumbnail>
+    </div>
+    <h1>{{materialPDFTitle5}}</h1>
+    <ion-button
+      id="challenge-materail5-download"
+      (click)="openUrl(materialPDFUrl5, materialPDFTitle5)"
+      mode="ios"
+    >
+      Click to Download
+    </ion-button>
+  </ion-card>
+</ion-content>

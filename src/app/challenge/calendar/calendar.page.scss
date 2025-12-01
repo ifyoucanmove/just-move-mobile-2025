@@ -1,0 +1,631 @@
+// Calendar Content
+.calendar-content {
+    --background: #f8fafc;
+    --padding-start: 0;
+    --padding-end: 0;
+    --padding-top: 0;
+    --padding-bottom: 0;
+    width: 100%;
+  }
+  
+  .calendar-wrapper {
+    padding: 20px;
+    min-height: 100vh;
+    background: #ffffff;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+  
+  // Calendar Header
+  .calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding: 0 4px;
+  
+    .header-left {
+      .calendar-title {
+        font-size: 28px;
+        font-weight: 700;
+        color: #2d3748;
+        margin: 0;
+      }
+    }
+  
+    .header-right {
+      .change-date-btn {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        color: #4a5568;
+        padding: 12px 20px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 14px;
+        transition: all 0.3s ease;
+        cursor: pointer;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  
+        &:hover {
+          background: #f7fafc;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+      }
+    }
+  }
+  
+  // Calendar Navigation
+  .calendar-nav {
+    margin-bottom: 20px;
+  
+    .nav-controls {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 20px;
+      background: #ffffff;
+      padding: 16px 24px;
+      border-radius: 20px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      border: 1px solid #e2e8f0;
+  
+      .nav-btn {
+        background: linear-gradient(
+          to right,
+          #01b6d8 0,
+          #01c8c3 25%,
+          #02d8b0 50%,
+          #02d9b0 75%,
+          #02e6a0 100%
+        );
+        border: none;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(1, 182, 216, 0.3);
+  
+        ion-icon {
+          font-size: 20px;
+        }
+  
+        &:hover {
+          transform: translateY(-2px) scale(1.05);
+          box-shadow: 0 6px 20px rgba(1, 182, 216, 0.4);
+        }
+  
+        &:active {
+          transform: translateY(0) scale(0.95);
+        }
+      }
+  
+      .current-month {
+        font-size: 20px;
+        font-weight: 700;
+        color: #2d3748;
+        min-width: 160px;
+        text-align: center;
+        text-transform: capitalize;
+      }
+    }
+  }
+  
+  // Calendar Container
+  .calendar-container {
+    background: white;
+    border-radius: 20px;
+    padding: 24px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e2e8f0;
+    width: 100%;
+    max-width: 100%;
+  
+    full-calendar {
+      width: 100% !important;
+      min-width: 100% !important;
+    }
+  
+    ::ng-deep {
+      .fc {
+        height: auto;
+        min-height: 500px;
+        width: 100% !important;
+  
+        // Force FullCalendar to use full width
+        .fc-view-harness {
+          width: 100% !important;
+        }
+  
+        .fc-daygrid {
+          width: 100% !important;
+          
+          .fc-scrollgrid {
+            width: 100% !important;
+          }
+        }
+  
+        // Override any table width constraints
+        table {
+          width: 100% !important;
+          table-layout: fixed !important;
+        }
+  
+        .fc-scrollgrid-sync-table {
+          width: 100% !important;
+        }
+  
+        .fc-col-header-row {
+          width: 100% !important;
+        }
+  
+        .fc-daygrid-day-frame {
+          width: 100% !important;
+        }
+  
+        // Remove default header since we have custom navigation
+        .fc-toolbar {
+          display: none;
+        }
+  
+        // Calendar grid styling
+        .fc-view-harness {
+          background: transparent;
+        }
+  
+        // Day grid styling
+        .fc-daygrid {
+          .fc-scrollgrid {
+            border: none;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+          }
+  
+          .fc-col-header {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            
+            .fc-col-header-cell {
+              border: none;
+              padding: 12px 8px;
+              
+              .fc-col-header-cell-cushion {
+                color: #4a5568;
+                font-weight: 700;
+                font-size: 14px;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+                text-decoration: none;
+              }
+            }
+          }
+  
+          .fc-daygrid-body {
+            .fc-daygrid-day {
+              border: 1px solid #e2e8f0;
+              min-height: 80px;
+              background: white;
+              transition: all 0.2s ease;
+              position: relative;
+  
+              &:hover {
+                background: #f7fafc;
+              }
+  
+              // Today's date highlight - highlight the actual day cell background
+              &.today-highlight {
+                background: linear-gradient(135deg, #94a3b8b5 0%, #64748ba6 100%);
+                border: 2px solid #94a3b8a3;
+                box-shadow: 0 4px 16px rgba(148, 163, 184, 0.2);
+                position: relative;
+                
+                // Animation for attention-grabbing effect
+                &::before {
+                  content: '';
+                  position: absolute;
+                  top: -3px;
+                  left: -3px;
+                  right: -3px;
+                  bottom: -3px;
+                  background: linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.05) 50%, transparent 70%);
+                  border-radius: 8px;
+                  animation: shimmer 3s infinite;
+                  pointer-events: none;
+                  z-index: 1;
+                }
+  
+                .fc-daygrid-day-number {
+                  color: white;
+                  font-weight: 700;
+                  text-shadow: 0 1px 3px rgba(0, 0, 0, 0.5);
+                  position: relative;
+                  z-index: 2;
+                }
+  
+                &:hover {
+                  background: linear-gradient(135deg, #8592a6 0%, #5a6b7d 100%);
+                  box-shadow: 0 6px 20px rgba(148, 163, 184, 0.3);
+                }
+              }
+  
+              // &.fc-day-today {
+              //   background: linear-gradient(135deg, #ebf8ff 0%, #bee3f8 100%);
+              //   border-color: #3182ce;
+                
+              //   .fc-daygrid-day-number {
+              //     background: #3182ce;
+              //     color: white;
+              //     border-radius: 50%;
+              //     width: 24px;
+              //     height: 24px;
+              //     display: flex;
+              //     align-items: center;
+              //     justify-content: center;
+              //     font-weight: 700;
+              //   }
+              // }
+  
+              .fc-daygrid-day-number {
+                padding: 8px;
+                color: #2d3748;
+                font-weight: 600;
+                font-size: 13px;
+              }
+  
+              .fc-daygrid-day-events {
+                margin: 6px;
+                margin-top: 2px;
+              }
+            }
+          }
+        }
+  
+        // Event styling
+        .fc-event {
+          border: none;
+          border-radius: 8px;
+          margin: 2px 0;
+          cursor: pointer;
+          transition: all 0.2s ease;
+          box-shadow: 0 3px 12px rgba(0, 0, 0, 0.12);
+  
+          &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+          }
+  
+          .challenge-day-event {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 2px;
+            padding: 6px 6px 6px 6px;
+            border-radius: 6px;
+            min-height: 50px;
+            height: 50px;
+            width: 100%;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            position: relative;
+  
+            // Icon area - always reserve space for consistent layout
+            .day-indicator {
+              flex-shrink: 0;
+              width: 20px;
+              height: 18px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-bottom: 1px;
+  
+              .status-icon {
+                transition: all 0.3s ease;
+                
+                &:hover {
+                  transform: scale(1.1);
+                }
+              }
+  
+              .check-icon {
+                background: rgba(255, 255, 255, 0.2);
+                color: white;
+                border-radius: 50%;
+                width: 16px;
+                height: 16px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 10px;
+                font-weight: bold;
+              }
+  
+              .day-number {
+                background: rgba(255, 255, 255, 0.15);
+                color: white;
+                border-radius: 3px;
+                padding: 1px 4px;
+                font-size: 8px;
+                font-weight: bold;
+              }
+            }
+  
+            // Day info - positioned consistently
+            .day-info {
+              flex: 1;
+              display: flex;
+              flex-direction: column;
+              gap: 0px;
+              align-items: center;
+              justify-content: center;
+              min-width: 0;
+              height: 28px;
+  
+              .day-label {
+                font-size: 8px;
+                font-weight: 600;
+                line-height: 1;
+                opacity: 0.9;
+                text-transform: uppercase;
+                letter-spacing: 0.3px;
+                text-decoration: none;
+              }
+  
+              .day-number-large {
+                font-size: 15px;
+                font-weight: 700;
+                line-height: 1;
+                margin-top: 1px;
+              }
+  
+              .watch-count {
+                font-size: 6px;
+                opacity: 0.8;
+                font-weight: 500;
+                margin-top: 1px;
+                white-space: nowrap;
+              }
+            }
+  
+            // For cards without icons, add invisible spacer
+            &.no-icon {
+              .day-info {
+                margin-top: 19px; // Same height as icon area + margin
+              }
+            }
+  
+            &.completed {
+            height: 56px;
+              background: linear-gradient(135deg, #f0f9f4 0%, #e6f7ed 100%);
+              border: 1px solid #2dd36f;
+              color: #1e994f;
+              box-shadow: 0 4px 16px rgba(72, 187, 120, 0.2);
+  
+              .day-indicator .status-icon.completed-icon {
+                color: #2dd36f;
+                font-size: 16px;
+                filter: drop-shadow(0 2px 4px rgba(45, 211, 111, 0.3));
+              }
+  
+              .day-info {
+                color: #1e994f;
+                font-weight: 600;
+              }
+            }
+  
+            &.pending {
+              // background: linear-gradient(135deg, #fefbfb 0%, #fdf4f4 100%);
+              border: 1px solid #f0c0c0;
+              color: #ef4444;
+              // box-shadow: 0 4px 16px rgba(239, 68, 68, 0.15);
+  
+              .day-info {
+                color: #ef4444;
+                font-weight: 600;
+                margin: 0;
+              }
+            }
+  
+            &.disabled {
+              background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+              border: 1px solid #a0aec0;
+              color: #718096;
+              opacity: 0.7;
+              cursor: not-allowed;
+              box-shadow: 0 2px 8px rgba(160, 174, 192, 0.2);
+  
+              &:hover {
+                transform: none;
+                box-shadow: 0 2px 8px rgba(160, 174, 192, 0.2);
+              }
+  
+              .day-info {
+                color: #718096;
+                font-weight: 500;
+              }
+  
+              .day-indicator .status-icon.disabled-icon {
+                color: #a0aec0;
+                font-size: 14px;
+                filter: drop-shadow(0 2px 4px rgba(160, 174, 192, 0.3));
+              }
+            }
+          }
+        }
+  
+        // More link styling
+        .fc-daygrid-more-link {
+          background: #dc3545;
+          color: white;
+          border-radius: 4px;
+          padding: 2px 6px;
+          font-size: 10px;
+          font-weight: 600;
+          text-decoration: none;
+          margin: 1px;
+          display: inline-block;
+          transition: all 0.2s ease;
+          box-shadow: 0 1px 3px rgba(220, 53, 69, 0.3);
+  
+          &:hover {
+            background: #c82333;
+            transform: translateY(-1px);
+            box-shadow: 0 2px 6px rgba(220, 53, 69, 0.4);
+          }
+        }
+      }
+    }
+  }
+  
+  // Responsive design
+  @media (max-width: 768px) {
+    .calendar-wrapper {
+      padding: 16px;
+    }
+  
+    .calendar-header {
+      flex-direction: column;
+      // gap: 16px;
+      // text-align: center;
+      align-items: flex-end;
+  
+      .header-left .calendar-title {
+        font-size: 24px;
+      }
+    }
+  
+    .calendar-nav .nav-controls {
+      padding: 12px 20px;
+      gap: 16px;
+  
+      .current-month {
+        font-size: 18px;
+        min-width: 140px;
+      }
+  
+      .nav-btn {
+        width: 40px;
+        height: 40px;
+  
+        ion-icon {
+          font-size: 18px;
+        }
+      }
+    }
+  
+    .calendar-container {
+      padding: 16px;
+  
+      ::ng-deep .fc .fc-daygrid .fc-daygrid-body .fc-daygrid-day {
+        min-height: 80px;
+  
+        .fc-daygrid-day-number {
+          padding: 8px;
+          padding-bottom: 0;
+          font-size: 13px;
+          font-weight: 800;
+          text-decoration: none;
+        }
+  
+        .challenge-day-event {
+          &.no-icon {
+            .day-info {
+              height: 100%;
+              justify-content: center;
+              
+              .day-number-large {
+                font-size: 15px;
+              }
+  
+              .day-label {
+                font-size: 8px;
+              }
+            }
+          }
+  
+          &.disabled {
+            .day-info {
+              color: #718096 !important;
+              
+              .day-number-large {
+                font-size: 13px;
+              }
+  
+              .day-label {
+                font-size: 7px;
+              }
+            }
+          }
+  
+          .day-indicator {
+            width: 16px;
+            height: 16px;
+  
+            .status-icon {
+              font-size: 16px !important;
+  
+              &.disabled-icon {
+                font-size: 15px !important;
+              }
+            }
+          }
+  
+          .day-info {
+            .day-number-large {
+              font-size: 15px;
+            }
+  
+            .day-label {
+              font-size: 8px;
+            }
+  
+            .watch-count {
+              font-size: 5px;
+            }
+          }
+        }
+      }
+    }
+  }
+  
+  // Force FullCalendar to use 100% width - High specificity override
+  .calendar-content .calendar-wrapper .calendar-container full-calendar,
+  .calendar-content .calendar-wrapper .calendar-container full-calendar .fc,
+  .calendar-content .calendar-wrapper .calendar-container full-calendar .fc .fc-view-harness,
+  .calendar-content .calendar-wrapper .calendar-container full-calendar .fc .fc-daygrid {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 100% !important;
+  }
+  
+  .calendar-content .calendar-wrapper .calendar-container full-calendar .fc table,
+  .calendar-content .calendar-wrapper .calendar-container full-calendar .fc .fc-scrollgrid,
+  .calendar-content .calendar-wrapper .calendar-container full-calendar .fc .fc-scrollgrid-sync-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+    
+    
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+  }
+  
+  // Shimmer animation for today's highlight
+  @keyframes shimmer {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
+    }
+  }
+    
+    

@@ -1,6 +1,6 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { addIcons } from 'ionicons';
-import { menuOutline, heartOutline, closeOutline, trophyOutline } from 'ionicons/icons';
+import { menuOutline, heartOutline, closeOutline, trophyOutline, cartOutline } from 'ionicons/icons';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../shared/shared/shared-module';
@@ -23,7 +23,7 @@ addIcons({
    SharedModule
   ],
 })
-export class HomePage {
+export class HomePage implements OnInit {
   selectedCategory = 'Shakes';
   categories = ['Shakes', 'Smoothie Bowls', 'Juices', 'Teas'];
   favoriteCount = 113;
@@ -45,9 +45,11 @@ export class HomePage {
     public challengeService:Challenges
   ) {
     addIcons({
-      trophyOutline
+      trophyOutline,
+      cartOutline
     });
   }
+
   
   toggleSidebar() {
     this.isSidebarOpen = !this.isSidebarOpen;
@@ -102,6 +104,7 @@ export class HomePage {
         this.loadChallengeData("_statusSuper");
       } */
     });
+   
   }
 
   loadChallengeData(type:any) {

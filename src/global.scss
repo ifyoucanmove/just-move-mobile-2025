@@ -150,6 +150,10 @@ ion-app {
     font-family: 'Poppins', sans-serif;
 }
 
+ion-button{
+  --background:linear-gradient(to right, #01b6d8 0, #01c8c3 25%, #02d8b0 50%, #02d9b0 75%, #02e6a0 100%);
+}
+
 /* Form Input Wrapper for Gradient Border */
 .form-input-wrapper {
     position: relative;
@@ -267,6 +271,18 @@ ion-toast.toast-top-right {
   color: white;
 }
 .primary-bg {
-  background-color: var(--ion-color-primary);
+  background-color: var(--secondary-color);
   color: white;
+}
+
+.text-secondary-custom {
+  color: var(--secondary-color) !important;
+}
+
+.ion-padding{
+  padding-bottom: 20px !important;
+  --padding-bottom: var(--ion-padding, 50px) !important;
+}
+ion-footer{
+  padding-bottom: 30px;
 }

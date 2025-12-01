@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
-import { Firestore, collection, query, onSnapshot, where, getDocs } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Firestore, collection, query, onSnapshot, where, getDocs, collectionData } from '@angular/fire/firestore';
+import { BehaviorSubject, Observable, take } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -328,6 +328,29 @@ export class Challenges {
       default:
         break;
     }
+  }
+
+  async getChallengeVideosDataNew(id: string) {
+    const videosRef = collection(this.afs, `challenges/${id}/videos`);
+    const q = query(videosRef, where("status", "==", "active"));
+    
+    const challengeDays = await getDocs(q);
+    
+    let data = [];
+    for (const doc of challengeDays.docs) {
+      const tdata = doc.data();
+      data.push(tdata);
+    }
+    return data;
+  }
+
+  getChallengeData(id: string): Observable<any[]> {
+    const q = query(
+      collection(this.afs, "challenges"),
+      where("_id", "==", id)
+    );
+  
+    return collectionData(q).pipe(take(1));
   }
 
 }

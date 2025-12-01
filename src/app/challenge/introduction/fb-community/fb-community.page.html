@@ -1,0 +1,21 @@
+<ion-header>
+  <app-main-header [headerType]="1"
+    buttonType="back-icon"
+    [title]="timelineInfo.title"
+  ></app-main-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <h1>Facebook Page</h1>
+  <p>
+    Don't forget to join our private
+    <span class="bold">Facebook Group</span> for 24/7 support from your fellow
+    challenge members and the whole MOVE {{ timelineInfo.title }} team!
+    <br /><br />
+  </p>
+  <div class="btns-div">
+    <ion-button (click)="openWebLink('https://www.facebook.com/groups/365613074569543/')" >
+      Click here to go to the Facebook Group &nbsp; <ion-icon name="logo-facebook"></ion-icon>
+    </ion-button>
+  </div>
+</ion-content>

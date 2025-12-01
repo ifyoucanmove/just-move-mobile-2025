@@ -10,8 +10,13 @@ export const authenticationGuard: CanActivateFn = async (route, state) => {
   // Wait for auth state to be determined before checking
   const user = await authService.waitForAuthState();
   userService.email = user?.email || '';
+ // userService.userDetails = user;
   console.log(user, 'currentUser after wait');
-  
+  //fetch user details using await until userdetail assigned
+  while(!authService.userDetails){
+    await new Promise(resolve => setTimeout(resolve, 1000));
+  }
+  console.log(authService.userDetails, 'user details');
   if(user || authService.currentUser){
     return true;
   }else{

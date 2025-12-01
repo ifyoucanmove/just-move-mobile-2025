@@ -1,0 +1,101 @@
+<ion-header>
+  <app-main-header [headerType]="1"
+    buttonType="back-icon"
+    [title]="timelineInfo.title"
+  ></app-main-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <img class="banner-image" *ngIf="bannerImage" [src]="bannerImage" style="border-radius: 25px;">
+  <h3 class="ion-text-center main-text" style="margin-top: 16px">
+    Let's Get Started, {{name? name +'!' : ''}}
+  </h3>
+  <p class="ion-text-center sub-text" >Body rocking, calorie burning, step by step dance workout</p>
+
+  <ion-row class="main-row" >
+    <ion-col size="6">
+      <div routerLink="/challenge/introduction/intro">
+        <ion-icon class="text-secondary-custom" name="information-circle"></ion-icon>
+        <h3>Introduction</h3>
+      </div>
+    </ion-col>
+    <ion-col size="6">
+      <div routerLink="/challenge/introduction/fb-community">
+        <ion-icon class="text-secondary-custom" name="logo-facebook"></ion-icon>
+        <h3>Private Facebook Community</h3>
+      </div>
+    </ion-col>
+    <ion-col size="6">
+      <div routerLink="/challenge/introduction/timeline">
+        <ion-icon class="text-secondary-custom" name="hourglass"></ion-icon>
+        <h3>Timeline</h3>
+      </div>
+    </ion-col>
+    <ion-col size="6">
+      <div routerLink="settings">
+        <ion-icon class="text-secondary-custom" name="cog"></ion-icon>
+        <h3>Settings</h3>
+      </div>
+    </ion-col>
+    <ion-col size="6" *ngIf="!isMiniChallenge">
+      <div routerLink="/challenge/introduction/upload-rules">
+        <ion-icon class="text-secondary-custom" name="image"></ion-icon>
+        <h3>Upload Rules & Guidelines</h3>
+      </div>
+    </ion-col>
+    <ion-col size="6" *ngIf="!isMiniChallenge">
+      <div routerLink="/challenge/introduction/materials">
+        <ion-icon class="text-secondary-custom" name="file-tray-full"></ion-icon>
+        <h3>Materials</h3>
+      </div>
+    </ion-col>
+    <ion-col offset="3" size="6">
+      <div routerLink="/challenge/introduction/other">
+        <ion-icon class="text-secondary-custom" name="reader"></ion-icon>
+        <h3>Other</h3>
+      </div>
+    </ion-col>
+  </ion-row>
+
+  <!-- <p class="col-md-8">
+    I'm humbled and SUPER AMPED that you have joined my challenge, and I wanted
+    to take this opportunity to officially welcome you to my MOVE
+    <b>{{ timelineInfo.title }}</b> 30 day Challenge.<br /><br />
+    This is the beginning of a major shift in your life, and I am not just
+    talking about changing your body - the next 30 days will COMPLETELY
+    TRANSFORM the way you think, feel and act in regard to fitness and a healthy
+    lifestyle. Transformation is all about the mindset, and everything starts
+    with YOU making the decision to CHANGE. You just did, and I can't wait to
+    watch you thrive like I KNOW YOU WILL.
+  </p> -->
+  <!-- <p class="col-md-8">
+    Welcome to Trap N Tone 2.0 Challenge in August which is part of the 6-month
+    BIG BOY Challenge. If you did the first Trap N Tone challenge, you know how
+    awesome it is, if this is your first time…get ready to WERK!. The next 25
+    days will be an adventure, and although some days might get tough, I believe
+    in you, and I know you can do it. Remember my team and I will be here EVERY
+    step of the way along with our wonderful and supportive community.
+  </p>
+  <p>
+    Make every day count! Get ready to MOVE and have a blast with these fun,
+    effective workouts.
+  </p>
+  <p>
+    For your challenge equipment, Trap N Tone challenge bundle available for buy
+    now pay later option at
+    <span
+      style="color: var(--ion-color-primary)"
+      (click)="openLink('https://ifyoucanmove.com/welcome', 'move')"
+      >TeamLaShae.com
+    </span>
+  </p>
+  <p>
+    Be sure to grab your “Just Move” Protein, Energy Rush and Sleep N Burn fat
+    burning capsules to help take your transformation to the next level!
+    <span
+      style="color: var(--ion-color-primary)"
+      (click)="openLink('https://justmovesupplements.com/', 'other')"
+      >justmovesupplements.com</span
+    >
+  </p> -->
+</ion-content>

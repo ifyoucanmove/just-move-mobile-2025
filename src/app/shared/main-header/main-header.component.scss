@@ -2,8 +2,10 @@ div {
     background: #000 url("../../../assets/images/top-nav-menu.webp") no-repeat
       center center / 100%;
     h1 {
-      margin: 12px 10px 12px 10px;
+      margin: 12px 10px 12px -30px;
       text-align: center;
+      color: white;
+      font-size: 22px;
     }
   }
   ion-img {

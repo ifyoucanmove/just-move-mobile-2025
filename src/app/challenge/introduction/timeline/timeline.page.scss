@@ -1,0 +1,64 @@
+.dot-container {
+    display: flex;
+    width: 35px;
+    height: 35px;
+    border: 5px solid #00e3a1;
+    justify-content: center;
+    align-items: center;
+    border-radius: 100%;
+  }
+  
+  .dot {
+    height: 13px;
+    width: 13px;
+    background-color: #00b4d9;
+    border-radius: 50%;
+    display: inline-block;
+  }
+  
+  .vertical-line {
+    border-left: 6px solid #00e3a1;
+    height: 120px;
+    position: relative;
+    left: 14px;
+  }
+  
+  .timeline-dates-container {
+    display: flex;
+  }
+  
+  .timeline-dates {
+    margin-left: 40px;
+  }
+  
+  .timeline-dates p {
+    height: 140px;
+  }
+  
+  .timeline-dates .date {
+    color: #00b4d9;
+    font-weight: bold;
+  }
+  
+  @media all and (max-width: 1024px) {
+    .vertical-line {
+      height: 110px;
+    }
+  
+    .timeline-dates p {
+      height: 133px;
+    }
+  }
+  .img-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    ion-img {
+      max-width: 60vw;
+    }
+  }
+  ion-img {
+    border-radius: 25px !important;
+    overflow: hidden;
+    margin-bottom: 20px;
+  }

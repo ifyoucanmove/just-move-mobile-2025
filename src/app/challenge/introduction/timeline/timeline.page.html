@@ -1,0 +1,144 @@
+<ion-header>
+  <app-main-header [headerType]="1"
+    buttonType="back-icon"
+    [title]="timelineInfo.title"
+  ></app-main-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-img *ngIf="bannerImage" [src]="bannerImage"></ion-img>
+  <div class="timeline-section">
+    <h1>Timeline</h1>
+
+       <div class="timeline-dates-container">
+      <div *ngIf="!isMiniChallenge"> 
+        <!-- <div>
+          <span class="dot-container">
+            <span class="dot"></span>
+          </span>
+          <div class="vertical-line"></div>
+        </div> -->
+        <!-- <div>
+          <span class="dot-container">
+            <span class="dot"></span>
+          </span>
+          <div class="vertical-line"></div>
+        </div> -->
+        <div>
+          <span class="dot-container">
+            <span class="dot"></span>
+          </span>
+          <div class="vertical-line"></div>
+        </div>
+        <div>
+          <span class="dot-container">
+            <span class="dot"></span>
+          </span>
+          <div class="vertical-line"></div>
+        </div>
+        <div>
+          <span class="dot-container">
+            <span class="dot"></span>
+          </span>
+        </div>
+        <!-- <div *ngIf="!isPast">
+          <div class="vertical-line"></div>
+        </div> -->
+        <!-- <div *ngIf="!isPast">
+          <span class="dot-container">
+            <span class="dot"></span>
+          </span>
+        </div> -->
+      </div>
+
+      <div *ngIf="isMiniChallenge">
+        <div>
+          <span class="dot-container">
+            <span class="dot"></span>
+          </span>
+          <div class="vertical-line"></div>
+        </div>
+        <div>
+          <span class="dot-container">
+            <span class="dot"></span>
+          </span>
+          <div *ngIf="!isPast" class="vertical-line"></div>
+          <span *ngIf="!isPast" class="dot-container">
+            <span class="dot"></span>
+          </span>
+        </div>
+      </div>
+
+      <div class="timeline-dates">
+        <!-- <p>
+          <span class="date">{{ this.timelineInfo.signupDates }}:</span>
+          <br />{{ timelineInfo.title }} Challenge signup to qualify for prizes.
+          Uploads are not mandatory but recommended.
+        </p> -->
+
+        <!-- ongoing and mini -->
+        <div *ngIf="isMiniChallenge && !isPast">
+          <p>
+            <span class="date">{{ timelineInfo.firstDate }} </span>
+            <b>Day 1</b> is the start of the Challenge.
+          </p>
+          <p>
+            <span class="date">{{ timelineInfo.thirdDate }} </span>
+            <b>Last day of the Challenge</b>. Made it to the end!, hope you’re
+            seeing some changes.
+          </p>
+          <p>
+            <span class="date">{{ timelineInfo.lastDate }} </span> You will no longer have
+            access to the challenge.
+          </p>
+        </div>
+
+        <!-- past and mini -->
+        <div *ngIf="isPast && isMiniChallenge">
+          <p>
+            <span class="date">Day 1</span> is the start of the Challenge.
+          </p>
+          <p>
+            <span class="date">Day 7</span> The Last Day of the challenge.
+          </p>
+        </div>
+
+        <!-- past but not mini -->
+        <div *ngIf="isPast && !isMiniChallenge">
+          <p>
+            <span class="date">Day 1</span> is the start of the Challenge. Photo and Video uploads are optional.
+          </p>
+          <p>
+            <span class="date">Middle of the Challenge</span>
+            Photo and Video uploads are optional.
+          </p>
+          <p>
+            <span class="date">Last day of the Challenge</span>
+            Photo and Video uploads are optional.
+          </p>
+        </div>
+
+        <!-- Ongoing and not mini  -->
+        <div *ngIf="!isPast && !isMiniChallenge">
+          <p>
+            <span class="date">{{ timelineInfo.firstDate }} </span>
+            <b>Day 1</b> is the start of the Challenge. Photo and Video uploads are optional.
+          </p>
+          <p>
+            <span class="date">{{ timelineInfo.secondDate }} </span>
+            <b>Middle of the Challenge</b>. Half way through, upload your photos and see your progress since you started
+            the challenge.
+          </p>
+          <p>
+            <span class="date">{{ timelineInfo.thirdDate }} </span>
+            <b>Last day of the Challenge</b>. Made it to the end!, Upload your photos and compare to Day 1, hope you’re
+            seeing some changes.
+          </p>
+          <!-- <p>
+            <span class="date">{{ timelineInfo.lastDate }}, </span>You will no longer have access to the challenge.
+          </p> -->
+        </div>
+      </div>
+    </div>
+  </div>
+</ion-content>

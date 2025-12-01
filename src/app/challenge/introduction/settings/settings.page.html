@@ -1,0 +1,24 @@
+<ion-header>
+  <app-main-header [headerType]="1"
+    buttonType="back-icon"
+    [title]="timelineInfo.title"
+  ></app-main-header>
+</ion-header>
+
+<ion-content>
+  <div class="btn-div">
+    <ion-button id="reset-watch-datas" (click)="resetChallengeData()"
+    >Reset Watch Data</ion-button
+    >
+    <p>Reset Watch Data will reset all completed counts in this challenge back to zero.</p>
+    <div class="border"></div>
+<form [formGroup]="completedEmailForm" >
+  <ion-item  style="margin-top: 10px;" lines="none"> 
+    <ion-toggle style="margin-right: 16px;" formControlName="isCompletedEmails" (ionChange)="toggle()" slot="start"></ion-toggle>
+    <ion-label>Receive Completed Email</ion-label>
+  </ion-item>
+</form>
+    <p  >Turning off Receive Completed Emails will stop you from getting completed emails for week 2, 3, 4. Everyone will still get first week, last day of the week, and final days completed emails.</p>
+    <div class="border"></div>
+  </div>
+</ion-content>

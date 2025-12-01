@@ -29,56 +29,56 @@
 </div>
 
   <ion-item
-    routerLink="/tabs/challenge/introduction"
+    routerLink="/challenge/introduction"
     lines="none"
     detail="true"
   >
-    <ion-label color="primary">Introduction & Guidelines</ion-label>
+    <ion-label class="text-secondary-custom">Introduction & Guidelines</ion-label>
   </ion-item>
 
   <ion-item
     *ngIf="challengeDatas && (challengeDatas.previewVideo2 || challengeDatas.previewVideo3    )"
-    routerLink="/tabs/challenge/preview"
+    routerLink="/challenge/preview"
     lines="none"
     detail="true"
   >
-    <ion-label color="primary">Challenge Preview</ion-label>
+    <ion-label class="text-secondary-custom">Challenge Preview</ion-label>
   </ion-item>
 
-  <ion-item
+ <!--  <ion-item
   (click)="addMeasurement()"
   lines="none"
   detail="true"
 >
-  <ion-label color="primary">Measurements</ion-label>
-</ion-item>
+  <ion-label class="text-secondary-custom">Measurements</ion-label>
+</ion-item> -->
 
   <ion-item
     *ngIf="showChallenge && showMaterials"
-    routerLink="/tabs/challenge/challenge-material"
+    routerLink="/challenge/challenge-material"
     lines="none"
     detail="true"
   >
-    <ion-label color="primary">Challenge Materials</ion-label>
+    <ion-label class="text-secondary-custom">Challenge Materials</ion-label>
   </ion-item>
 
-  <ion-item
+<!--   <ion-item
     *ngIf="showChallenge && showMaterials"
     routerLink="/tabs/challenge/media-upload"
     lines="none"
     detail="true"
   >
-    <ion-label color="primary" data-e2e="photo-video-upload"
+    <ion-label  class="text-secondary-custom" data-e2e="photo-video-upload"
       >Photo / Video Upload</ion-label
     >
-  </ion-item>
+  </ion-item> -->
   <ion-item
     *ngIf="showChallenge && (this.showMaterials || (isMiniChallenge && showWeek1Menu))"
     routerLink="/challenge/challenge-tip-tricks"
     lines="none"
     detail="true"
   >
-    <ion-label color="primary">Warmup & Tips</ion-label>
+    <ion-label  class="text-secondary-custom">Warmup & Tips</ion-label>
   </ion-item>
   <ion-item
     *ngIf="showChallenge && (this.showMaterials || (isMiniChallenge && showWeek1Menu)) "
@@ -86,15 +86,15 @@
     lines="none"
     detail="true"
   >
-    <ion-label color="primary">Cool Down</ion-label>
+    <ion-label  class="text-secondary-custom">Cool Down</ion-label>
   </ion-item>
 
   <ion-item
-  routerLink="/tabs/challenge/calendar"
+  routerLink="/challenge/calendar"
   lines="none"
   detail="true"
 >
-  <ion-label color="primary">Calendar</ion-label>
+  <ion-label  class="text-secondary-custom">Calendar</ion-label>
   <ion-badge slot="end" color="success">New</ion-badge>
 </ion-item>
 
@@ -104,7 +104,7 @@
     lines="none"
     detail="true"
   >
-    <ion-label color="primary">
+    <ion-label  class="text-secondary-custom">
       {{!isMiniChallenge? "Week 1" : "Mini Challenge"}}
     </ion-label>
     <div slot="end" *ngIf="watchDataLoaded" class="watch-container-item">
@@ -126,7 +126,7 @@
     lines="none"
     detail="true"
   >
-    <ion-label color="primary">Week 2</ion-label>
+    <ion-label  class="text-secondary-custom">Week 2</ion-label>
     <div
       slot="end"
       *ngIf="!isMiniSubscription && watchDataLoaded"
@@ -152,7 +152,7 @@
     lines="none"
     detail="true"
   >
-    <ion-label color="primary">Week 3</ion-label>
+    <ion-label  class="text-secondary-custom">Week 3</ion-label>
     <div
       slot="end"
       *ngIf="!isMiniSubscription && watchDataLoaded"
@@ -178,7 +178,7 @@
     lines="none"
     detail="true"
   >
-    <ion-label color="primary">Week 4</ion-label>
+    <ion-label  class="text-secondary-custom">Week 4</ion-label>
     <div
       slot="end"
       *ngIf="!isMiniSubscription && watchDataLoaded"
@@ -204,7 +204,7 @@
     lines="none"
     detail="true"
   >
-    <ion-label color="primary">Week 5</ion-label>
+    <ion-label  class="text-secondary-custom">Week 5</ion-label>
     <div
       slot="end"
       *ngIf="!isMiniSubscription && watchDataLoaded"
@@ -226,11 +226,11 @@
   </ion-item>
   <ion-item
     *ngIf="showChallenge && this.showWeek4Menu"
-    routerLink="/tabs/challenge/feedback"
+    routerLink="/challenge/feedback"
     lines="none"
     detail="true"
   >
-    <ion-label color="primary">Feedback</ion-label>
+    <ion-label  class="text-secondary-custom">Feedback</ion-label>
   </ion-item>
 
 </ion-content>

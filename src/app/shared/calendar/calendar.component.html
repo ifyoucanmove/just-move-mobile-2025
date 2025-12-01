@@ -1,0 +1,8 @@
+<ng-container *ngIf="type == 1 ">
+  <ion-datetime presentation="date"  [preferWheel]="true" #dateval mode="ios" size="cover" [value]="calenderDate" [min]="minDate" [max]="maxDate"
+    (ionChange)="changeDate(dateval.value)">
+  </ion-datetime>
+  <div class="btn-div">
+    <ion-button (click)="save()">Save</ion-button>
+  </div>
+</ng-container>

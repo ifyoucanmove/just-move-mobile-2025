@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { collection, Firestore, onSnapshot, query, where } from '@angular/fire/firestore';
+import { collection, doc, Firestore, onSnapshot, query, updateDoc, where } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -33,7 +33,9 @@ export class Customer {
 
   constructor(
     private firestore: Firestore
-  ) {}
+  ) {
+    
+  }
 
   async getStripeCustomerData(userEmail: string) {
     this.loadCustomerSubscriptionDatas(userEmail).subscribe((res:any) => {
@@ -140,4 +142,18 @@ export class Customer {
     });
 
   }
+  public updateCustomer(id: string, values: any): Observable<any> {
+  return new Observable<any>((observer) => {
+    const docRef = doc(this.firestore, `stripe_customers/${id}`);
+    updateDoc(docRef, values).then(
+      (res) => {
+        observer.next(res);
+        observer.complete();
+      },
+      (err) => {
+        observer.error(err);
+      }
+    );
+  });
+}
 }

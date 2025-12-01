@@ -9,6 +9,7 @@ import { BehaviorSubject, map, Observable } from 'rxjs';
 export class User {
   userDetails$: BehaviorSubject<any> = new BehaviorSubject<any>(null);
   email: string = "";
+  userDetails: any;
   constructor(
     public afs: Firestore, public afAuth: Auth
   ) { }

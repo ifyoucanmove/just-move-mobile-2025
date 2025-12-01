@@ -7,13 +7,14 @@ import { ModalController } from '@ionic/angular/standalone';
 import { ToastController } from '@ionic/angular/standalone';
 import { LoadingController } from '@ionic/angular/standalone';
 import { Firestore } from '@angular/fire/firestore';
+import { MainHeaderComponent } from '../main-header/main-header.component';
 
 @Component({
   selector: 'app-mood-capture',
   templateUrl: './mood-capture.component.html',
   styleUrls: ['./mood-capture.component.scss'],
   standalone: true,
-  imports: [SharedModule]
+  imports: [SharedModule, MainHeaderComponent]
 })
 export class MoodCaptureComponent  implements OnInit {
 

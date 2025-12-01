@@ -6,10 +6,11 @@ import { IonContent, IonHeader, IonTitle,IonImg,
   IonTab,
   IonTabBar,
   IonTabButton,
-  IonTabs,IonSearchbar,IonFooter, 
+  IonTabs,IonSearchbar,IonFooter, IonDatetime, IonAccordionGroup, IonAccordion,
   IonToolbar,IonInput,IonButton, IonGrid, IonRow, IonCol, IonIcon, IonText, IonSkeletonText, IonLabel, IonCard, IonThumbnail, IonItem, IonList, IonBadge, IonBackButton } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { beerOutline, chevronBackOutline, eyeOffOutline, eyeOutline, heartOutline, homeOutline, searchOutline, menuOutline, filterOutline, closeOutline, arrowBackOutline, chevronForwardOutline, logOutOutline } from 'ionicons/icons';
+import { HttpClientModule } from '@angular/common/http';
 
 //add icon 
 addIcons({
@@ -34,21 +35,21 @@ addIcons({
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    FormsModule,
+    FormsModule,HttpClientModule,
     IonContent, IonHeader, IonTitle, IonToolbar,IonImg,IonInput,IonButton,IonSearchbar,
     IonGrid, IonRow, IonCol, IonIcon, IonText, IonTab, IonTabBar, IonTabButton, IonTabs,
     IonSkeletonText,IonLabel,IonCard,IonThumbnail,IonItem,IonList,IonBadge,IonFooter,
-    IonBackButton
+    IonBackButton,IonDatetime,IonAccordionGroup,IonAccordion,
   ],
   exports: [
     CommonModule,
     ReactiveFormsModule,
     RouterModule,
-    FormsModule,
+    FormsModule,HttpClientModule,
     IonContent, IonHeader, IonTitle, IonToolbar,IonImg,IonInput,IonButton,IonSearchbar,
     IonGrid, IonRow, IonCol, IonIcon, IonText, IonTab, IonTabBar, IonTabButton, IonTabs,
     IonSkeletonText,IonLabel,IonCard,IonThumbnail,IonItem,IonList,IonBadge,IonFooter,
-    IonBackButton
+    IonBackButton,IonDatetime,IonAccordionGroup,IonAccordion,
   ]
 })
 export class SharedModule { }

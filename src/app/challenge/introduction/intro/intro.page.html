@@ -1,0 +1,27 @@
+<ion-header>
+  <app-main-header [headerType]="1"
+    buttonType="back-icon"
+    [title]="timelineInfo.title"
+  ></app-main-header>
+</ion-header>
+<ion-content class="ion-padding">
+  <img style="border-radius: 25px !important;"  *ngIf="bannerImage" [src]="bannerImage">
+  <h2 style="margin-top: 20px;">Hello,</h2>
+  <p class="col-md-8" [innerHTML]="introMessage"></p>
+  <p>Make every day count! Get ready to MOVE and have a blast with these fun, effective workouts.</p>
+  <p>Get your <a target='_blank'
+    href='https://teamlashae.com/collections/big-boy-challenge-shirts/'>Challenge Shirts! </a></p>
+
+  <p>For your challenge equipment, challenge bundle available for buy now pay later option at <a target='_blank'
+      href='https://teamlashae.com/'>TeamLaShae.com </a></p>
+  <p>Be sure to grab your “Just Move”
+    Protein, Energy Rush and Sleep N Burn fat burning capsules to help take your transformation to the next level!
+    <a target='_blank' href='https://justmovesupplements.com/'>justmovesupplements.com</a>
+  </p>
+  <div class="img-div">
+    <ion-img class="ion-img-round" src="assets/images/challenge_dashboard.webp"></ion-img>
+  </div>
+
+  <br /><br />
+
+</ion-content>

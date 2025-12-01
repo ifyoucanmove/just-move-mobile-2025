@@ -1,0 +1,58 @@
+<ion-header>
+  <app-main-header [headerType]="1" [title]="title" buttonType="back-icon"></app-main-header>
+</ion-header>
+
+<ion-content>
+  <div class="header">
+    <h1 class="ion-text-center">Challenge Feedback</h1>
+    <p>
+      Please do not expect responses - we use your valuable feedback to make
+      improvements
+    </p>
+  </div>
+  <form [formGroup]="feedbackForm">
+    <ion-item>
+      <ion-list>
+        <ion-text>Would you recommend this challenge to others?</ion-text>
+        <ion-input formControlName="recommend"></ion-input>
+      </ion-list>
+    </ion-item>
+    <ion-item>
+      <ion-list>
+        <ion-text>How was your challenge experience?</ion-text>
+        <ion-textarea formControlName="experience" rows="6"></ion-textarea>
+      </ion-list>
+    </ion-item>
+    <ion-item>
+      <ion-list>
+        <ion-text>How did you like the private Facebook community?</ion-text>
+        <ion-textarea formControlName="fb" rows="6"></ion-textarea>
+      </ion-list>
+    </ion-item>
+    <ion-item>
+      <ion-list>
+        <ion-text
+          >Do you feel you benefited from this challenge? If so, how?</ion-text
+        >
+        <ion-textarea formControlName="benefit" rows="6"></ion-textarea>
+      </ion-list>
+    </ion-item>
+    <ion-item>
+      <ion-list>
+        <ion-text
+          >Is there anything that you would like to be improved for the
+          challenge or the online gym?
+        </ion-text>
+        <ion-textarea formControlName="better" rows="6"></ion-textarea>
+      </ion-list>
+    </ion-item>
+    <div class="flex-btn">
+      <ion-button
+        id="submit-feedback"
+        [disabled]="this.clicked || !this.feedbackForm.valid"
+        (click)="submitFeedback()"
+        >Submit Feedback</ion-button
+      >
+    </div>
+  </form>
+</ion-content>

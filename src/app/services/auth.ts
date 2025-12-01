@@ -1,6 +1,8 @@
 import { Injectable, inject } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User } from '@angular/fire/auth';
-import { doc, Firestore, setDoc } from '@angular/fire/firestore';
+import { collection, collectionSnapshots, doc, Firestore, query, setDoc, where } from '@angular/fire/firestore';
+import { map } from 'rxjs';
+import { Customer } from './customer';
 
 @Injectable({
   providedIn: 'root',
@@ -11,8 +13,8 @@ export class AuthService {
   currentUser: User | null = null;
   private authStateReady: Promise<User | null>;
   private authStateResolver?: (user: User | null) => void;
-
-  constructor(){
+  userDetails: any;
+  constructor(private customerService: Customer){
     // Create a promise that resolves when auth state is determined
     this.authStateReady = new Promise((resolve) => {
       this.authStateResolver = resolve;
@@ -23,6 +25,13 @@ export class AuthService {
       if(user){
         console.log('User found', user);
         this.currentUser = user;
+        this.getUserByEmail(user.email || '').subscribe((res:any) => {
+          if(res.length > 0){
+            this.userDetails = res[0];
+            console.log(this.userDetails, 'user details');
+            this.customerService.getStripeCustomerData(user.email || '');
+          }
+        });
       }else{
         console.log('No user found');
         this.currentUser = null;
@@ -41,6 +50,22 @@ export class AuthService {
    */
   async waitForAuthState(): Promise<User | null> {
     return this.authStateReady;
+  }
+
+  public getUserByEmail(email : string){
+
+    const usersRef = collection(this.firestore, 'users');
+
+    const q = query(usersRef, where('email', '==', email));
+    return collectionSnapshots(q).pipe(
+      map((snapshots: any) =>
+        snapshots.map((snapshot: any) => ({
+          id: snapshot.id,
+          ...snapshot.data()
+        }))
+      )
+    );
+ 
   }
 
 
@@ -125,6 +150,22 @@ export class AuthService {
       return user;
     } catch (error) {
       throw error;
+    }
+  }
+
+  async getToken() {
+    try {
+      const user = await this.auth.currentUser;
+      console.log("user", user);
+      const token = await user?.getIdToken();
+      if(!token) return localStorage.getItem("token");
+      console.log("token after try", token);
+      
+      return token;
+    } catch (e) {
+      console.log("In catch", localStorage.getItem("token"));
+      
+      return localStorage.getItem("token");
     }
   }
 

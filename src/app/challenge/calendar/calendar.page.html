@@ -1,0 +1,56 @@
+<ion-header>
+  <app-main-header
+    [headerType]="1"
+    buttonType="back-icon"
+    [title]="challengeData?.[0]?.dashTitle"
+  ></app-main-header>
+</ion-header>
+
+<ion-content class="calendar-content">
+
+
+  <!-- <div class="loading-container" *ngIf="isLoading" >
+    <ion-spinner ></ion-spinner>
+  </div> -->
+
+
+<ng-container  >
+  <div class="calendar-wrapper">
+    <!-- Calendar Header -->
+    <div class="calendar-header">
+      <div class="header-left">
+        <!-- <h2 class="calendar-title">Calendar View</h2> -->
+      </div>
+      <div class="header-right">
+        <button 
+          *ngIf="challengeData && challengeData[0] && challengeData[0]._status !== 'active'" 
+          class="change-date-btn"
+          (click)="openDateDialog()">
+          Change Start Date
+        </button>
+      </div>
+    </div>
+
+    <!-- Calendar Navigation -->
+    <div class="calendar-nav">
+      <div class="nav-controls">
+        <button class="nav-btn prev-btn" (click)="previousMonth()">
+          <ion-icon name="chevron-back-outline"></ion-icon>
+        </button>
+        <div class="current-month">
+          {{ currentMonthYear }}
+        </div>
+        <button class="nav-btn next-btn" (click)="nextMonth()">
+          <ion-icon name="chevron-forward-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- FullCalendar Component -->
+    <div class="calendar-container">
+      <full-calendar #calendar [options]="calendarOptions"></full-calendar>
+    </div>
+  </div>
+</ng-container>
+
+</ion-content>

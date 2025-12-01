@@ -1,0 +1,21 @@
+.btn-div{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 10px 0;
+    ion-button{
+        width: 50%;
+        --height: 35px !important;
+        height: 35px !important;
+        color: #fff;
+        --border-radius : 6px;
+    }
+}
+ion-datetime{
+    // --background : #fff;
+    padding: 10px;
+    // background: #fff;
+}
+.dateOnly{
+    padding: 10px;
+}

@@ -66,7 +66,7 @@
   <div class="btns-div" *ngIf="this.video1 && !this.hideVideo " >
     
 
-    <ng-container>
+  <!--   <ng-container>
       <div *ngIf="!checkFavorites(id)">
         <ion-button id="single-category-add-favorite-btn" (click)="addToFavList()"
         
@@ -81,8 +81,8 @@
           Favorited
         </ion-button>
       </div>
-    </ng-container>
-    <ion-button
+    </ng-container> -->
+  <!--   <ion-button
     id="challenge-day-chromecast-btn1"
     (click)="PlayOnChromeCast(video1)"
   >
@@ -91,7 +91,7 @@
       src="assets/icons/cast.png"
     ></ion-img>
     Cast
-  </ion-button>
+  </ion-button> -->
 
   </div>
 
@@ -117,7 +117,7 @@
    
   </div>
 
-  <div class="btns-div">
+<!--   <div class="btns-div">
     <ion-button
     id="challenge-day-mark-complete-btn"
     *ngIf="!isCompleted"
@@ -137,10 +137,10 @@
     Complete
   </ion-button>
    
-  </div>
-  <div *ngIf="isCompleted" class="btns-div2">
+  </div> -->
+ <!--  <div *ngIf="isCompleted" class="btns-div2">
     <p (click)="completedHistory()" >Completed History</p>
-  </div>
+  </div> -->
 
 
   <div class="video-div" *ngIf="this.video2 && !this.hideVideo">
@@ -156,7 +156,7 @@
       <source src="{{ this.video2 }}" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
-    <div class="btns-div">
+  <!--   <div class="btns-div">
       <ion-button
         id="challenge-day-chromecast-btn2"
         (click)="PlayOnChromeCast(video2)"
@@ -167,7 +167,7 @@
     ></ion-img>
         Cast 
       </ion-button>
-    </div>
+    </div> -->
   </div>
   
 
@@ -184,7 +184,7 @@
       <source src="{{ this.video3 }}" type="video/mp4" />
       Your browser does not support the video tag.
     </video>
-    <div class="btns-div" >
+ <!--    <div class="btns-div" >
       <ion-button
         id="challenge-day-chromecast-btn2"
         (click)="PlayOnChromeCast(video3)"
@@ -195,7 +195,7 @@
     ></ion-img>
         Cast 
       </ion-button>
-    </div>
+    </div> -->
   </div>
 
 
