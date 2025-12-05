@@ -276,7 +276,7 @@ export class ChallengeWeek2Page implements OnInit {
       ].challengeEndDate.seconds * 1000;
 
     if (today < show) {
-      this.router.navigate(["/tabs/challenge/day", day]);
+      this.router.navigate(["/challenge/day", day]);
      
     }
   }

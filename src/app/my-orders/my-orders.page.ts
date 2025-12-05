@@ -1,104 +1,137 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-
-import { Shopify } from '../services/shopify';
-import { ActivatedRoute } from '@angular/router';
-import { User } from '../services/user';
-import { Customer } from '../services/customer';
-import { addIcons } from 'ionicons';
-import { add, remove, trash } from 'ionicons/icons';
-import { AlertController } from '@ionic/angular/standalone';
-import { LoadingController } from '@ionic/angular/standalone';
-import { combineLatest } from 'rxjs';
-import { Browser } from '@capacitor/browser';
-import * as _ from "lodash";
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { SharedModule } from '../shared/shared/shared-module';
 import { MainHeaderComponent } from '../shared/main-header/main-header.component';
+import { Shopify } from '../services/shopify';
+import { ActivatedRoute, Router } from '@angular/router';
+import { Customer } from '../services/customer';
+import { User } from '../services/user';
+import { LoadingController } from '@ionic/angular/standalone';
+import { AlertController } from '@ionic/angular/standalone';
+import { addIcons } from 'ionicons';
+import { add, remove, trash } from 'ionicons/icons';
+import { IonAccordionGroup } from '@ionic/angular/standalone';
+import { combineLatest } from 'rxjs';
+import { Browser } from '@capacitor/browser';
 import { Alert } from '../services/alert';
+import * as _ from 'lodash';
+import { ShopifyStorePipe } from '../pipes/shopify-store.pipe';
 import { AuthService } from '../services/auth';
-
 @Component({
-  selector: 'app-my-cart',
-  templateUrl: './my-cart.page.html',
-  styleUrls: ['./my-cart.page.scss'],
+  selector: 'app-my-orders',
+  templateUrl: './my-orders.page.html',
+  styleUrls: ['./my-orders.page.scss'],
   standalone: true,
-  imports: [SharedModule, MainHeaderComponent]
+  imports: [SharedModule,MainHeaderComponent, ShopifyStorePipe]
 })
-export class MyCartPage implements OnInit {
+export class MyOrdersPage implements OnInit {
+
+  orders: any[] = [];
+  completedOrders: any[] = [];
+  pendingOrders: any[] = [];
+  isLoading: boolean = true;
+  selectedSegment: "pending" | "completed" = "pending";
+
+  //for carts
 
   unfilteredStores:any = [];
   stores:any = [];
   // selectedAccordion = '';
-  selectedStore: any = "";
- 
-  @ViewChild("accordionGroup", { static: true }) accordionGroup!: any;
+  selectedStore: string = "";
+  userDetails: any;
+  @ViewChild("accordionGroup", { static: true }) accordionGroup!: IonAccordionGroup;
 
   constructor(
     private shopifyService: Shopify,
-    private alertController: AlertController,
-    private loadingCtrl: LoadingController,
     private route: ActivatedRoute,
-    private changeDetector: ChangeDetectorRef,
-    private alsertService: Alert,
+    private loadingCtrl: LoadingController,
+    private router: Router,
+    private alertController: AlertController,
     private userService: User,
     public customerService : Customer,
-    public authService: AuthService
+    private alertService: Alert,
+    private authService: AuthService
   ) {
     addIcons({remove, add, trash})
   }
 
   ngOnInit() {
-    this.shopifyService.loadCartItems(this.authService.userDetails.email);
+    this.userService.userDetails$.subscribe((res)=> {
+      if(res){
+        this.userDetails = res;
+      }
+    })
     this.route.queryParams.subscribe((param) => {
-      if (param) {
-        this.selectedStore = param["store"];
-        this.filterStores();
-        this.ngAfterViewInit();
-      } else {
-        this.selectedStore = "";
-      }    
+      this.isLoading = true;
+      this.loadingCtrl.create().then((loadingEl) => {
+        // loadingEl.present();
+        let email = this.authService.userDetails.email;
+        this.shopifyService.getMyorders(email).subscribe(
+          (res: any[]) => {
+            console.log("Order res", res);
+            this.orders = [];
+            this.isLoading = false;
+
+            this.orders = res.filter((order) => order.line_items.length > 0);
+            // const orders = _.get(res, 'data.orders.edges', []);
+            // _.each(orders, (item) => {
+            //   const orderNode: any = _.get(item, 'node', {});
+            //   const channelName: any = _.get(
+            //     orderNode,
+            //     'channelInformation.channelDefinition.channelName',
+            //     ''
+            //   );
+            //   const price: any = _.get(
+            //     orderNode,
+            //     'currentTotalPriceSet.shopMoney.amount',
+            //     ''
+            //   );
+            //   const lineItems: any = _.get(orderNode, 'lineItems.edges', []);
+            //   const deliveryStatus = _.get(
+            //     orderNode,
+            //     'fulfillments[0].displayStatus',
+            //     ''
+            //   );
+            //   this.orders.push({
+            //     ...orderNode,
+            //     createdAtString: moment(orderNode.createdAt).format(
+            //       'MMM D [at] h:mm a'
+            //     ),
+            //     channelName: channelName,
+            //     price: price,
+            //     lineItems: lineItems,
+            //     lineItemsLength: _.sumBy(lineItems, 'node.quantity'),
+            //     tagsString: orderNode.tags.join(','),
+            //     deliveryStatus,
+            //   });
+            // });
+            console.log("orders, ", this.orders);
+            // this.completedOrders = this.orders.filter(order=>order.displayFinancialStatus == 'PAID');
+            // this.pendingOrders = this.orders.filter(order=>order.displayFinancialStatus != 'PAID');
+            // this.orders
+
+            loadingEl.dismiss();
+          },
+          (err) => {
+            this.isLoading = false;
+            loadingEl.dismiss();
+            console.log("error", err);
+
+            this.orders = [];
+          }
+        );
+      });
     });
-   
+
     combineLatest([
       this.shopifyService.cartItemsJustMove$,
       this.shopifyService.cartItemsPejaAmari$,
       this.shopifyService.cartItemsTeamLashae$,
       this.shopifyService.cartItemsSayItLoud$,
-    ]).subscribe((res) => {
-      console.log("<<<<<<<<<<Cart items>>>>>>>>>>>></Cart>", res);
-      
-      let item = [
-        {
-            "price": {
-                "amount": "10.0",
-                "currencyCode": "USD"
-            },
-            "image": {
-                "url": "https://cdn.shopify.com/s/files/1/0515/8921/8473/files/74da21f7-4d8b-4dce-b1a2-615bbe0c240a.jpg?v=1732648084"
-            },
-            "availableForSale": true,
-            "id": "gid://shopify/ProductVariant/46833640308976",
-            "title": "$10.00",
-            "parentProductId": "gid://shopify/Product/9117133930736",
-            "parentProductVariants": [
-                {
-                    "price": {
-                        "amount": "10.0",
-                        "currencyCode": "USD"
-                    },
-                    "id": "gid://shopify/ProductVariant/46833640308976",
-                    "title": "$10.00",
-                    "availableForSale": true,
-                    "image": {
-                        "url": "https://cdn.shopify.com/s/files/1/0515/8921/8473/files/74da21f7-4d8b-4dce-b1a2-615bbe0c240a.jpg?v=1732648084"
-                    }
-                }
-            ],
-            "parentProductTitle": "Just Move $10 Gift Card",
-            "quantity": 2
-        }
-    ]
-    
-       this.unfilteredStores = [
+    ]).subscribe((res:any) => {
+      this.unfilteredStores = [
         {
           store: "justMove",
           cssClass: "bg1",
@@ -131,50 +164,10 @@ export class MyCartPage implements OnInit {
           length: res[3].length,
           cartTotal: this.calculateCartTotal(res[3]),
         },
-      ]; 
-      this.stores.sort((a:any, b:any) => b.length - a.length);
-     
-      console.log("All stores", this.stores);
-      this.filterStores();
+      ];
+      this.unfilteredStores.sort((a:any, b:any) => b.length - a.length);
+      this.stores = this.unfilteredStores.filter((store:any) => store.length > 0);
     });
-  }
-
-  ngAfterViewInit(): void {
-    const nativeEl = this.accordionGroup;
-    console.log("Native Element", nativeEl);
-    if(nativeEl){
-      nativeEl.value = this.selectedStore;
-    }
-  }
-
-  filterStores() {
-    console.log("Unfiltered stores", this.unfilteredStores);
-    
-    const selected = this.unfilteredStores.find((store:any) => store.store === this.selectedStore);
-    this.stores = this.unfilteredStores.filter(
-      (store:any) => store.length > 0 || store.store === this.selectedStore
-    );
-    if (selected) {
-      this.stores = this.stores.filter((store:any) => store.store !== this.selectedStore);
-      this.stores.unshift(selected);
-    }
-
-    if (this.stores.length > 1) {
-      this.stores = [this.stores[0], ...this.stores.slice(1).sort((a:any, b:any) => b.length - a.length)];
-      if (!this.selectedStore) {
-        this.selectedStore = this.stores.map((store:any) => store.store);
-        console.log("seleddcted store", this.selectedStore);
-        
-        this.changeDetector.detectChanges();
-      }
-      
-    }
-
-    console.log("Filtered stores", this.stores);
-  }
-
-  trackByStore(index: number, store: any): string {
-    return store.store;
   }
 
   calculateCartTotal(cartItems: any[]) {
@@ -183,10 +176,13 @@ export class MyCartPage implements OnInit {
     }, 0);
   }
 
-  accordionChange(event: any) {
-    
-    this.selectedStore = event.detail.value;
-    console.log(this.selectedStore);
+  orderClicked(order: any) {
+   // this.router.navigate(["/tabs/shopify/order-details"], { state: order });
+  }
+
+  segmentChanged(event: any) {
+    console.log("event", event.detail.value);
+    this.selectedSegment = event.detail.value;
   }
 
   increaseQuantity(productId: string, store:any) {
@@ -199,7 +195,7 @@ export class MyCartPage implements OnInit {
       this.shopifyService
         .addToCartsFb(cartItems, store)
         .then(() => {
-         console.log("Cart updated successfully");
+          console.log("Cart updated successfully");
         })
         .catch((error) => {
           console.error("Error updating cart:", error);
@@ -258,69 +254,56 @@ export class MyCartPage implements OnInit {
         .addToCartsFb(updatedCartItems, store)
         .then(() => {
           loadingEl.dismiss();
-       //   this.logService.logActivity('cart', `removed-${productId}-${store}`)
           console.log("Item deleted and cart updated successfully");
         })
         .catch((error) => {
           loadingEl.dismiss();
           console.error("Error updating cart:", error);
-          this.alsertService.showFirebaseAlert(error);
-        });
+         });
     });
   }
 
   checkout(store: string) {
-
     this.loadingCtrl.create().then(async (loadingEl) => {
       loadingEl.present();
       try {
-        console.log("Store", store);
-        
         this.shopifyService.updateStoreFrontClinet(store);
-         let items: any[] = [];
+        let items: any[] = [];
         _.each(this.shopifyService.getCart(store), (item) => {
-          console.log("Item,", item);
-          
           items.push({
             quantity: item.quantity,
             merchandiseId: item.id,
           });
-        }); 
-       /*  let items = [
-          {  "merchandiseId": "gid://shopify/ProductVariant/46833640308976",
-             "quantity": "2"
-           }
-         ]; */
-         
+        });
+
         let email = this.authService.userDetails.email;
-        console.log("email", items);
-        await this.shopifyService.updateShopifyCustomer(email,store, this.customerService.customerSubscribed$.value) // temp call
+        await this.shopifyService.updateShopifyCustomer(email, store, this.customerService.customerSubscribed$.value) // temp call
         let data = await this.shopifyService.createCheckoutId(items, email);
-      // alert(JSON.stringify(data));
+
         loadingEl.dismiss();
         if (data && !data.errors && data.cartCreate.cart.id) {
           const webUrl = data.cartCreate.cart.checkoutUrl;
           console.log("OPENINIG URL", webUrl);
+
           Browser.open({ url: webUrl });
         } else {
           console.log(data);
-          if (data.errors) this.alsertService.showFirebaseAlert(data.errors);
+          if (data.errors) this.alertService.showFirebaseAlert(data.errors);
         }
       } catch (error) {
         loadingEl.dismiss();
-        this.alsertService.showFirebaseAlert(error);
+        this.alertService.showFirebaseAlert(error);
       }
     });
   }
 
-
-  checkIfStoreSelected(store:any) {
-    
-    return Array.isArray(this.selectedStore) && this.selectedStore.includes(store.store); 
-   
+  accordionChange(event: any) {
+    this.selectedStore = event.detail.value;
+    console.log(this.selectedStore);
   }
 
-
+  trackByStore(index: number, store: any): string {
+    return store.store;
+  }
 
 }
-

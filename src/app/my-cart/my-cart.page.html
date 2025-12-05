@@ -6,7 +6,7 @@
 
 
 <div class="accordon-container">
-  <p class="desc" >You have items from multiple stores, please make sure to checkout and pay for each store.</p>
+  <p class="desc" >You have items from store, please make sure to checkout and pay.</p>
 
 <!--   <ion-accordion-group [value]="selectedStore" (ionChange)="accordionChange($event)"   #accordionGroup>
     <ion-accordion *ngFor="let store of stores; trackBy: trackByStore" class="accordion"
@@ -34,14 +34,18 @@
               <h6 *ngIf="customerService.customerSubscribed$.value" class="price"> <s style="margin-right: 5px; color: grey;" >${{item.price?.amount | number: '1.2-2'}}</s> </h6>
               <h6 *ngIf="!customerService.customerSubscribed$.value" class="price"> ${{item.price?.amount | number: '1.2-2'}}</h6>
               <div class="quantity">
-                <ion-button  color="light" size="small" ><ion-icon name="remove"></ion-icon></ion-button>
+                <ion-button  color="light"
+                (click)="decreaseQuantity(item.id, store.store)"
+                size="small" ><ion-icon name="remove"></ion-icon></ion-button>
                 <ion-text>{{item.quantity}}</ion-text>
-                <ion-button  color="light"  size="small"><ion-icon name="add"></ion-icon></ion-button>
+                <ion-button  color="light"  
+                (click)="increaseQuantity(item.id, store.store)"
+                size="small"><ion-icon name="add"></ion-icon></ion-button>
               </div>
             </div>
             <div class="trash-div" >
              <div>
-              <ion-icon  name="trash"></ion-icon>
+              <ion-icon  (click)="confirmDelete(item.id, store.store)" name="trash"></ion-icon>
              </div>
             </div>
         

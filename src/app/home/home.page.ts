@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { addIcons } from 'ionicons';
-import { menuOutline, heartOutline, closeOutline, trophyOutline, cartOutline } from 'ionicons/icons';
+import { menuOutline, heartOutline, closeOutline, trophyOutline, cartOutline, receiptOutline, storefrontOutline } from 'ionicons/icons';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { SharedModule } from '../shared/shared/shared-module';
@@ -46,7 +46,9 @@ export class HomePage implements OnInit {
   ) {
     addIcons({
       trophyOutline,
-      cartOutline
+      cartOutline,
+      receiptOutline,
+      storefrontOutline
     });
   }
 

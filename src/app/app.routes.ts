@@ -154,10 +154,32 @@ export const routes: Routes = [
     loadComponent: () => import('./my-cart/my-cart.page').then( m => m.MyCartPage)
   },
   {
+    path: 'my-store',
+    loadComponent: () => import('./my-store/my-store.page').then( m => m.MyStorePage)
+  },
+  {
+    path: 'my-orders',
+    loadComponent: () => import('./my-orders/my-orders.page').then( m => m.MyOrdersPage)
+  },
+  {
+    path: 'collection-details',
+    loadComponent: () => import('./collection-details/collection-details.page').then( m => m.CollectionDetailsPage)
+  },
+  {
+    path: 'collection-details/:id',
+    loadComponent: () => import('./collection-details/collection-details.page').then( m => m.CollectionDetailsPage)
+  },
+  {
+    path: 'shopify-details',
+    loadComponent: () => import('./shopify-details/shopify-details.page').then( m => m.ShopifyDetailsPage)
+  },
+  {
     path: '**',
     redirectTo: 'welcome',
     pathMatch: 'full',
   },
+
+  
   
 
 ];

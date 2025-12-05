@@ -60,6 +60,7 @@ const cred: any = {
 @Injectable({
   providedIn: 'root',
 })
+
 export class Shopify {
   selectedStore : string = 'justMove';
   client = createStorefrontApiClient(cred.justMove);
@@ -355,7 +356,7 @@ export class Shopify {
 
   async addToCartsFb(items: any, store : string) {
 
-    let ref = doc(this.afs, `my_cart/${this.userDetails.email}-${store}`);
+    let ref = doc(this.afs, `my_cart/${this.authService.userDetails.email}-${store}`);
    return await setDoc(ref, { items: items });
    /*  return await this.afs
       .collection('my_cart')

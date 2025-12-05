@@ -32,11 +32,19 @@
       <span>Challenges</span>
     </div>
     
-   <!--  my cart -->
-   <div class="sidebar-item" (click)="navigateTo('/my-cart')">
-    <ion-icon name="cart-outline"></ion-icon>
-    <span>My Cart</span>
-  </div>
+    <!--  my cart -->
+    <div class="sidebar-item" (click)="navigateTo('/my-cart')">
+      <ion-icon name="cart-outline"></ion-icon>
+      <span>My Cart</span>
+    </div>
+    <div class="sidebar-item" (click)="navigateTo('/my-store')">
+      <ion-icon name="storefront-outline"></ion-icon>
+      <span>My Store</span>
+    </div>
+    <div class="sidebar-item" (click)="navigateTo('/my-orders')">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <span>My Orders</span>
+    </div>
     <!-- logout -->
     <div class="sidebar-item" (click)="logout()">
       <ion-icon name="log-out-outline"></ion-icon>

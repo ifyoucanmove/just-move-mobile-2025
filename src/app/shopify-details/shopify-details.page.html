@@ -1,0 +1,52 @@
+<ion-header>
+  <app-main-header [headerType]="1" buttonType="back-icon" title="{{selectedStore | shopifyStore}}"></app-main-header>
+</ion-header>
+<ion-content>
+ <ng-container *ngIf="product" >
+  <ion-img [src]="selectedVariant.image?.url" ></ion-img>
+
+  <div class="content ion-padding">
+    <h3 *ngIf="product?.variants?.length == 1">{{ product?.title }}</h3>
+    <h3 *ngIf="product?.variants?.length > 1">{{ product?.title }} - {{selectedVariant.title}}</h3>
+    <h3 *ngIf="!customerService.customerSubscribed$.value" class="price">${{ selectedVariant?.price?.amount | number: '1.2-2'}}</h3>
+    <h3 *ngIf="customerService.customerSubscribed$.value" class="price"><s style="margin-right: 5px; color: grey;" >${{selectedVariant?.price?.amount | number: '1.2-2'}}</s> ${{customerService.applyDiscount(selectedVariant?.price?.amount) | number: '1.2-2'}}</h3>
+
+
+    <div class="variant-container" *ngIf="product?.variants?.length > 1">
+      <h5 class="title" >Variant</h5>
+      <ion-select interface="action-sheet" placeholder="Select Variant" (ionChange)="onVariantChange($event)">
+        <ion-select-option [value]="variant.id"   *ngFor="let variant of product.variants" > {{ variant.title }}</ion-select-option>
+      </ion-select>
+    </div>
+
+    <div class="quantity-container">
+      <h5 class="title" >Quantity</h5>
+      <div class="quantity">
+        <ion-button [disabled]="!product.availableForSale"  (click)=" variantInCart?.quantity > 0 ? decreaseQuantityInCart() : decreaseQuantity()"  color="medium" size="small" ><ion-icon name="remove"></ion-icon></ion-button>
+        <ion-text>{{ variantInCart ? variantInCart?.quantity : quantity}}</ion-text>
+        <ion-button [disabled]="!product.availableForSale" (click)=" variantInCart ? increaseQuantityInCart() : increaseQuantity()" color="medium"  size="small"><ion-icon name="add"></ion-icon></ion-button>
+      </div>
+
+     
+      
+     <div>
+
+      <ion-button (click)="addToCart()" [disabled]="variantInCart ? true : quantity == 0 " color="secondary" class="cart-btn" style="margin-top: 20px;" >Add to Cart</ion-button> &nbsp; &nbsp;
+      <ion-button (click)="cartClicked()" fill="outline" color="secondary" class="cart-btn" style="margin-top: 20px;"> <ion-icon name="cart"></ion-icon> &nbsp; Cart</ion-button>
+     </div>
+    <div> <p class="incart-text" *ngIf="product.isAddedInCart || variantInCart" >Already in cart </p></div>
+
+    </div>
+
+    <h5 class="title" >Description</h5>
+    <div [innerHTML]="product?.descriptionHtml"></div>
+  </div>
+
+
+ </ng-container>
+
+ 
+</ion-content>
+  <!-- <ion-footer>
+    <app-cart-footer></app-cart-footer>
+  </ion-footer> -->

@@ -238,7 +238,7 @@ export class ChallengeDayPage implements OnInit {
   }
 
   openAccountPage() {
-    this.router.navigateByUrl("/tabs/profile/subscription-billing");
+    this.router.navigateByUrl("/profile/subscription-billing");
   }
 
   loadChallengeWatchData() {
@@ -496,14 +496,14 @@ export class ChallengeDayPage implements OnInit {
         comboId: id,
         comboName: name,
       };
-      this.router.navigate(["/tabs/byo/play-combo"], { state: data });
+      this.router.navigate(["/byo/play-combo"], { state: data });
 
       // this.downloadCombos();
     });
   }
 
   viewWorkouts(id:string) {
-    this.router.navigate(["/tabs/byo/combo-details"], { queryParams: { id: id } });
+    this.router.navigate(["/byo/combo-details"], { queryParams: { id: id } });
   }
 
 

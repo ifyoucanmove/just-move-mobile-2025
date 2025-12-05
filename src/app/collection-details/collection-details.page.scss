@@ -1,0 +1,95 @@
+.product-card {
+    margin: 5px 16px;
+    div {
+      padding: 8px;
+      h5 {
+        font-size: 14px;
+        font-weight: 900;
+        margin: 0;
+      }
+      .price {
+        color: #004aff;
+        // margin-top: 4px;
+      }
+      .no-stock {
+        color: #767676;
+      }
+    }
+    .price-container{
+        padding: 0;
+        // margin-top: 5px;
+        display: flex;
+        justify-content: space-between;
+        // align-items: center;
+
+        .btn-container{
+            padding: 0 8px;
+
+        }
+
+    }
+    ion-button{
+        font-weight: 900;
+    }
+  }
+  
+  ion-footer {
+    border-top: 1px solid #ccc;
+  }
+  
+  .empty-div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+  }
+  
+  .ribbon {
+    background-color: rgba(0, 0, 0, 0);
+    position: absolute;
+    top: 10px;
+    left: -10px;
+    z-index: 1;
+    overflow: hidden;
+    width: 150px;
+    height: 150px;
+  }
+  
+  .ribbon span {
+    position: absolute;
+    display: block;
+    width: 225px;
+    background-color: red;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+    text-align: center;
+    transform: rotate(-45deg);
+    left: -62px;
+    top: 39px;
+  }
+  
+  .ribbon-top-left {
+    top: 0;
+    left: 0;
+  }
+  
+  .sort-row {
+    padding: 16px 16px 8px 16px;
+    ion-col {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+  
+      ion-button {
+        --height: 35px !important;
+        min-height: 35px !important;
+        font-weight: 900;
+      }
+    }
+    ion-searchbar{
+      padding: 0;
+      height: 45px;
+    }
+  }

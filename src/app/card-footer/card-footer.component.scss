@@ -1,0 +1,23 @@
+.cart-container{
+    padding: 8px 16px 3px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    p{
+        font-size: 16px;
+        font-weight: 700;
+        margin-bottom: 4px;
+    }
+    ion-button{
+        --border-radius : 25px;
+        width: 100px;
+        height: 40px !important;
+        --height: 40px !important;
+        --min-height : 40px;
+        min-height : 40px;
+        font-size: 17px;
+        font-weight: 900;
+
+    }
+}

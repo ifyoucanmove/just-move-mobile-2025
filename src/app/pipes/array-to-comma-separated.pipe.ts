@@ -1,0 +1,19 @@
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({
+  name: 'arrayToCommaSeparated',
+  standalone: true
+})
+export class ArrayToCommaSeparatedPipe implements PipeTransform {
+
+  transform(value: any): string {
+    if (Array.isArray(value)) {
+      return value.length > 0 ? value.join(', ') : 'None';
+    } else if (typeof value === 'string') {
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    } else {
+      return 'None';
+    }
+  }
+
+}

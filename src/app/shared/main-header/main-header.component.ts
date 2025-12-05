@@ -62,7 +62,7 @@ export class MainHeaderComponent  implements OnInit {
   favoriteClicked() {
     if (this.customerService.status == "active") {
       console.log(this.router.url);
-      this.router.navigate(["/tabs/favorites"], { queryParams: { from: 'back' } });
+      this.router.navigate(["/favorites"], { queryParams: { from: 'back' } });
     } else {
      /*  this.toastService.presentToast(
         "A subscription is required to access this page"
@@ -71,7 +71,7 @@ export class MainHeaderComponent  implements OnInit {
   }
   searchClicked() {
     if (this.customerService.status == "active") {
-      this.router.navigate(["/tabs/search"], { queryParams: { from: 'back' } });
+      this.router.navigate(["/search"], { queryParams: { from: 'back' } });
     } else {
    /*    this.toastService.presentToast(
         "A subscription is required to access this page"

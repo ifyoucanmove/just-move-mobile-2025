@@ -156,4 +156,12 @@ export class Customer {
     );
   });
 }
+applyDiscount(priceValue: any) {
+  let price = parseFloat(priceValue);
+  if (typeof price !== 'number' || price < 0) {
+    throw new Error('Invalid price. Please provide a positive number.');
+  }
+  const discountedPrice = price * (100 - this.memberDiscount) / 100;
+  return discountedPrice // Return with two decimal places
+}
 }

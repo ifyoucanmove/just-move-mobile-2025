@@ -1,0 +1,47 @@
+.content{
+    h3{
+        font-size: 20px;
+        font-weight: 900;
+        margin-bottom: 3px;
+    }
+    .price{
+        color: #004aff;
+    }
+
+    .title{
+        font-size: 15px;
+        font-weight: 900;
+        margin-top: 20px;
+        margin-bottom: 5px;
+
+    }
+    .quantity-container{
+        .quantity{
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 5px;
+            ion-text{
+                font-size: 16px;
+                font-weight: 900;
+            }
+        }
+    }
+}
+
+
+
+.cart-btn{
+    min-width: 150px;
+}
+
+
+.variant-container{
+    ion-select{
+        width: 100%;
+        border: 1px solid #9f9f9f !important;
+        border-radius: 5px;
+        font-size: 15px;
+        --padding-start : 10px;
+    }
+}

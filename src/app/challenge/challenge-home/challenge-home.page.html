@@ -62,16 +62,7 @@
     <ion-label class="text-secondary-custom">Challenge Materials</ion-label>
   </ion-item>
 
-<!--   <ion-item
-    *ngIf="showChallenge && showMaterials"
-    routerLink="/tabs/challenge/media-upload"
-    lines="none"
-    detail="true"
-  >
-    <ion-label  class="text-secondary-custom" data-e2e="photo-video-upload"
-      >Photo / Video Upload</ion-label
-    >
-  </ion-item> -->
+
   <ion-item
     *ngIf="showChallenge && (this.showMaterials || (isMiniChallenge && showWeek1Menu))"
     routerLink="/challenge/challenge-tip-tricks"

@@ -1,0 +1,9 @@
+<div class="cart-container">
+  <div>
+    <p>{{noOfItems}} Items Added</p>
+    <p style="color: #004aff;" >  ${{customerService.applyDiscount(total)| number : '0.2-2'}}</p>
+  </div>
+  <ion-button (click)="cartClicked()" > 
+    <ion-icon name="cart"></ion-icon>
+     Cart</ion-button>
+</div>

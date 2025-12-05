@@ -1,0 +1,109 @@
+<ion-header>
+  <app-main-header [headerType]="1"  buttonType="back-icon" title="My Orders"></app-main-header>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+<h2 class="title-h2" >My Orders</h2>
+
+  <!-- <ion-segment style="margin: 5px 0 15px;" (ionChange)="segmentChanged($event)" value="pending">
+    <ion-segment-button value="pending">
+     Pending
+    </ion-segment-button>
+    <ion-segment-button value="completed">
+    Completed
+    </ion-segment-button>
+  </ion-segment> -->
+
+
+  <ng-container *ngIf="this.isLoading" >
+    <ion-card  *ngFor="let _ of [].constructor(4)" class="card">
+      <ion-item lines="none" class="top-item" style="margin-bottom: 20px;">
+        <ion-list style="width: 100%;" >
+         <ion-skeleton-text   [animated]="true" style="width: 70%; height: 20px;"></ion-skeleton-text>
+        <ion-skeleton-text  [animated]="true" style="width: 30%;"></ion-skeleton-text>
+        </ion-list>
+       <ion-skeleton-text  [animated]="true" slot="end" style="width: 20%; height: 15px;"></ion-skeleton-text>
+       </ion-item>
+       <ion-item  *ngFor="let _ of [].constructor(4)"  lines="none" class="detail-item">
+       <ion-skeleton-text  [animated]="true" style="width: 60%;"></ion-skeleton-text>
+        <ion-skeleton-text  [animated]="true" slot="end" style="width: 40%;"></ion-skeleton-text>
+       </ion-item>   
+    </ion-card>
+  </ng-container>
+
+
+<ng-container *ngIf="!this.isLoading" >
+  <ng-container  >
+    <ion-card (click)="orderClicked(order)"   *ngFor="let order of orders" class="card" (click)="true">
+      <ion-item lines="none" class="top-item" >
+       <ion-list color="none">
+        <h4><b>{{order.name}}</b></h4>
+        <ion-label style="height: 16px;">{{order.createdAt | date }} </ion-label>
+       </ion-list>
+       <ion-list style="text-align: right;" slot="end">
+        <h4 style="color: #004aff;" ><b>${{order.total_price }}</b></h4>
+        <ion-label style="height: 16px;"> {{ order.financial_status | titlecase }} </ion-label>
+       </ion-list>
+       
+      </ion-item>
+      <ion-item  style="margin-top: 20px;" lines="none" class="detail-item">
+        <ion-label> Channel  </ion-label>
+        <ion-label slot="end"> <b>{{(order.appName  || '-') | titlecase}}</b> </ion-label>
+      </ion-item>
+  
+      <ion-item    lines="none" class="detail-item">
+        <ion-label> Delivery Status  </ion-label>
+        <ion-label slot="end"> <b>{{(order.fulfillment_status || 'Unfulifilled') | titlecase}}</b> </ion-label>
+      </ion-item>
+      <ion-item    lines="none" class="detail-item">
+        <ion-label> No of Items  </ion-label>
+        <ion-label slot="end"> <b>{{order.line_items.length}}</b> </ion-label>
+      </ion-item>
+    </ion-card>
+
+    <div class="empty-div" *ngIf="orders.length == 0">
+      <p>No   orders!</p>
+    </div>
+  
+  </ng-container>
+  <!-- <ng-container *ngIf="selectedSegment == 'completed'" >
+    <ion-card (click)="orderClicked(order)"   *ngFor="let order of completedOrders" class="card" (click)="true">
+      <ion-item lines="none" class="top-item" >
+       <ion-list color="none">
+        <h4><b>{{order.name}}</b></h4>
+        <ion-label style="height: 16px;">{{order.createdAtString }} </ion-label>
+       </ion-list>
+       <ion-list style="text-align: right;" slot="end">
+        <h4 style="color: #004aff;" ><b>${{order.price}}</b></h4>
+        <ion-label style="height: 16px;">{{order.displayFinancialStatus}} </ion-label>
+       </ion-list>
+       
+      </ion-item>
+      <ion-item  style="margin-top: 20px;" lines="none" class="detail-item">
+        <ion-label> Channel  </ion-label>
+        <ion-label slot="end"> <b>{{order.channelName}}</b> </ion-label>
+      </ion-item>
+  
+      <ion-item    lines="none" class="detail-item">
+        <ion-label> Delivery Status  </ion-label>
+        <ion-label slot="end"> <b>{{order.deliveryStatus}}</b> </ion-label>
+      </ion-item>
+      <ion-item    lines="none" class="detail-item">
+        <ion-label> No of Items  </ion-label>
+        <ion-label slot="end"> <b>{{order.lineItemsLength}}</b> </ion-label>
+      </ion-item>
+    </ion-card>
+  
+
+    <div class="empty-div" *ngIf="completedOrders.length == 0">
+      <p>No  completed orders</p>
+    </div>
+  </ng-container> -->
+</ng-container>
+
+  
+
+
+
+</ion-content>

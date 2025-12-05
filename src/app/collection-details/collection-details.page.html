@@ -1,0 +1,72 @@
+<ion-header>
+  <app-main-header
+    [headerType]="1"
+    buttonType="back-icon"
+    title="{{collectionName }}"
+  ></app-main-header>
+</ion-header>
+
+<ion-content>
+  <ng-container *ngIf="isLoading">
+    <ion-row style="margin-top: 16px">
+      <ion-col size="6" *ngFor="let product of [].constructor(10) ">
+        <ion-card style="min-height: 150px" class="product-card">
+          <ion-skeleton-text
+            [animated]="true"
+            style="width: 100%; height: 150px; margin: 0"
+          ></ion-skeleton-text>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ng-container>
+
+  <ng-container *ngIf="!isLoading">
+    <ng-container *ngIf="products.length">
+
+      <ion-row class="sort-row">
+        <ion-col size="12">
+          <ion-button
+            *ngIf="products.length > 0"
+            (click)="sortProducts()"
+            color="secondary"
+            shape="round"
+            fill="outline"
+            >Sort &nbsp; <ion-icon name="swap-vertical"></ion-icon>
+          </ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row>
+        <ion-col size="6" *ngFor="let product of products ">
+          <ion-card (click)="productClicked(product)" class="product-card">
+            <div *ngIf="!product.availableForSale" class="ribbon ribbon-top-left">
+              <span>Out of Stock</span>
+            </div>
+            <ion-img [src]="product.variants[0].image?.url"></ion-img>
+            <div>
+              <h5>{{product.title}}</h5>
+              <div class="price-container">
+                <h5 *ngIf="product.availableForSale && customerService.customerSubscribed$.value" class="price">
+                  <s style="margin-right: 5px; color: grey;" >${{product.variants[0].price.amount | number: '1.2-2'}}</s>  ${{customerService.applyDiscount(product.variants[0].price.amount) | number: '1.2-2'}}
+                </h5>
+                <h5 *ngIf="product.availableForSale && !customerService.customerSubscribed$.value" class="price">
+                  ${{product.variants[0].price.amount | number: '1.2-2'}}
+                </h5>
+              </div>
+              <ion-button [disabled]="!product.availableForSale" (click)="addToCart(product, $event)" mode="ios" color="primart" fill="outline" size="small">Add to Cart</ion-button>
+            </div>
+          </ion-card>
+        </ion-col>
+      </ion-row>
+    </ng-container>
+
+    <div class="empty-div" *ngIf="products.length == 0">No products</div>
+  </ng-container>
+
+  <ion-infinite-scroll (ionInfinite)="onIonInfinite($event)">
+    <ion-infinite-scroll-content></ion-infinite-scroll-content>
+  </ion-infinite-scroll>
+</ion-content>
+
+<ion-footer>
+  <app-card-footer></app-card-footer>
+</ion-footer>

@@ -342,7 +342,7 @@ export class ChallengeHomePage implements OnInit {
         this.router.navigate(['challenge/challenge-week4'])
         break;
         case 5 : 
-        this.router.navigate(['/tabs/challenge/week5'])
+        this.router.navigate(['/challenge/week5'])
         break;
         
   }
@@ -358,7 +358,7 @@ export class ChallengeHomePage implements OnInit {
   }
 
   addMeasurement(){
-    this.router.navigate(['/tabs/challenge/measurements'], {queryParams : {type : 'challenge', challengeId : this.challengeId}});
+    this.router.navigate(['/challenge/measurements'], {queryParams : {type : 'challenge', challengeId : this.challengeId}});
   }
 
 }
