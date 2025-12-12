@@ -14,6 +14,7 @@ import { InfiniteScrollCustomEvent } from '@ionic/angular/standalone';
 import { CardFooterComponent } from '../card-footer/card-footer.component';
 import { IonInfiniteScroll } from '@ionic/angular/standalone';
 import { IonInfiniteScrollContent } from '@ionic/angular/standalone';
+import { ToastService } from '../services/toast.service';
 
 @Component({
   selector: 'app-collection-details',
@@ -40,7 +41,8 @@ export class CollectionDetailsPage implements OnInit {
     private actionSheetCtrl : ActionSheetController,
     private loadingCtrl : LoadingController,
     private alertService : Alert,
-    public customerService : Customer
+    public customerService : Customer,
+    private toastService : ToastService
   ) { }
 
   ngOnInit() {
@@ -233,17 +235,35 @@ export class CollectionDetailsPage implements OnInit {
   }
 
 
-  addToCart(product : any, event : Event) {
+async  addToCart(product : any, event : Event) {
     event.stopPropagation();
+    let variant = null;
+    console.log("product", product);
+    if (product.variants.length > 1) {
+      variant =  await this.getVarient(product.variants);
+      console.log("variant", variant);
+      if(!variant) return;
+      if(variant?.availableForSale) {
+        variant = variant;
+      } 
+      else {
+        this.toastService.presentToast("This product is out of stock");
+        return;
+      }
+    } else {
+      variant = product.variants[0];
+    }
+
+    if(!variant) return;
     this.loadingCtrl.create().then(loadingEl=>{
      loadingEl.present();
      const cartItems = this.shopifyService.getCart(this.store);
-     const existingItem = cartItems.find((item) => item.id === product.variants[0].id);
+     const existingItem = cartItems.find((item) => item.id === variant.id);
    
      if (existingItem) {
        existingItem.quantity += 1;
      } else {
-       cartItems.push({ ...product.variants[0], quantity: 1, parentProductId: product.id, parentProductTitle : product.title, parentProductVariants : product.variants });
+       cartItems.push({ ...variant, quantity: 1, parentProductId: product.id, parentProductTitle : product.title, parentProductVariants : product.variants });
      }
    
      this.shopifyService.setCart(this.store, cartItems);
@@ -255,6 +275,35 @@ export class CollectionDetailsPage implements OnInit {
      });
     })
    }
+
+   async getVarient(variants:any): Promise<any> {
+    return new Promise(async (resolve) => {
+        let buttons = variants.map((varient:any) => ({
+            text: varient.title,
+            data: {
+                id: varient,
+            },
+            handler: () => {
+                resolve(varient); 
+            },
+        }));
+        buttons.push({
+            text: "Cancel",
+            role: "cancel",
+            handler: () => {
+                resolve(null);
+            },
+        });
+
+        const actionSheet = await this.actionSheetCtrl.create({
+            header: "Select Varient",
+            cssClass: "shopify-sort",
+            buttons: buttons,
+        });
+        await actionSheet.present();
+    });
+}
+
 
 }
 

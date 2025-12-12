@@ -1,9 +1,9 @@
 <ion-content [fullscreen]="true" class="product-detail-content">
-  <div class="wrapper-content">
+  <div class="wrapper-content" *ngIf="recipe">
   <div class="image-section">
     <ion-img 
-      src="assets/images/beverage.png" 
-      alt="Chocolate Banana Shake"
+      [src]="recipe?.image?.url || 'assets/images/placeholder.jpg'" 
+      alt="{{recipe?.title}}"
       class="product-image">
     </ion-img>
   </div>
@@ -11,24 +11,19 @@
   <div class="recipe-card">
     <div class="content">
     <div class="tags-container">
-      <span class="tag tag-easy">EASY</span>
-      <span class="tag tag-time">5 MINS</span>
+      <span class="tag tag-easy" *ngFor="let tag of recipe?.tags">{{tag}}</span>
     </div>
 
-    <h1 class="recipe-title">Chocolate Banana Shake</h1>
+    <h1 class="recipe-title">{{recipe?.title}}</h1>
 
     <p class="recipe-description">
-      Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna.
-    </p>
+       {{recipe?.description}}    </p>
 
     <div class="ingredients-section">
       <h2 class="ingredients-heading">INGREDIENTS</h2>
-      <ul class="ingredients-list">
-        <li>JUST MOVE Banana Pudding Protein</li>
-        <li>JUST MOVE Chocolate Cake Protein</li>
-        <li>12 oz. of Almond Milk</li>
-        <li>20g Crushed Cashews</li>
-      </ul>
+      <div
+      [innerHTML]="recipe?.ingredients"
+      ></div>
     </div>
 
     <div class="favorites-section">

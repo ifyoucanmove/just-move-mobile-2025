@@ -63,6 +63,7 @@ export class ShopifyDetailsPage implements OnInit {
     
     const variantId = event.target.value;
     const selected = this.product.variants.find((variant: any) => variant.id == variantId);
+    console.log("selected", selected);
     if (selected) {
       this.selectedVariant = selected;
       this.checkProductInCart();

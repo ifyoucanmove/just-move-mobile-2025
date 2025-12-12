@@ -63,6 +63,8 @@
     overflow-x: auto;
     padding-bottom: 10px;
     padding-top: 5px;
+    width: 100vw;
+    padding-right: 30px;
   }
 
   .filter-tag {
@@ -74,6 +76,20 @@
     padding: 6px 14px;
     border-radius: 20px;
     font-size: 14px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    user-select: none;
+    
+    &:hover {
+      opacity: 0.8;
+    }
+    
+    &.active {
+      background-color: var(--primary-color);
+      color: #ffffff;
+      font-weight: 600;
+    }
     
     .close-icon {
       font-size: 16px;
@@ -268,7 +284,7 @@ ion-tab-bar {
 
 
 .content-ion{
-  height: calc(100vh - 280px);
+  height: calc(100vh - 200px);
   overflow-y: auto;
   padding-bottom: 20px;
 }

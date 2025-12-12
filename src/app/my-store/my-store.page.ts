@@ -13,6 +13,7 @@ import { addIcons } from 'ionicons';
 import { swapVertical } from 'ionicons/icons';
 import { ArrayToCommaSeparatedPipe } from '../pipes/array-to-comma-separated.pipe';
 import { CardFooterComponent } from '../card-footer/card-footer.component';
+import { ToastService } from '../services/toast.service';
 @Component({
   selector: 'app-my-store',
   templateUrl: './my-store.page.html',
@@ -43,6 +44,7 @@ export class MyStorePage implements OnInit {
     private actionSheetCtrl: ActionSheetController,
     private loadingCtrl: LoadingController,
     private cdr : ChangeDetectorRef,
+    private toastService : ToastService,
     public customerService : Customer
   ) {
     addIcons({swapVertical})
@@ -359,7 +361,14 @@ export class MyStorePage implements OnInit {
     let variant = null;
     if (product.variants.length > 1) {
       variant =  await this.getVarient(product.variants);
-      
+      if(!variant) return;
+      if(variant?.availableForSale) {
+        variant = variant;
+      } 
+      else {
+        this.toastService.presentToast("This product is out of stock");
+        return;
+      }
     } else {
       variant = product.variants[0];
     }

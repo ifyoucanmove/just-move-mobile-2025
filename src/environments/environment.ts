@@ -19,7 +19,14 @@ export const environment = {
     messagingSenderId: "975192045133",
     appId: "1:975192045133:web:1202f65632d06be011ce04",
     measurementId: "G-W6L0018E97",
-  }
+  },
+  categoryList: [
+    {value: 'Pancakes & Waffles', text: 'Pancakes & Waffles'},
+    {value: 'Breakfast, Brunch & Lunch', text: 'Breakfast, Brunch & Lunch'},
+    {value: 'Protein Shakes & Post-Workout', text: 'Protein Shakes & Post-Workout'},
+    {value: 'Yogurt Bowls & Smoothie Bowls', text: 'Yogurt Bowls & Smoothie Bowls'},
+    {value: 'Snacks, Baked Goods & Dips', text: 'Snacks, Baked Goods & Dips'}
+  ]
 };
 
 /*

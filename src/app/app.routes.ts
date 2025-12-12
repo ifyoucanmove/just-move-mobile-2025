@@ -174,6 +174,11 @@ export const routes: Routes = [
     loadComponent: () => import('./shopify-details/shopify-details.page').then( m => m.ShopifyDetailsPage)
   },
   {
+    path: 'product-detail/:id',
+    loadComponent: () => import('./product-detail/product-detail.page').then( m => m.ProductDetailPage),
+    canActivate: [authenticationGuard]
+  },
+  {
     path: '**',
     redirectTo: 'welcome',
     pathMatch: 'full',

@@ -31,7 +31,8 @@
       
      <div>
 
-      <ion-button (click)="addToCart()" [disabled]="variantInCart ? true : quantity == 0 " color="secondary" class="cart-btn" style="margin-top: 20px;" >Add to Cart</ion-button> &nbsp; &nbsp;
+      <ion-button (click)="addToCart()" 
+      [disabled]=" !selectedVariant.availableForSale || variantInCart ? true : quantity == 0 " color="secondary" class="cart-btn" style="margin-top: 20px;" >Add to Cart</ion-button> &nbsp; &nbsp;
       <ion-button (click)="cartClicked()" fill="outline" color="secondary" class="cart-btn" style="margin-top: 20px;"> <ion-icon name="cart"></ion-icon> &nbsp; Cart</ion-button>
      </div>
     <div> <p class="incart-text" *ngIf="product.isAddedInCart || variantInCart" >Already in cart </p></div>
