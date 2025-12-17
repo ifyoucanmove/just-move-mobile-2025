@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { addIcons } from 'ionicons';
 import { menuOutline, heartOutline, closeOutline, trophyOutline, cartOutline, receiptOutline, storefrontOutline } from 'ionicons/icons';
 import { CommonModule } from '@angular/common';
@@ -8,6 +8,10 @@ import { AuthService } from '../services/auth';
 import { Common } from '../services/common';
 import { Customer } from '../services/customer';
 import { Challenges } from '../services/challenges';
+import { SidebarComponent } from '../shared/sidebar/sidebar.component';
+import { Platform, NavController } from '@ionic/angular/standalone';
+import { App } from '@capacitor/app';
+import { Subscription } from 'rxjs';
 
 addIcons({
   menuOutline,
@@ -20,10 +24,11 @@ addIcons({
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   imports: [
-   SharedModule
+   SharedModule,
+   SidebarComponent
   ],
 })
-export class HomePage implements OnInit {
+export class HomePage implements OnInit, OnDestroy {
   selectedCategory = 'Shakes';
   categories = ['Shakes', 'Smoothie Bowls', 'Juices', 'Teas'];
   favoriteCount = 113;
@@ -38,11 +43,16 @@ export class HomePage implements OnInit {
   status:string = "";
   challengePurchases = [];
   isPaused : boolean = false;
-  constructor(public router:Router, public authService:AuthService, private common:Common,
+  backButtonSubscription?: Subscription;
+  lastBackPress = 0;
+  backButtonPressCount = 0;
 
+  constructor(public router:Router, public authService:AuthService, private common:Common,
     public route:ActivatedRoute,
     public customerService:Customer,
-    public challengeService:Challenges
+    public challengeService:Challenges,
+    private platform: Platform,
+    private navCtrl: NavController
   ) {
     addIcons({
       trophyOutline,
@@ -57,36 +67,9 @@ export class HomePage implements OnInit {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
-  navigateTo(route: string) {
-    this.router.navigate([route]);
-    this.toggleSidebar(); // Close sidebar after navigation
-  }
-
   goToProductDetail() {
   //  this.router.navigate(['/product-detail']);
   this.router.navigate(['/products']);
-  }
-
-  async logout() {
-    const result = await this.common.showConfirmDialog(
-      'Logout',
-      'Are you sure you want to logout?',
-      'Cancel',
-      'Logout'
-    );
-
-    if (result === 'confirm') {
-      // User confirmed logout
-      try {
-        await this.authService.signOut();
-        this.router.navigate(['/signin']);
-        window.location.reload();
-      } catch (error) {
-        console.error('Logout error:', error);
-        await this.common.showErrorToast('Failed to logout. Please try again.');
-      }
-    }
-    // If result is 'button1', user cancelled - do nothing
   }
 
  
@@ -106,7 +89,59 @@ export class HomePage implements OnInit {
         this.loadChallengeData("_statusSuper");
       } */
     });
-   
+
+    const currentUrl = this.router.url;
+    if (currentUrl == '/home') {
+    // Handle back button for double-tap to exit
+    this.setupBackButtonHandler();
+    }
+  }
+
+  setupBackButtonHandler() {
+    // Only handle back button on mobile platforms
+    if (this.platform.is('android') || this.platform.is('capacitor')) {
+      // Use priority 10 to intercept, but check route and allow default behavior when not on home
+      this.backButtonSubscription = this.platform.backButton.subscribeWithPriority(10, () => {
+        // Check current route
+        const currentUrl = this.router.url;
+        
+        // Only handle back button when route is /home
+        if (currentUrl !== '/home') {
+          // Not on home route - allow default back button behavior by using NavController
+          this.navCtrl.back();
+          return;
+        }
+
+        // On /home route - handle double-tap to exit
+        const currentTime = new Date().getTime();
+        
+        // Reset counter if more than 2 seconds have passed since last press
+        if (currentTime - this.lastBackPress > 2000) {
+          this.backButtonPressCount = 0;
+        }
+        
+        this.lastBackPress = currentTime;
+        this.backButtonPressCount++;
+
+        if (this.backButtonPressCount === 1) {
+          // First press - show toast message
+          this.common.showInfoToast('Press back again to exit');
+          // Don't navigate back - prevent default navigation
+        } else if (this.backButtonPressCount === 2) {
+          // Second press within 2 seconds - exit app
+          this.backButtonPressCount = 0;
+          App.exitApp();
+        }
+        // When on home route, don't navigate back - this prevents default behavior
+      });
+    }
+  }
+
+  ngOnDestroy() {
+    // Unsubscribe from back button handler
+    if (this.backButtonSubscription) {
+      this.backButtonSubscription.unsubscribe();
+    }
   }
 
   loadChallengeData(type:any) {

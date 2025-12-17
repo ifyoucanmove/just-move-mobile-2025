@@ -129,6 +129,9 @@ ion-app {
   ion-content {
     contain: layout style paint;
   }
+  ion-toolbar{
+    --padding-top: 20px;
+  }
   
   /* Fix for devices with dynamic island or punch hole cameras */
   @supports (padding: env(safe-area-inset-top)) {
@@ -144,6 +147,50 @@ ion-app {
     --light-gray-color: #e8e8e8;
     --black-color: #000000; 
     --white-color: #ffffff;
+}
+
+/* Force light mode - prevent dark mode from being applied */
+html {
+  color-scheme: light !important;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root,
+  html,
+  body,
+  ion-app {
+    color-scheme: light !important;
+  }
+  
+  /* Override any dark mode styles */
+  ion-content {
+    --background: #ffffff !important;
+    --color: #000000 !important;
+  }
+  
+  ion-toolbar {
+    --background: #ffffff !important;
+    --color: #000000 !important;
+  }
+  
+  ion-header {
+    --background: #ffffff !important;
+  }
+  
+  ion-tab-bar {
+    --background: #ffffff !important;
+    --color: #000000 !important;
+  }
+  
+  ion-tab-button {
+    --color: #000000 !important;
+    --color-selected: var(--primary-color) !important;
+  }
+  
+  /* Ensure all text remains dark */
+  h1, h2, h3, h4, h5, h6, p, span, div {
+    color: inherit !important;
+  }
 }
 
 *{
@@ -284,5 +331,5 @@ ion-toast.toast-top-right {
   --padding-bottom: var(--ion-padding, 50px) !important;
 }
 ion-footer{
-  padding-bottom: 30px;
+  padding-bottom: 50px;
 }

@@ -4,7 +4,6 @@
     ion-toolbar {
       --background: #ffffff;
       --color: #000000;
-      padding: 0;
     }
   }
 
@@ -146,7 +145,7 @@
   }
 
   .recipe-list {
-    padding: 16px;
+    padding: 16px 16px 50px 16px;
   }
 
   .recipe-item {
@@ -204,11 +203,12 @@
   .badge {
     display: inline-block;
     background-color: var(--primary-color);
-    color: #ffffff;
+    color: #ffffff !important;
     padding: 4px 14px;
     border-radius: 16px;
     font-size: 10px;
     font-weight: 300;
+
   }
 }
 
@@ -224,6 +224,7 @@
 }
 
 ion-tab-bar {
+  padding-bottom: 40px;
   ion-tab-button {
     &[aria-selected="true"],
     &.tab-selected,
@@ -240,7 +241,6 @@ ion-tab-bar {
     ion-toolbar {
       --background: #ffffff;
       --color: #000000;
-      padding: 0;
     }
   }
 

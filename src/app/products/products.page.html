@@ -1,3 +1,4 @@
+<app-sidebar [isOpen]="isSidebarOpen" (closeSidebar)="toggleSidebar()"></app-sidebar>
 
 <ion-tabs>
   <ion-tab tab="home">
@@ -7,7 +8,7 @@
           <div class="header-top">
             <h1 class="page-title">Home</h1>
             <div class="header-icons">
-              <ion-button fill="clear"  style="--background:transparent;" class="icon-button">
+              <ion-button fill="clear"  style="--background:transparent;" class="icon-button" (click)="toggleSidebar()">
                 <ion-icon name="menu-outline"></ion-icon>
               </ion-button>
             
@@ -27,7 +28,7 @@
           <div class="header-top">
             <h1 class="page-title">Recipes</h1>
             <div class="header-icons">
-              <ion-button fill="clear"  style="--background:transparent;" class="icon-button">
+              <ion-button fill="clear"  style="--background:transparent;" class="icon-button" (click)="toggleSidebar()">
                 <ion-icon name="menu-outline"></ion-icon>
               </ion-button>
             
@@ -40,9 +41,9 @@
                   
                 </ion-col> -->
                 <ion-col size="12" class="d-flex">
-                  <ion-button fill="clear"  style="--background:transparent;" class="back-button">
+                <!--   <ion-button fill="clear"  style="--background:transparent;" class="back-button">
                     <ion-icon name="chevron-back-outline"></ion-icon>
-                  </ion-button>
+                  </ion-button> -->
                   <div class="filter-tags">
                     <span 
                       class="filter-tag" 
@@ -104,7 +105,7 @@
           <div class="header-top">
             <h1 class="page-title">Favorites</h1>
             <div class="header-icons">
-              <ion-button fill="clear"  style="--background:transparent;" class="icon-button">
+              <ion-button fill="clear"  style="--background:transparent;" class="icon-button" (click)="toggleSidebar()">
                 <ion-icon name="menu-outline"></ion-icon>
               </ion-button>
             
@@ -124,7 +125,7 @@
           <div class="header-top">
             <h1 class="page-title">Search</h1>
             <div class="header-icons">
-              <ion-button fill="clear"  style="--background:transparent;" class="icon-button">
+              <ion-button fill="clear"  style="--background:transparent;" class="icon-button" (click)="toggleSidebar()">
                 <ion-icon name="menu-outline"></ion-icon>
               </ion-button>
             

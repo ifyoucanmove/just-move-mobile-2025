@@ -9,7 +9,7 @@ import { IonContent, IonHeader, IonTitle,IonImg,
   IonTabs,IonSearchbar,IonFooter, IonDatetime, IonAccordionGroup, IonAccordion,
   IonToolbar,IonInput,IonButton, IonGrid, IonRow, IonCol, IonIcon, IonText, IonSkeletonText, IonLabel, IonCard, IonThumbnail, IonItem, IonList, IonBadge, IonBackButton } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { beerOutline, chevronBackOutline, eyeOffOutline, eyeOutline, heartOutline, homeOutline, searchOutline, menuOutline, filterOutline, closeOutline, arrowBackOutline, chevronForwardOutline, logOutOutline } from 'ionicons/icons';
+import { beerOutline, chevronBackOutline, eyeOffOutline, eyeOutline, heartOutline, homeOutline, searchOutline, menuOutline, filterOutline, closeOutline, arrowBackOutline, chevronForwardOutline, logOutOutline, arrowForwardOutline } from 'ionicons/icons';
 import { HttpClientModule } from '@angular/common/http';
 import { ArrayToCommaSeparatedPipe } from 'src/app/pipes/array-to-comma-separated.pipe';
 
@@ -27,7 +27,8 @@ addIcons({
   closeOutline,
   arrowBackOutline,
   chevronForwardOutline,
-  logOutOutline
+  logOutOutline,
+  arrowForwardOutline
 });
 
 @NgModule({

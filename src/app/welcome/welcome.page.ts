@@ -15,10 +15,22 @@ export class WelcomePage implements OnInit {
   constructor(public authService:AuthService,public router:Router) { }
 
   async ngOnInit() {
-    // Wait for auth state to be determined
+    // Note: If user is authenticated, welcomeGuard will redirect before this component loads
+    // This check is just a safety fallback
     const user = await this.authService.waitForAuthState();
     if(user){
-      this.router.navigate(['/home']);
+      // Redirect to home if somehow we got here (shouldn't happen due to guard)
+      this.router.navigate(['/home'], { replaceUrl: true });
+    }
+  }
+
+  goToSignin() {
+    //check if user is already logged in
+    const user = this.authService.currentUser;
+    if(user){
+      this.router.navigate(['/home'], { replaceUrl: true });
+    }else{
+      this.router.navigate(['/signin']);
     }
   }
 

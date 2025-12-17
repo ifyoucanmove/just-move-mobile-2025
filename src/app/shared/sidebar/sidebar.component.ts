@@ -1,0 +1,79 @@
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth';
+import { Common } from '../../services/common';
+import { Challenges } from '../../services/challenges';
+import { SharedModule } from '../shared/shared-module';
+import { addIcons } from 'ionicons';
+import { homeOutline, beerOutline, heartOutline, searchOutline, trophyOutline, cartOutline, receiptOutline, storefrontOutline, logOutOutline, closeOutline } from 'ionicons/icons';
+
+addIcons({
+  homeOutline,
+  beerOutline,
+  heartOutline,
+  searchOutline,
+  trophyOutline,
+  cartOutline,
+  receiptOutline,
+  storefrontOutline,
+  logOutOutline,
+  closeOutline
+});
+
+@Component({
+  selector: 'app-sidebar',
+  templateUrl: './sidebar.component.html',
+  styleUrls: ['./sidebar.component.scss'],
+  standalone: true,
+  imports: [SharedModule]
+})
+export class SidebarComponent implements OnInit {
+
+  @Input() isOpen: boolean = false;
+  @Output() closeSidebar = new EventEmitter<void>();
+
+  constructor(
+    private router: Router,
+    private authService: AuthService,
+    private common: Common,
+    private challengeService: Challenges
+  ) { }
+
+  ngOnInit() {}
+
+  onClose() {
+    this.closeSidebar.emit();
+  }
+
+  navigateTo(route: string) {
+    this.router.navigate([route]);
+    this.onClose(); // Close sidebar after navigation
+  }
+
+  async logout() {
+    const result = await this.common.showConfirmDialog(
+      'Logout',
+      'Are you sure you want to logout?',
+      'Cancel',
+      'Logout'
+    );
+
+    if (result === 'confirm') {
+      // User confirmed logout
+      try {
+        // Cleanup challenges data and subscriptions
+        this.challengeService.cleanup();
+        await this.authService.signOut();
+        this.router.navigate(['/welcome'], { replaceUrl: true });
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      } catch (error) {
+        console.error('Logout error:', error);
+        await this.common.showErrorToast('Failed to logout. Please try again.');
+      }
+    }
+    // If result is 'button1', user cancelled - do nothing
+  }
+
+}

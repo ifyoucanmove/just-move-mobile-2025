@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { addIcons } from 'ionicons';
 import { heartOutline } from 'ionicons/icons';
 import { SharedModule } from '../shared/shared/shared-module';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RecipeService } from '../services/recipe';
 
 addIcons({
@@ -20,7 +20,9 @@ export class ProductDetailPage implements OnInit {
 
   recipe: any;
   id: string = '';
-  constructor(private route: ActivatedRoute, private recipeService: RecipeService) { }
+  constructor(private route: ActivatedRoute,
+     private recipeService: RecipeService,
+     private router: Router) { }
 
   ngOnInit() {
     this.route.params.subscribe((params) => {
@@ -32,6 +34,10 @@ export class ProductDetailPage implements OnInit {
     },(err:any) => {
       console.log(err);
     });
+  }
+
+  goBack() {
+    this.router.navigate(['/products']);
   }
 
 }

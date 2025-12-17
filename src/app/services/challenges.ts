@@ -1,12 +1,15 @@
 import { Injectable, inject } from '@angular/core';
 import { Firestore, collection, query, onSnapshot, where, getDocs, collectionData } from '@angular/fire/firestore';
-import { BehaviorSubject, Observable, take } from 'rxjs';
+import { BehaviorSubject, Observable, take, Subscription } from 'rxjs';
+import { AuthService } from './auth';
 
 @Injectable({
   providedIn: 'root',
 })
 export class Challenges {
   private firestore = inject(Firestore);
+  private authService = inject(AuthService);
+  private challengesSubscription?: Subscription;
   [key: string]: any;
   statusChallenges$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
   statusSuperChallenges$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
@@ -51,6 +54,18 @@ export class Challenges {
 
   async loadAllChallengeData() {
     try {
+      // Check if user is authenticated before loading
+      const user = await this.authService.waitForAuthState();
+      if (!user && !this.authService.currentUser) {
+        console.log("User not authenticated, skipping loadAllChallengeData");
+        return;
+      }
+
+      // Unsubscribe from previous subscription if exists
+      if (this.challengesSubscription) {
+        this.challengesSubscription.unsubscribe();
+      }
+
       // Load from local storage first
       const stored = localStorage.getItem('challenges');
       let challenges = stored ? JSON.parse(stored) : null;
@@ -62,8 +77,15 @@ export class Challenges {
       }
 
       // Subscribe to Firestore changes
-      this.getAllActiveChallenges().subscribe(
+      this.challengesSubscription = this.getAllActiveChallenges().subscribe(
         async (res) => {
+          // Check authentication again before processing
+          const currentUser = await this.authService.waitForAuthState();
+          if (!currentUser && !this.authService.currentUser) {
+            this.cleanup();
+            return;
+          }
+
           console.log("all challenges", res);
           if (res && res.length) {
             // Save locally
@@ -86,6 +108,20 @@ export class Challenges {
     } catch (error) {
       console.error("Error in loadAllChallengeData:", error);
     }
+  }
+
+  cleanup() {
+    // Unsubscribe from challenges subscription
+    if (this.challengesSubscription) {
+      this.challengesSubscription.unsubscribe();
+      this.challengesSubscription = undefined;
+    }
+    // Clear challenge data
+    this.allChallenges$.next([]);
+    this.statusChallenges$.next([]);
+    this.statusSuperChallenges$.next([]);
+    this.challengeDatas = [];
+    this.challengeDatasUnfiltered = [];
   }
 
   getAllActiveChallenges(): Observable<any[]> {

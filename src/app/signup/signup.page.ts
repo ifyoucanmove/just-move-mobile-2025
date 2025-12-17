@@ -5,6 +5,7 @@ import { Location } from '@angular/common';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
 import { Common } from '../services/common';
+import { Challenges } from '../services/challenges';
 
 @Component({
   selector: 'app-signup',
@@ -22,7 +23,8 @@ export class SignupPage implements OnInit {
   constructor(public fb:FormBuilder,public router:Router,
     public common:Common,
     public authService:AuthService,
-    public location:Location) { 
+    public location:Location,
+    private challengeService: Challenges) { 
       this.signupForm = this.fb.group({
         name: ['', [Validators.required]],
         email: ['', [Validators.required, Validators.email]],
@@ -34,7 +36,9 @@ export class SignupPage implements OnInit {
  async ngOnInit() {
     const user = await this.authService.waitForAuthState();
     if(user){
-      this.router.navigate(['/home']);
+      // Load challenge data if user is already logged in
+      this.challengeService.loadAllChallengeData();
+      this.router.navigate(['/home'], { replaceUrl: true });
     }
   /*   this.signupForm = this.fb.group({
       name: ['', [Validators.required]],
@@ -102,7 +106,9 @@ export class SignupPage implements OnInit {
         let result = await this.authService.signUpWithEmailAndPassword(this.signupForm.value.email, this.signupForm.value.password, this.signupForm.value.name);
         if(result){
           this.common.showSuccessToast('Sign up successful');
-          this.router.navigate(['/home']);
+          // Load challenge data after successful signup
+          this.challengeService.loadAllChallengeData();
+          this.router.navigate(['/home'], { replaceUrl: true });
         }
       }catch(error:any){
         if(error.code === 'auth/email-already-in-use'){

@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authenticationGuard } from './guard/authentication-guard';
+import { welcomeGuard } from './guard/welcome-guard';
 
 export const routes: Routes = [
   {
@@ -11,7 +12,8 @@ export const routes: Routes = [
   
   {
     path: 'welcome',
-    loadComponent: () => import('./welcome/welcome.page').then( m => m.WelcomePage)
+    loadComponent: () => import('./welcome/welcome.page').then( m => m.WelcomePage),
+    canActivate: [welcomeGuard]
   },
   {
     path: 'signin',

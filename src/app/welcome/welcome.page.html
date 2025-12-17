@@ -1,7 +1,11 @@
 <!-- <ion-content [fullscreen]="true" > -->
   <div class="bg-screen">
-    <div class="welcome-logo" routerLink="/signin">
+    <div class="overlay-backdrop"></div>
+    <div class="welcome-logo">
       <ion-img src="assets/images/logo-supplement.png" class="welcome-logo-img" ></ion-img>
+      <ion-button fill="clear"   class="continue-button"  (click)="goToSignin()">
+      Continue <ion-icon name="arrow-forward-outline"></ion-icon>
+    </ion-button>
     </div>
   </div>
 <!-- </ion-content> -->

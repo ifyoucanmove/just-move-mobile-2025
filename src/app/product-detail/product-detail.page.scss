@@ -43,6 +43,7 @@
   box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
   margin-left: 20px;
   margin-right: 20px;
+  margin-bottom: 50px;
   .content{
     padding: 15px;
   }
@@ -69,6 +70,7 @@
 .tag-easy,
 .tag-time {
   background: var(--primary-color);
+  color: #ffffff !important;
 }
 
 .recipe-title {
@@ -141,7 +143,7 @@
 .cta-button {
   background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
   background-color: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-  color: #ffffff;
+  color: #ffffff !important;
   border-bottom-left-radius: 30px;
   border-bottom-right-radius: 30px;
   padding: 15px;

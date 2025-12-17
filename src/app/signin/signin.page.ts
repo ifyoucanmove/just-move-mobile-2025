@@ -6,6 +6,7 @@ import { SharedModule } from '../shared/shared/shared-module';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
 import { Common } from '../services/common';
+import { Challenges } from '../services/challenges';
 
 @Component({
   selector: 'app-signin',
@@ -19,7 +20,8 @@ export class SigninPage implements OnInit {
   showPassword: boolean = false;
   constructor(public fb:FormBuilder,
     public authService:AuthService,public common:Common,
-    public location:Location,public router:Router) {
+    public location:Location,public router:Router,
+    private challengeService: Challenges) {
     // Initialize form in constructor to avoid formGroup error
     this.signinForm = this.fb.group({
       email: ['', Validators.required],
@@ -30,7 +32,17 @@ export class SigninPage implements OnInit {
  async ngOnInit() {
     const user = await this.authService.waitForAuthState();
     if(user){
-      this.router.navigate(['/home']);
+      // Load challenge data if user is already logged in
+      this.challengeService.loadAllChallengeData();
+      this.router.navigate(['/home'], { replaceUrl: true });
+    }
+  }
+
+  ionViewWillEnter() {
+    // route to home if user is already logged in
+    const user = this.authService.currentUser;
+    if(user){
+      this.router.navigate(['/home'], { replaceUrl: true });
     }
   }
 
@@ -41,7 +53,9 @@ export class SigninPage implements OnInit {
       console.log(result);
       if(result){
         this.common.showSuccessToast('Sign in successful');
-        this.router.navigate(['/home']);
+        // Load challenge data after successful login
+        this.challengeService.loadAllChallengeData();
+        this.router.navigate(['/home'], { replaceUrl: true });
       }
     }catch(error:any){
       console.log(error);

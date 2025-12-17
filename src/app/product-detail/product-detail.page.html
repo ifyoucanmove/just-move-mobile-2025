@@ -1,5 +1,21 @@
 <ion-content [fullscreen]="true" class="product-detail-content">
   <div class="wrapper-content" *ngIf="recipe">
+    <!-- add  back button -->
+    <ion-button fill="clear"  
+    style="font-size: 18px;
+    --background: #ffffffa6;
+    --border-radius: 30px;
+    position: absolute;
+    z-index: 9;
+    left: 14px;
+    top: 34px;
+    --padding-start: 5px;
+    --padding-end: 5px;
+    --padding-top: 2px;
+    --padding-bottom: 2px;
+    color: black;" class="icon-button" (click)="goBack()">
+      <ion-icon name="chevron-back-outline"></ion-icon>
+    </ion-button>
   <div class="image-section">
     <ion-img 
       [src]="recipe?.image?.url || 'assets/images/placeholder.jpg'" 
