@@ -22,24 +22,39 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    // Check authentication state immediately and redirect before initial navigation
-    const user = await this.authService.waitForAuthState();
-    if (user || this.authService.currentUser) {
-      // User is authenticated - navigate to home before any component loads
-      this.router.navigate(['/home'], { replaceUrl: true });
-      this.challengeService.loadAllChallengeData();
-    }
-
-    // Listen to auth state changes to load challenge data when user logs in
-    this.authStateUnsubscribe = onAuthStateChanged(this.auth, async (user: User | null) => {
-      if (user) {
-        // User logged in - load challenge data
+    try {
+      console.log('[AppComponent] ngOnInit started');
+      
+      // Check authentication state immediately and redirect before initial navigation
+      console.log('[AppComponent] Waiting for auth state...');
+      const user = await this.authService.waitForAuthState();
+      console.log('[AppComponent] Auth state resolved:', user ? 'User found' : 'No user');
+      
+      if (user || this.authService.currentUser) {
+        // User is authenticated - navigate to home before any component loads
+        console.log('[AppComponent] Navigating to /home');
+        this.router.navigate(['/home'], { replaceUrl: true });
         this.challengeService.loadAllChallengeData();
-      } else {
-        // User logged out - cleanup challenge data
-        this.challengeService.cleanup();
       }
-    });
+
+      // Listen to auth state changes to load challenge data when user logs in
+      this.authStateUnsubscribe = onAuthStateChanged(this.auth, async (user: User | null) => {
+        console.log('[AppComponent] Auth state changed:', user ? 'User logged in' : 'User logged out');
+        if (user) {
+          // User logged in - load challenge data
+          this.challengeService.loadAllChallengeData();
+        } else {
+          // User logged out - cleanup challenge data
+          this.challengeService.cleanup();
+        }
+      });
+      
+      console.log('[AppComponent] ngOnInit completed successfully');
+    } catch (error) {
+      console.error('[AppComponent] Error in ngOnInit:', error);
+      // Don't block the app - let it navigate to welcome page
+      this.router.navigate(['/welcome'], { replaceUrl: true });
+    }
   }
 
   ngOnDestroy() {

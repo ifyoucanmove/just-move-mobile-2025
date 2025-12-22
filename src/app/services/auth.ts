@@ -15,33 +15,48 @@ export class AuthService {
   private authStateResolver?: (user: User | null) => void;
   userDetails: any;
   constructor(private customerService: Customer){
+    console.log('[AuthService] Constructor started');
+    
     // Create a promise that resolves when auth state is determined
     this.authStateReady = new Promise((resolve) => {
       this.authStateResolver = resolve;
     });
 
+    // Add a timeout to prevent infinite waiting
+    setTimeout(() => {
+      if (this.authStateResolver) {
+        console.warn('[AuthService] Auth state timeout - resolving with null');
+        this.authStateResolver(null);
+        this.authStateResolver = undefined;
+      }
+    }, 10000); // 10 second timeout
+
     // Listen to auth state changes
     this.auth.onAuthStateChanged((user) => {
+      console.log('[AuthService] onAuthStateChanged fired:', user ? 'User found' : 'No user');
       if(user){
-        console.log('User found', user);
+        console.log('[AuthService] User found', user.email);
         this.currentUser = user;
         this.getUserByEmail(user.email || '').subscribe((res:any) => {
           if(res.length > 0){
             this.userDetails = res[0];
-            console.log(this.userDetails, 'user details');
+            console.log('[AuthService] User details loaded:', this.userDetails);
             this.customerService.getStripeCustomerData(user.email || '');
           }
         });
       }else{
-        console.log('No user found');
+        console.log('[AuthService] No user found');
         this.currentUser = null;
       }
       // Resolve the promise on first auth state change
       if (this.authStateResolver) {
+        console.log('[AuthService] Resolving auth state promise');
         this.authStateResolver(user);
         this.authStateResolver = undefined; // Clear resolver after first use
       }
     });
+    
+    console.log('[AuthService] Constructor completed');
   }
 
   /**

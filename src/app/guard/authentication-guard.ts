@@ -7,19 +7,27 @@ export const authenticationGuard: CanActivateFn = async (route, state) => {
   const authService = inject(AuthService);
   const router = inject(Router);
   const userService = inject(User);
-  // Wait for auth state to be determined before checking
-  const user = await authService.waitForAuthState();
-  userService.email = user?.email || '';
- // userService.userDetails = user;
-  console.log(user, 'currentUser after wait');
-  //fetch user details using await until userdetail assigned
- /*  while(!authService.userDetails){
-    await new Promise(resolve => setTimeout(resolve, 1000));
-  } */
-  console.log(authService.userDetails, 'user details');
-  if(user || authService.currentUser){
-    return true;
-  }else{
+  
+  try {
+    console.log('[authenticationGuard] Starting...');
+    
+    // Wait for auth state to be determined before checking
+    const user = await authService.waitForAuthState();
+    console.log('[authenticationGuard] User:', user ? user.email : 'none');
+    
+    userService.email = user?.email || '';
+    console.log('[authenticationGuard] User details:', authService.userDetails);
+    
+    if(user || authService.currentUser){
+      console.log('[authenticationGuard] Allowing access');
+      return true;
+    }else{
+      console.log('[authenticationGuard] Redirecting to /welcome');
+      router.navigate(['/welcome']);
+      return false;
+    }
+  } catch (error) {
+    console.error('[authenticationGuard] Error:', error);
     router.navigate(['/welcome']);
     return false;
   }
