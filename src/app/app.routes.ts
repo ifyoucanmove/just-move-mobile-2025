@@ -48,7 +48,7 @@ export const routes: Routes = [
     canActivate: [authenticationGuard]
   },
   {
-    path: 'challenge/challenge-home',
+    path: 'challenge/challenge-home/:id',
     loadComponent: () => import('./challenge/challenge-home/challenge-home.page').then( m => m.ChallengeHomePage),
      canActivate: [authenticationGuard]
   },

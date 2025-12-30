@@ -3,6 +3,7 @@ import { Auth, createUserWithEmailAndPassword, sendEmailVerification, sendPasswo
 import { collection, collectionSnapshots, doc, Firestore, query, setDoc, where } from '@angular/fire/firestore';
 import { map } from 'rxjs';
 import { Customer } from './customer';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ export class AuthService {
   private authStateReady: Promise<User | null>;
   private authStateResolver?: (user: User | null) => void;
   userDetails: any;
+  isAdmin: boolean = false;
   constructor(private customerService: Customer){
     // Create a promise that resolves when auth state is determined
     this.authStateReady = new Promise((resolve) => {
@@ -24,11 +26,14 @@ export class AuthService {
     this.auth.onAuthStateChanged((user) => {
       if(user){
         console.log('User found', user);
+       this.isAdmin = environment.adminpeople.includes(user.uid);
+
         this.currentUser = user;
         this.getUserByEmail(user.email || '').subscribe((res:any) => {
           if(res.length > 0){
             this.userDetails = res[0];
             console.log(this.userDetails, 'user details');
+          //  this.isAdmin = environment.adminpeople.includes(this.userDetails.id);
             this.customerService.getStripeCustomerData(user.email || '');
           }
         });

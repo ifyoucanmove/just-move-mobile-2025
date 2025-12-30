@@ -333,3 +333,12 @@ ion-toast.toast-top-right {
 ion-footer{
   padding-bottom: 50px;
 }
+
+/* Filter Dialog Modal Styles */
+.filter-dialog-modal {
+  --width: 90%;
+  --max-width: 500px;
+  --height: auto;
+  --max-height: 80vh;
+  --border-radius: 16px;
+}

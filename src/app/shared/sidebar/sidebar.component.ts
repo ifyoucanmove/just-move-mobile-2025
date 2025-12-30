@@ -34,7 +34,7 @@ export class SidebarComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private authService: AuthService,
+    public authService: AuthService,
     private common: Common,
     private challengeService: Challenges
   ) { }

@@ -202,7 +202,8 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async challengeClicked(challenge:any) {
-    this.router.navigateByUrl("challenge/challenge-home");
+    console.log("challenge", challenge);
+    this.router.navigateByUrl("challenge/challenge-home/" + challenge.id);
   }
 
 }

@@ -37,29 +37,13 @@
           <div class="header-bottom">
             <ion-grid>
               <ion-row>
-                <!-- <ion-col size="1">
-                  
-                </ion-col> -->
-                <ion-col size="12" class="d-flex">
-                <!--   <ion-button fill="clear"  style="--background:transparent;" class="back-button">
-                    <ion-icon name="chevron-back-outline"></ion-icon>
-                  </ion-button> -->
-                  <div class="filter-tags">
-                    <span 
-                      class="filter-tag" 
-                      [class.active]="isCategorySelected(category)"
-                      *ngFor="let category of categoryList"
-                      (click)="toggleCategory(category)">
-                      {{category.text}}
-                     <!--  <ion-icon name="close-outline" class="close-icon"></ion-icon> -->
-                    </span>
-                  </div>
-                </ion-col>
-              <!--   <ion-col size="2">
-                  <ion-button fill="clear" style="--background:transparent;" class="icon-button">
-                    <ion-icon name="filter-outline"></ion-icon>
+                <ion-col size="12" class="d-flex justify-content-end">
+                  <ion-button fill="clear"
+                   style="--background:transparent;" class="icon-button filter-button" (click)="openFilterDialog()">
+                   <ion-icon name="filter-outline"></ion-icon>
+                   <span class="filter-text">Filter</span>
                   </ion-button>
-                </ion-col> -->
+                </ion-col> 
               </ion-row>
             </ion-grid>
            

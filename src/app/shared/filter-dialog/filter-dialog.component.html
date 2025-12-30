@@ -1,0 +1,43 @@
+<ion-header> 
+  <ion-toolbar>
+    <ion-title>Filter Categories</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<!-- <ion-content class="ion-padding"> -->
+  <div class="filter-dialog-content">
+    <div class="category-list">
+      <div 
+        class="category-item"
+        [class.selected]="isCategorySelected(category)"
+        *ngFor="let category of categoryList"
+        (click)="toggleCategory(category)">
+        <div class="checkbox-wrapper">
+          <div class="custom-checkbox" [class.checked]="isCategorySelected(category)">
+            <ion-icon name="checkmark-outline" *ngIf="isCategorySelected(category)"></ion-icon>
+          </div>
+        </div>
+        <span class="category-text">{{category.text}}</span>
+      </div>
+    </div>
+
+    <div class="dialog-actions">
+      <ion-button 
+        fill="outline" 
+        class="clear-button"
+        (click)="clearFilters()">
+        Clear All
+      </ion-button>
+      <ion-button 
+        class="apply-button"
+        (click)="applyFilters()">
+        Apply 
+      </ion-button>
+    </div>
+  </div>
+<!-- </ion-content> -->
