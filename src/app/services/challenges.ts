@@ -1,4 +1,4 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, NgZone } from '@angular/core';
 import { Firestore, collection, query, onSnapshot, where, getDocs, collectionData } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable, take, Subscription } from 'rxjs';
 import { AuthService } from './auth';
@@ -9,6 +9,7 @@ import { AuthService } from './auth';
 export class Challenges {
   private firestore = inject(Firestore);
   private authService = inject(AuthService);
+  private ngZone = inject(NgZone);
   private challengesSubscription?: Subscription;
   [key: string]: any;
   statusChallenges$: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
@@ -128,20 +129,27 @@ export class Challenges {
     return new Observable((observer) => {
       const challengesRef = collection(this.firestore, 'challenges');
       const q = query(challengesRef);
-      
-      const unsubscribe = onSnapshot(
-        q,
-        (snapshot) => {
-          const challenges = snapshot.docs.map((doc) => {
-            const data = doc.data() as any;
-            return { id: doc.id, ...data };
-          });
-          observer.next(challenges);
-        },
-        (error) => {
-          console.error("Error in getAllActiveChallenges:", error);
-          observer.error(error);
-        }
+
+      // Run onSnapshot inside NgZone to avoid injection context warning
+      const unsubscribe = this.ngZone.runOutsideAngular(() =>
+        onSnapshot(
+          q,
+          (snapshot) => {
+            this.ngZone.run(() => {
+              const challenges = snapshot.docs.map((doc) => {
+                const data = doc.data() as any;
+                return { id: doc.id, ...data };
+              });
+              observer.next(challenges);
+            });
+          },
+          (error) => {
+            this.ngZone.run(() => {
+              console.error("Error in getAllActiveChallenges:", error);
+              observer.error(error);
+            });
+          }
+        )
       );
 
       // Return cleanup function

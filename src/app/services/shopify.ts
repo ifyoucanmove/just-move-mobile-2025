@@ -36,23 +36,23 @@ interface IPageInfo {
 const cred: any = {
   justMove: {
     storeDomain: 'just-move-supplements.myshopify.com',
-    apiVersion: '2024-07',
+    apiVersion: '2025-04',
     publicAccessToken: '792053bac459ec82873acc350433d89f',
   },
   pejaAmari: {
     storeDomain: 'pejaandamari.myshopify.com',
-    apiVersion: '2024-07',
+    apiVersion: '2025-04',
     publicAccessToken: 'dad052ddf6c3e85730e72ab7860fd192',
   },
   teamLashae: {
     storeDomain: 'teamlashae.myshopify.com',
-    apiVersion: '2024-07',
+    apiVersion: '2025-04',
     publicAccessToken: '62111e3c3f73b01a4ec4d183cc413898',
   },
   sayItLoud: {},
   testApp: {
     storeDomain: '9de471-3f.myshopify.com',
-    apiVersion: '2024-07',
+    apiVersion: '2025-04',
     publicAccessToken: 'd5de965f01858b50b9e6fef424f0b68a',
   },
 };
