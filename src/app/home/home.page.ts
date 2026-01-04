@@ -8,9 +8,11 @@ import { AuthService } from '../services/auth';
 import { Common } from '../services/common';
 import { Customer } from '../services/customer';
 import { Challenges } from '../services/challenges';
+import { Shopify } from '../services/shopify';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { Platform, NavController } from '@ionic/angular/standalone';
 import { App } from '@capacitor/app';
+import { Browser } from '@capacitor/browser';
 import { Subscription } from 'rxjs';
 
 addIcons({
@@ -51,6 +53,7 @@ export class HomePage implements OnInit, OnDestroy {
     public route:ActivatedRoute,
     public customerService:Customer,
     public challengeService:Challenges,
+    private shopifyService: Shopify,
     private platform: Platform,
     private navCtrl: NavController
   ) {
@@ -201,9 +204,41 @@ export class HomePage implements OnInit, OnDestroy {
 
   }
 
-  async challengeClicked(challenge:any) {
+  async challengeClicked(challenge: any) {
     console.log("challenge", challenge);
-    this.router.navigateByUrl("challenge/challenge-home/" + challenge.id);
+
+    const email = this.authService.currentUser?.email;
+    if (!email) {
+      this.common.showInfoToast('Please login to access challenges');
+      return;
+    }
+
+    // Check if user has purchased this challenge
+    const hasPurchased = await this.customerService.hasChallengePurchase(email, challenge.id);
+
+    if (hasPurchased) {
+      // User has purchased - navigate to challenge content
+      this.router.navigateByUrl("challenge/challenge-home/" + challenge.id);
+    } else {
+      // User has NOT purchased - create checkout URL and open Shopify
+      try {
+        const checkoutUrl = await this.shopifyService.createChallengeCheckoutUrl(
+          challenge.id,
+          email,
+          'justMove'
+        );
+
+        if (checkoutUrl) {
+          // Open Shopify checkout in browser
+          await Browser.open({ url: checkoutUrl });
+        } else {
+          this.common.showErrorToast('Unable to load checkout. Please try again.');
+        }
+      } catch (error) {
+        console.error('Error opening checkout:', error);
+        this.common.showErrorToast('Error loading checkout. Please try again.');
+      }
+    }
   }
 
 }
