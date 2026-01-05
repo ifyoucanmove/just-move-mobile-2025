@@ -221,18 +221,28 @@ export class HomePage implements OnInit, OnDestroy {
         // User has purchased - navigate to challenge content
         this.router.navigateByUrl("challenge/challenge-home/" + challenge.id);
       } else {
-        // User has NOT purchased - create checkout URL and open Shopify
-        const checkoutUrl = await this.shopifyService.createChallengeCheckoutUrl(
-          challenge.id,
-          email,
-          'justMove'
+        // User has NOT purchased - ask for confirmation before redirecting to checkout
+        const result = await this.common.showConfirmDialog(
+          'Purchase Challenge',
+          'You will be redirected to our store to complete your purchase. Continue?',
+          'Cancel',
+          'Continue'
         );
 
-        if (checkoutUrl) {
-          // Open Shopify checkout in browser
-          await Browser.open({ url: checkoutUrl });
-        } else {
-          this.common.showErrorToast('Unable to load checkout. Please try again.');
+        if (result === 'confirm') {
+          // Create checkout URL and open Shopify
+          const checkoutUrl = await this.shopifyService.createChallengeCheckoutUrl(
+            challenge.id,
+            email,
+            'justMove'
+          );
+
+          if (checkoutUrl) {
+            // Open Shopify checkout in browser
+            await Browser.open({ url: checkoutUrl });
+          } else {
+            this.common.showErrorToast('Unable to load checkout. Please try again.');
+          }
         }
       }
     } catch (error) {
