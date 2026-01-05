@@ -214,14 +214,14 @@ export class HomePage implements OnInit, OnDestroy {
     }
 
     // Check if user has purchased this challenge
-    const hasPurchased = await this.customerService.hasChallengePurchase(email, challenge.id);
+    try {
+      const hasPurchased = await this.customerService.hasChallengePurchase(email, challenge.id);
 
-    if (hasPurchased) {
-      // User has purchased - navigate to challenge content
-      this.router.navigateByUrl("challenge/challenge-home/" + challenge.id);
-    } else {
-      // User has NOT purchased - create checkout URL and open Shopify
-      try {
+      if (hasPurchased) {
+        // User has purchased - navigate to challenge content
+        this.router.navigateByUrl("challenge/challenge-home/" + challenge.id);
+      } else {
+        // User has NOT purchased - create checkout URL and open Shopify
         const checkoutUrl = await this.shopifyService.createChallengeCheckoutUrl(
           challenge.id,
           email,
@@ -234,10 +234,10 @@ export class HomePage implements OnInit, OnDestroy {
         } else {
           this.common.showErrorToast('Unable to load checkout. Please try again.');
         }
-      } catch (error) {
-        console.error('Error opening checkout:', error);
-        this.common.showErrorToast('Error loading checkout. Please try again.');
       }
+    } catch (error) {
+      console.error('Error in challengeClicked:', error);
+      this.common.showErrorToast('Error checking purchase status. Please try again.');
     }
   }
 

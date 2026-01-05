@@ -174,45 +174,40 @@ applyDiscount(priceValue: any) {
  * @returns Promise<boolean> - true if has any active, non-expired purchase
  */
 async hasChallengePurchase(email: string, challengeId: string): Promise<boolean> {
-  try {
-    // Query all purchases for this challenge
-    const purchasesRef = collection(this.firestore, `stripe_customers/${email.toLowerCase()}/justmoveshopifypurchases`);
-    const q = query(purchasesRef, where('challengeId', '==', challengeId));
-    const snapshot = await getDocs(q);
+  // Query all purchases for this challenge
+  const purchasesRef = collection(this.firestore, `stripe_customers/${email.toLowerCase()}/justmoveshopifypurchases`);
+  const q = query(purchasesRef, where('challengeId', '==', challengeId));
+  const snapshot = await getDocs(q);
 
-    if (snapshot.empty) {
-      return false;
-    }
-
-    // Check if any purchase is active and not expired
-    const now = new Date();
-    for (const doc of snapshot.docs) {
-      const purchase = doc.data();
-
-      // Check if purchase is active
-      if (purchase['status'] !== 'active') {
-        continue;
-      }
-
-      // Check expiration date if it exists
-      if (purchase['expirationDate']) {
-        const expirationDate = purchase['expirationDate'].toDate ?
-          purchase['expirationDate'].toDate() :
-          new Date(purchase['expirationDate']);
-
-        if (expirationDate >= now) {
-          return true; // Found valid purchase
-        }
-      } else {
-        // No expiration date means it's valid
-        return false;
-      }
-    }
-
-    return false; // No valid purchases found
-  } catch (error) {
-    console.error('Error checking challenge purchase:', error);
+  if (snapshot.empty) {
     return false;
   }
+
+  // Check if any purchase is active and not expired
+  const now = new Date();
+  for (const docSnap of snapshot.docs) {
+    const purchase = docSnap.data();
+
+    // Check if purchase is active
+    if (purchase['status'] !== 'active') {
+      continue;
+    }
+
+    // Check expiration date if it exists
+    if (purchase['expirationDate']) {
+      const expirationDate = purchase['expirationDate'].toDate ?
+        purchase['expirationDate'].toDate() :
+        new Date(purchase['expirationDate']);
+
+      if (expirationDate >= now) {
+        return true; // Found valid purchase
+      }
+    } else {
+      // No expiration date means it's valid
+      return true;
+    }
+  }
+
+  return false; // No valid purchases found
 }
 }
