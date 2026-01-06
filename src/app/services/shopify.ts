@@ -36,23 +36,23 @@ interface IPageInfo {
 const cred: any = {
   justMove: {
     storeDomain: 'just-move-supplements.myshopify.com',
-    apiVersion: '2024-07',
+    apiVersion: '2025-04',
     publicAccessToken: '792053bac459ec82873acc350433d89f',
   },
   pejaAmari: {
     storeDomain: 'pejaandamari.myshopify.com',
-    apiVersion: '2024-07',
+    apiVersion: '2025-04',
     publicAccessToken: 'dad052ddf6c3e85730e72ab7860fd192',
   },
   teamLashae: {
     storeDomain: 'teamlashae.myshopify.com',
-    apiVersion: '2024-07',
+    apiVersion: '2025-04',
     publicAccessToken: '62111e3c3f73b01a4ec4d183cc413898',
   },
   sayItLoud: {},
   testApp: {
     storeDomain: '9de471-3f.myshopify.com',
-    apiVersion: '2024-07',
+    apiVersion: '2025-04',
     publicAccessToken: 'd5de965f01858b50b9e6fef424f0b68a',
   },
 };
@@ -726,5 +726,195 @@ export class Shopify {
         }
       )
       .toPromise();
+  }
+
+  /**
+   * Get product variant by SKU
+   * Searches all products with pagination and finds the variant with matching SKU
+   * @param sku - The SKU to search for (e.g., "challenge-new-year-new-you-january2021")
+   * @param store - Store name (justMove, pejaAmari, etc.)
+   */
+  async getProductBySku(sku: string, store: string = 'justMove'): Promise<any> {
+    const client = createStorefrontApiClient(cred[store]);
+
+    const productQuery = `
+      query getProducts($cursor: String) {
+        products(first: 250, after: $cursor) {
+          edges {
+            node {
+              id
+              title
+              handle
+              availableForSale
+              variants(first: 100) {
+                edges {
+                  node {
+                    id
+                    title
+                    sku
+                    availableForSale
+                    price {
+                      amount
+                      currencyCode
+                    }
+                    image {
+                      url
+                    }
+                  }
+                }
+              }
+            }
+          }
+          pageInfo {
+            hasNextPage
+            endCursor
+          }
+        }
+      }
+    `;
+
+    try {
+      let allProducts: any[] = [];
+      let hasNextPage = true;
+      let cursor: string | null = null;
+
+      // Fetch all products with pagination
+      while (hasNextPage) {
+        const response: any = await client.request(productQuery, {
+          variables: { cursor }
+        });
+        const { data, errors } = response;
+
+        if (errors) {
+          console.error('GraphQL Errors:', errors);
+          return null;
+        }
+
+        const products = data?.products?.edges || [];
+        allProducts = [...allProducts, ...products];
+
+        hasNextPage = data?.products?.pageInfo?.hasNextPage || false;
+        cursor = data?.products?.pageInfo?.endCursor || null;
+
+        // Safety limit to prevent infinite loops
+        if (allProducts.length > 1000) break;
+      }
+
+      console.log(`Searching for SKU: ${sku} in ${allProducts.length} products`);
+
+      // Log all SKUs for debugging
+      const allSkus: string[] = [];
+      allProducts.forEach((p: any) => {
+        p.node.variants.edges.forEach((v: any) => {
+          if (v.node.sku) allSkus.push(v.node.sku);
+        });
+      });
+      console.log('Available SKUs:', allSkus);
+
+      // Search through all products to find matching SKU
+      for (const productEdge of allProducts) {
+        const product = productEdge.node;
+        const matchingVariant = product.variants.edges.find(
+          (v: any) => v.node.sku === sku
+        );
+
+        if (matchingVariant) {
+          console.log(`Found product with SKU ${sku}:`, product.title);
+          return {
+            product: product,
+            variant: matchingVariant.node,
+          };
+        }
+      }
+
+      console.log(`No product found with SKU: ${sku}`);
+      return null;
+    } catch (error) {
+      console.error('Error fetching product by SKU:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Create checkout URL for a challenge purchase
+   * @param challengeId - The challenge ID (e.g., "new-year-new-you-january2021")
+   * @param email - User's email
+   * @param store - Store name (default: justMove)
+   * @returns Checkout URL or null if product not found
+   */
+  async createChallengeCheckoutUrl(challengeId: string, email: string, store: string = 'justMove'): Promise<string | null> {
+    const sku = `challenge-${challengeId}`;
+
+    // Find product by SKU
+    const productData = await this.getProductBySku(sku, store);
+
+    if (!productData || !productData.variant) {
+      console.error(`Product not found for challenge: ${challengeId}`);
+      return null;
+    }
+
+    const client = createStorefrontApiClient(cred[store]);
+
+    const checkoutQuery = `mutation cartCreate($input: CartInput!) {
+      cartCreate(input: $input) {
+        userErrors {
+          code
+          field
+          message
+        }
+        cart {
+          id
+          checkoutUrl
+          cost {
+            subtotalAmount {
+              amount
+            }
+            totalAmount {
+              amount
+            }
+          }
+        }
+      }
+    }`;
+
+    try {
+      const { data, errors } = await client.request(checkoutQuery, {
+        variables: {
+          input: {
+            buyerIdentity: {
+              email: email,
+            },
+            attributes: [
+              { key: 'email', value: email },
+              { key: 'challengeId', value: challengeId }
+            ],
+            lines: [
+              {
+                merchandiseId: productData.variant.id,
+                quantity: 1,
+              },
+            ],
+            discountCodes: this.customerService.customerSubscribed$.value
+              ? []
+              : [],
+          },
+        },
+      });
+
+      if (errors) {
+        console.error('Checkout creation errors:', errors);
+        return null;
+      }
+
+      if (data?.cartCreate?.userErrors?.length > 0) {
+        console.error('Cart user errors:', data.cartCreate.userErrors);
+        return null;
+      }
+
+      return data?.cartCreate?.cart?.checkoutUrl || null;
+    } catch (error) {
+      console.error('Error creating checkout URL:', error);
+      return null;
+    }
   }
 }  

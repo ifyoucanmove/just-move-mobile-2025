@@ -8,9 +8,11 @@ import { AuthService } from '../services/auth';
 import { Common } from '../services/common';
 import { Customer } from '../services/customer';
 import { Challenges } from '../services/challenges';
+import { Shopify } from '../services/shopify';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { Platform, NavController } from '@ionic/angular/standalone';
 import { App } from '@capacitor/app';
+import { Browser } from '@capacitor/browser';
 import { Subscription } from 'rxjs';
 
 addIcons({
@@ -51,6 +53,7 @@ export class HomePage implements OnInit, OnDestroy {
     public route:ActivatedRoute,
     public customerService:Customer,
     public challengeService:Challenges,
+    private shopifyService: Shopify,
     private platform: Platform,
     private navCtrl: NavController
   ) {
@@ -201,8 +204,51 @@ export class HomePage implements OnInit, OnDestroy {
 
   }
 
-  async challengeClicked(challenge:any) {
-    this.router.navigateByUrl("challenge/challenge-home");
+  async challengeClicked(challenge: any) {
+    console.log("challenge", challenge);
+
+    const email = this.authService.currentUser?.email;
+    if (!email) {
+      this.common.showInfoToast('Please login to access challenges');
+      return;
+    }
+
+    // Check if user has purchased this challenge
+    try {
+      const hasPurchased = await this.customerService.hasChallengePurchase(email, challenge.id);
+
+      if (hasPurchased) {
+        // User has purchased - navigate to challenge content
+        this.router.navigateByUrl("challenge/challenge-home/" + challenge.id);
+      } else {
+        // User has NOT purchased - ask for confirmation before redirecting to checkout
+        const result = await this.common.showConfirmDialog(
+          'Purchase Challenge',
+          'You will be redirected to our store to complete your purchase. Continue?',
+          'Cancel',
+          'Continue'
+        );
+
+        if (result === 'confirm') {
+          // Create checkout URL and open Shopify
+          const checkoutUrl = await this.shopifyService.createChallengeCheckoutUrl(
+            challenge.id,
+            email,
+            'justMove'
+          );
+
+          if (checkoutUrl) {
+            // Open Shopify checkout in browser
+            await Browser.open({ url: checkoutUrl });
+          } else {
+            this.common.showErrorToast('Unable to load checkout. Please try again.');
+          }
+        }
+      }
+    } catch (error) {
+      console.error('Error in challengeClicked:', error);
+      this.common.showErrorToast('Error checking purchase status. Please try again.');
+    }
   }
 
 }

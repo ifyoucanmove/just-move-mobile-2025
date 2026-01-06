@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, inject } from '@angular/core';
+import { Component, OnInit, OnDestroy, inject, NgZone } from '@angular/core';
 import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
 import { Challenges } from './services/challenges';
 import { AuthService } from './services/auth';
@@ -14,7 +14,9 @@ import { filter, take } from 'rxjs/operators';
 export class AppComponent implements OnInit, OnDestroy {
   private auth = inject(Auth);
   private router = inject(Router);
+  private ngZone = inject(NgZone);
   private authStateUnsubscribe?: () => void;
+  private initialNavigationDone = false;
 
   constructor(
     public challengeService: Challenges,
@@ -22,24 +24,30 @@ export class AppComponent implements OnInit, OnDestroy {
   ) {}
 
   async ngOnInit() {
-    try {
-      console.log('[AppComponent] ngOnInit started');
-      
-      // Check authentication state immediately and redirect before initial navigation
-      console.log('[AppComponent] Waiting for auth state...');
+    // Wait for router to complete initial navigation first
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      take(1)
+    ).subscribe(async () => {
+      this.initialNavigationDone = true;
+
+      // Check authentication state after initial navigation
       const user = await this.authService.waitForAuthState();
-      console.log('[AppComponent] Auth state resolved:', user ? 'User found' : 'No user');
-      
       if (user || this.authService.currentUser) {
-        // User is authenticated - navigate to home before any component loads
-        console.log('[AppComponent] Navigating to /home');
-        this.router.navigate(['/home'], { replaceUrl: true });
+        // User is authenticated - navigate to home
+        this.ngZone.run(() => {
+          this.router.navigate(['/home'], { replaceUrl: true });
+        });
         this.challengeService.loadAllChallengeData();
       }
+    });
 
-      // Listen to auth state changes to load challenge data when user logs in
-      this.authStateUnsubscribe = onAuthStateChanged(this.auth, async (user: User | null) => {
-        console.log('[AppComponent] Auth state changed:', user ? 'User logged in' : 'User logged out');
+    // Listen to auth state changes to load challenge data when user logs in
+    this.authStateUnsubscribe = onAuthStateChanged(this.auth, async (user: User | null) => {
+      // Only handle auth changes after initial navigation is complete
+      if (!this.initialNavigationDone) return;
+
+      this.ngZone.run(() => {
         if (user) {
           // User logged in - load challenge data
           this.challengeService.loadAllChallengeData();
@@ -48,13 +56,7 @@ export class AppComponent implements OnInit, OnDestroy {
           this.challengeService.cleanup();
         }
       });
-      
-      console.log('[AppComponent] ngOnInit completed successfully');
-    } catch (error) {
-      console.error('[AppComponent] Error in ngOnInit:', error);
-      // Don't block the app - let it navigate to welcome page
-      this.router.navigate(['/welcome'], { replaceUrl: true });
-    }
+    });
   }
 
   ngOnDestroy() {

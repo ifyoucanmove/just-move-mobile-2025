@@ -78,11 +78,12 @@ export class ChallengeHomePage implements OnInit {
 
 
   ngOnInit() {
-  
+  this.challengeId = this.route.snapshot.params['id'];
+  console.log("challengeId", this.challengeId);
    this.userId = this.userService.email;
     this.route.queryParams.subscribe((param) => {
      console.log("this.challengeService.challengeDatas", this.challengeService.challengeDatas);
-     let index = this.challengeService.challengeDatas.findIndex((item:any) => item.id == "yNObVzzG2h62C8I3PlA8");
+     let index = this.challengeService.challengeDatas.findIndex((item:any) => item.id == this.challengeId);
      console.log("index", index);
      this.challengeService.selectedChallengeIndex = index;
       let selectedIndex = index;
@@ -98,13 +99,13 @@ export class ChallengeHomePage implements OnInit {
       this.challengeDatas =
         this.challengeService.challengeDatas[selectedIndex];
       //  console.log("this.challengeDatas", this.challengeDatas.previewVideo1);
-      this.challengeDatas = this.challengeService.challengeDatas.find((item:any) => item.id == "yNObVzzG2h62C8I3PlA8");
+      this.challengeDatas = this.challengeService.challengeDatas.find((item:any) => item.id == this.challengeId);
     //find index of this.challengeDatas
   
     console.log("result", this.challengeService.challengeDatas[index]);
      // this.checkDatas();
       this.loadChallengeWatchData();
-      this.challengeId = this.challengeService.challengeDatas[selectedIndex].id;
+   //   this.challengeId = this.challengeService.challengeDatas[selectedIndex].id;
       this.totalDays =
         (parseInt(
           this.challengeService.challengeDatas[selectedIndex].weekTotalCount,

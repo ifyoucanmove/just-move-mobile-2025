@@ -15,6 +15,7 @@
       class="search-bar"
       [showClearButton]="false">
     </ion-searchbar>
+    @if(authService.isAdmin) {
     <div class="category-buttons">
       <ion-button 
         *ngFor="let category of categories" 
@@ -23,7 +24,7 @@
         [fill]="selectedCategory === category ? 'solid' : 'outline'">
         {{ category }}
       </ion-button>
-    </div>
+    </div>}
   </ion-toolbar>
 </ion-header>
 

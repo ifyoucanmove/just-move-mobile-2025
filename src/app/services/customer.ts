@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { collection, doc, Firestore, onSnapshot, query, updateDoc, where } from '@angular/fire/firestore';
+import { collection, doc, Firestore, getDoc, getDocs, onSnapshot, query, updateDoc, where } from '@angular/fire/firestore';
 import { BehaviorSubject, Observable } from 'rxjs';
 
 @Injectable({
@@ -163,5 +163,51 @@ applyDiscount(priceValue: any) {
   }
   const discountedPrice = price * (100 - this.memberDiscount) / 100;
   return discountedPrice // Return with two decimal places
+}
+
+/**
+ * Check if user has purchased a specific challenge
+ * Checks the justmoveshopifypurchases subcollection for active purchases
+ * User can have multiple purchases of the same challenge
+ * @param email - User's email
+ * @param challengeId - The challenge ID to check
+ * @returns Promise<boolean> - true if has any active, non-expired purchase
+ */
+async hasChallengePurchase(email: string, challengeId: string): Promise<boolean> {
+  // Query all purchases for this challenge
+  const purchasesRef = collection(this.firestore, `stripe_customers/${email.toLowerCase()}/justmoveshopifypurchases`);
+  const q = query(purchasesRef, where('challengeId', '==', challengeId));
+  const snapshot = await getDocs(q);
+
+  if (snapshot.empty) {
+    return false;
+  }
+
+  // Check if any purchase is active and not expired
+  const now = new Date();
+  for (const docSnap of snapshot.docs) {
+    const purchase = docSnap.data();
+
+    // Check if purchase is active
+    if (purchase['status'] !== 'active') {
+      continue;
+    }
+
+    // Check expiration date if it exists
+    if (purchase['expirationDate']) {
+      const expirationDate = purchase['expirationDate'].toDate ?
+        purchase['expirationDate'].toDate() :
+        new Date(purchase['expirationDate']);
+
+      if (expirationDate >= now) {
+        return true; // Found valid purchase
+      }
+    } else {
+      // No expiration date means it's valid
+      return true;
+    }
+  }
+
+  return false; // No valid purchases found
 }
 }

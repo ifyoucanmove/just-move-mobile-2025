@@ -3,6 +3,7 @@ import { Auth, createUserWithEmailAndPassword, sendEmailVerification, sendPasswo
 import { collection, collectionSnapshots, doc, Firestore, query, setDoc, where } from '@angular/fire/firestore';
 import { map } from 'rxjs';
 import { Customer } from './customer';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -14,6 +15,7 @@ export class AuthService {
   private authStateReady: Promise<User | null>;
   private authStateResolver?: (user: User | null) => void;
   userDetails: any;
+  isAdmin: boolean = false;
   constructor(private customerService: Customer){
     console.log('[AuthService] Constructor started');
     
@@ -35,12 +37,15 @@ export class AuthService {
     this.auth.onAuthStateChanged((user) => {
       console.log('[AuthService] onAuthStateChanged fired:', user ? 'User found' : 'No user');
       if(user){
-        console.log('[AuthService] User found', user.email);
+        console.log('User found', user);
+       this.isAdmin = environment.adminpeople.includes(user.uid);
+
         this.currentUser = user;
         this.getUserByEmail(user.email || '').subscribe((res:any) => {
           if(res.length > 0){
             this.userDetails = res[0];
-            console.log('[AuthService] User details loaded:', this.userDetails);
+            console.log(this.userDetails, 'user details');
+          //  this.isAdmin = environment.adminpeople.includes(this.userDetails.id);
             this.customerService.getStripeCustomerData(user.email || '');
           }
         });

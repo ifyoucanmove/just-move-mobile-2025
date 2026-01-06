@@ -12,10 +12,11 @@
       <ion-icon name="home-outline"></ion-icon>
       <span>Home</span>
     </div>
+    @if(authService.isAdmin) {
     <div class="sidebar-item" (click)="navigateTo('/products')">
       <ion-icon name="beer-outline"></ion-icon>
       <span>Recipes</span>
-    </div>
+    </div>}
     <div class="sidebar-item" (click)="navigateTo('/products')">
       <ion-icon name="heart-outline"></ion-icon>
       <span>Favorites</span>
