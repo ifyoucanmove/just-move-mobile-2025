@@ -60,6 +60,15 @@
         <ion-label> No of Items  </ion-label>
         <ion-label slot="end"> <b>{{order.line_items.length}}</b> </ion-label>
       </ion-item>
+      @for (item of order.line_items; track $index) {
+      <ion-item    lines="none" class="detail-item">
+        <ion-label> {{item.title}} </ion-label>
+        <div class="d-flex flex-column justify-content-end align-items-end">
+        <ion-label slot="end"> <b>${{item.price}}</b> </ion-label>
+        <ion-label slot="end"> <b>Quanity: {{item.quantity}}</b> </ion-label>
+      </div>
+      </ion-item>
+    }
     </ion-card>
 
     <div class="empty-div" *ngIf="orders.length == 0">

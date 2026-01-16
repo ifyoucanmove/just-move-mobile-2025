@@ -7,9 +7,7 @@
   ion-toolbar {
     --background: #FFD300 !important;
     --color: #000000;
-    padding: 0;
-    height: 240px;
-   // padding-top: 20px;
+    padding: 0; 
   }
 }
 
@@ -35,12 +33,27 @@
   --padding-end: 0;
 }
 
+.search-container{
+  display: flex;
+  align-items: center;
+  padding: 10px 12px 12px 12px;
+  .search-btn{
+    --background: black;
+    --border-radius: 30px;
+    --box-shadow: none;
+    --color: white;
+    width: 110px;
+    font-size: 12px;
+    text-transform: lowercase;
+    height: 40px;
+  }
+}
 .search-bar {
   --background: #ffffff;
   --border-radius: 30px;
   --box-shadow: none;
   --placeholder-color: black;
-  padding: 8px 16px 12px 16px;
+  /* padding: 8px 2px 12px 16px; */
   
   .searchbar-input {
     font-size: 14px;
@@ -97,9 +110,56 @@
   gap: 12px;
   padding: 16px;
   height: 100%;
-  margin-top: -56px;
+  /* margin-top: -56px; */
     z-index: 9;
     position: relative;
+}
+
+.recipe-slider-container {
+  padding: 16px;
+  /* margin-top: -56px; */
+  z-index: 9;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+.recipe-slider-wrapper {
+  display: flex;
+  transition: transform 0.3s ease-in-out;
+ /*  height: 100%; */
+  /* height: 340px; */
+}
+
+.recipe-slide {
+  min-width: 100%;
+  width: 100%;
+  flex-shrink: 0;
+  height: 100%;
+  padding: 0 8px;
+}
+
+.slider-indicators {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 0 16px;
+}
+
+.indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+
+  &.active {
+    background-color: #000000;
+    width: 24px;
+    border-radius: 4px;
+  }
 }
 
 .main-recipe-card {
@@ -110,6 +170,7 @@
   display: flex;
   flex-direction: column;
   position: relative;
+  height: 300px;
 }
 
 .recipe-header {
@@ -125,11 +186,11 @@
 }
 
 .recipe-title {
-  color: #ffffff;
-  font-size: 20px;
+  color: #ffffff !important;
+  font-size: 18px;
   font-weight: 400;
   margin: 0;
-  width: 60%;
+  width: 100%;
 }
 
 .favorite-count {

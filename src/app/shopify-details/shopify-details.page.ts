@@ -101,6 +101,7 @@ export class ShopifyDetailsPage implements OnInit {
       const cartItem$ = this.getCartItem$(store);
       if (cartItem$) {
         cartItem$.subscribe((res: any) => {
+          console.log(res,'res');
           if(res !== null && res.length > 0){
             const foundProduct = res.find((item:any) => {
               // console.log(item.id === this.selectedVariant.id)

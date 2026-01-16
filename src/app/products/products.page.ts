@@ -1,12 +1,14 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
 import { SharedModule } from '../shared/shared/shared-module';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { RecipeService } from '../services/recipe';
 import { environment } from 'src/environments/environment';
 import { IonTabs } from '@ionic/angular/standalone';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { FilterDialogComponent } from '../shared/filter-dialog/filter-dialog.component';
 import { ModalController } from '@ionic/angular/standalone';
+import { Shopify } from '../services/shopify';
+import { AuthService } from '../services/auth';
 
 @Component({
   selector: 'app-products',
@@ -24,9 +26,12 @@ export class ProductsPage implements OnInit, AfterViewInit {
   categoryList: any[] = environment.categoryList;
   selectedCategories: Set<string> = new Set(); // Track selected categories
   isSidebarOpen = false;
-
+  searchText: string = '';
   constructor(public router:Router, 
     public recipeService: RecipeService,
+    public shopifyService:Shopify,
+    public route:ActivatedRoute,
+    public authService:AuthService,
     private modalController: ModalController) { }
 
   ngOnInit() {
@@ -34,11 +39,21 @@ export class ProductsPage implements OnInit, AfterViewInit {
       console.log(res);
       this.allRecipes = res;
       this.recipes = res;
+
+      this.searchByText();
     },(err:any) => {
       console.log(err);
     });
+   
   }
 
+  searchByText() {
+    this.route.queryParams.subscribe((res) => {
+      this.searchText = res['search'];
+      console.log(this.searchText,"search text");
+      this.filterRecipes();
+    });
+  }
   ngAfterViewInit() {
     // Set the shakes (recipes) tab as active initially
     setTimeout(() => {
@@ -66,14 +81,22 @@ export class ProductsPage implements OnInit, AfterViewInit {
   }
 
   filterRecipes() {
-    if (this.selectedCategories.size === 0) {
+    if (this.selectedCategories.size === 0 && !this.searchText) {
       // If no categories selected, show all recipes
       this.recipes = this.allRecipes;
     } else {
-      // Filter recipes that match any of the selected categories
+      // Filter recipes that match any of the selected categories or if search text is not empty, then filter the recipes by search text
+      if(this.selectedCategories.size > 0) {
       this.recipes = this.allRecipes.filter(recipe => 
-        recipe.category && this.selectedCategories.has(recipe.category)
+        (recipe.category && this.selectedCategories.has(recipe.category))
       );
+    }
+      if(this.searchText && this.searchText.trim()) {
+        this.recipes = this.recipes.filter(recipe => recipe.title.toLowerCase().includes(this.searchText.toLowerCase()) || recipe.description.toLowerCase().includes(this.searchText.toLowerCase()));
+      }
+      if(this.selectedCategories.size === 0 && this.searchText) {
+        this.recipes = this.allRecipes.filter(recipe => recipe.title.toLowerCase().includes(this.searchText.toLowerCase()) || recipe.description.toLowerCase().includes(this.searchText.toLowerCase()));
+      }
     }
   }
 
@@ -100,10 +123,34 @@ export class ProductsPage implements OnInit, AfterViewInit {
     });
     await modal.present();
     const { data } = await modal.onDidDismiss();
+    console.log(data,"data");
     if (data && data.selectedCategories) {
       // Convert array back to Set
       this.selectedCategories = new Set(data.selectedCategories);
+      console.log(this.selectedCategories,"selected categories");
       this.filterRecipes();
     }
+  }
+  search() {
+    if (this.searchText && this.searchText.trim()) {
+    this.router.navigate(['/products'], {
+        queryParams: { search: this.searchText.trim() }
+      });
+    } else {
+      this.router.navigate(['/products']);
+    }
+  }
+
+  onSearchInput() {
+     this.router.navigate(['/products'], {
+      queryParams: { search: this.searchText.trim() }
+    });
+   // this.filterRecipes();
+  }
+
+  onSearchClear() {
+    this.searchText = '';
+    this.router.navigate(['/products']);
+  //  this.filterRecipes();
   }
 }

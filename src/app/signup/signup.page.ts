@@ -6,19 +6,21 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
 import { Common } from '../services/common';
 import { Challenges } from '../services/challenges';
+import { IonSpinner } from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-signup',
   templateUrl: './signup.page.html',
   styleUrls: ['./signup.page.scss'],
   standalone: true,
-  imports: [SharedModule]
+  imports: [SharedModule, IonSpinner]
 })
 export class SignupPage implements OnInit {
 
   signupForm!:FormGroup;
   showPassword: boolean = false;
   showConfirmPassword: boolean = false;
+  isLoading: boolean = false;
 
   constructor(public fb:FormBuilder,public router:Router,
     public common:Common,
@@ -101,8 +103,11 @@ export class SignupPage implements OnInit {
     this.location.back();
   }
   async signup() {
+    if (this.isLoading) return; // Prevent multiple clicks
+    
     if(this.signupForm.valid){
-    try{
+      this.isLoading = true;
+      try{
         let result = await this.authService.signUpWithEmailAndPassword(this.signupForm.value.email, this.signupForm.value.password, this.signupForm.value.name);
         if(result){
           this.common.showSuccessToast('Sign up successful');
@@ -120,6 +125,8 @@ export class SignupPage implements OnInit {
         else{
           this.common.showErrorToast('Something went wrong');
         }
+      } finally {
+        this.isLoading = false;
       }
     }else{
       console.log('Form is not valid');

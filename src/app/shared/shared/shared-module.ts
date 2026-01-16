@@ -7,7 +7,7 @@ import { IonContent, IonHeader, IonTitle,IonImg,
   IonTabBar,
   IonTabButton,
   IonTabs,IonSearchbar,IonFooter, IonDatetime, IonAccordionGroup, IonAccordion,
-  IonToolbar,IonInput,IonButton, IonGrid, IonRow, IonCol, IonIcon, IonText, IonSkeletonText, IonLabel, IonCard, IonThumbnail, IonItem, IonList, IonBadge, IonBackButton } from '@ionic/angular/standalone';
+  IonToolbar,IonInput,IonButton, IonGrid, IonRow, IonCol, IonIcon, IonText, IonSkeletonText, IonLabel, IonCard, IonThumbnail, IonItem, IonList, IonBadge, IonBackButton, IonSpinner } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
 import { beerOutline, chevronBackOutline, eyeOffOutline, eyeOutline, heartOutline, homeOutline, searchOutline, menuOutline, filterOutline, closeOutline, arrowBackOutline, chevronForwardOutline, logOutOutline, arrowForwardOutline } from 'ionicons/icons';
 import { HttpClientModule } from '@angular/common/http';
@@ -42,7 +42,7 @@ addIcons({
     IonContent, IonHeader, IonTitle, IonToolbar,IonImg,IonInput,IonButton,IonSearchbar,
     IonGrid, IonRow, IonCol, IonIcon, IonText, IonTab, IonTabBar, IonTabButton, IonTabs,
     IonSkeletonText,IonLabel,IonCard,IonThumbnail,IonItem,IonList,IonBadge,IonFooter,
-    IonBackButton,IonDatetime,IonAccordionGroup,IonAccordion,
+    IonBackButton,IonDatetime,IonAccordionGroup,IonAccordion,IonSpinner,
   ],
   exports: [
     CommonModule,

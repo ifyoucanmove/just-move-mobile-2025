@@ -3,19 +3,41 @@
 <ion-header [translucent]="false" class="yellow-header">
   <ion-toolbar color="transparent">
     <div class="header-content">
-      <ion-title class="header-title">Most Popular Recipes</ion-title>
-      <ion-button fill="clear" class="menu-button"
+      <div class="d-flex">
+        <ion-button fill="clear" class="menu-button"
+        style="--background:transparent;"
+        (click)="toggleSidebar()">
+          <ion-icon name="menu-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
+        </ion-button>
+        <ion-title class="header-title">Just Move</ion-title>
+      </div>
+      
+      <ion-button fill="clear" class="menu-button position-relative"
       style="--background:transparent;"
-      (click)="toggleSidebar()">
-        <ion-icon name="menu-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
+      [routerLink]="['/my-cart']">
+      @if(shopifyService.cartTotalQuantity$.value > 0) {
+     <span class="cart-count">{{shopifyService.cartTotalQuantity$.value}}</span> }
+        <ion-icon name="cart-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
       </ion-button>
+     
     </div>
-    <ion-searchbar 
-      placeholder="Search Recipes" 
-      class="search-bar"
-      [showClearButton]="false">
-    </ion-searchbar>
     @if(authService.isAdmin) {
+      <div class="search-container">
+        <ion-searchbar 
+        placeholder="Search Recipes" 
+        class="search-bar"
+        [(ngModel)]="searchText"
+        (ionClear)="onSearchClear()"
+        [showClearButton]="true">
+      </ion-searchbar> 
+      <ion-button class="search-btn" (click)="search()"  type="button">
+       <!--  <ion-icon name="search-outline" slot="icon-only"></ion-icon> --> Search
+      </ion-button>
+      </div>
+    
+  }
+
+   <!--  @if(authService.isAdmin) {
     <div class="category-buttons">
       <ion-button 
         *ngFor="let category of categories" 
@@ -24,46 +46,14 @@
         [fill]="selectedCategory === category ? 'solid' : 'outline'">
         {{ category }}
       </ion-button>
-    </div>}
+    </div>} -->
   </ion-toolbar>
 </ion-header>
 
- <!--  <div class="recipe-content">
-  <div class="recipe-container">
-    <div class="main-recipe-card" (click)="goToProductDetail()">
-      <div class="recipe-header">
-        <h2 class="recipe-title">Chocolate Banana Shake</h2>
-        <div class="favorite-count">
-          <ion-icon name="heart-outline"></ion-icon>
-          <span>{{ favoriteCount }}</span>
-        </div>
-      </div>
-      <div class="recipe-image-container">
-        <ion-img 
-          src="assets/images/beverage.png" 
-          alt="Chocolate Banana Shake"
-          class="recipe-image">
-        </ion-img>
-      </div>
-    </div>
-    
-    <div class="side-cards">
-      <div class="side-card"></div>
-      <div class="side-card"></div>
-    </div>
-  </div>
-  </div> -->
+
 
 
 <ion-content class="ion-padding">
-  <!-- <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
-    <ion-refresher-content></ion-refresher-content>
-  </ion-refresher> -->
- <!--  <div class="btns-div" *ngIf="status != 'active'">
-    <ion-button (click)="openSubscribeModal()">
-      <ion-icon name="sync"></ion-icon> &nbsp; Subscribe
-    </ion-button>
-  </div> -->
   @for (challenge of challengeDatas.slice(0, 1); track challenge.id) {
   <ion-card   (click)="challengeClicked(challenge)">
     <img
@@ -110,5 +100,41 @@
   </ion-card>
 }
 
+
+@if(authService.isAdmin && recipes.length > 0) {
+  <h2 class="recipe-heading" style="    font-weight: 600;">Protein</h2>
+  <div class="recipe-content">
+   <div class="recipe-slider-container">
+     <div class="recipe-slider-wrapper" 
+          [style.transform]="'translateX(-' + (currentSlideIndex * 100) + '%)'"
+          (touchstart)="onTouchStart($event)"
+          (touchmove)="onTouchMove($event)"
+          (touchend)="onTouchEnd($event)">
+       @for (recipe of recipes; track recipe.id) {
+       <div class="recipe-slide">
+         <div class="main-recipe-card">
+           <div class="recipe-header">
+             <h2 class="recipe-title">{{ recipe.title }}</h2>
+           </div>
+           <div class="recipe-image-container" (click)="goToProductDetail(recipe.id)" >
+             <ion-img 
+               [src]="recipe.image?.url" 
+               class="recipe-image">
+             </ion-img>
+           </div>
+         </div>
+       </div>
+       }
+     </div>
+     <div class="slider-indicators">
+       @for (recipe of recipes; track recipe.id; let i = $index) {
+         <div class="indicator" 
+              [class.active]="i === currentSlideIndex"
+              (click)="goToSlide(i)"></div>
+       }
+     </div>
+   </div>
+   </div>
+ }
 
 </ion-content>

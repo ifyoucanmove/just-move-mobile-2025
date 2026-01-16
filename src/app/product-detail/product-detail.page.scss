@@ -3,7 +3,20 @@
   padding: 0;
   position: relative;
 }
-
+.icon-button{
+  font-size: 18px;
+    --background: #ffffffa6;
+    --border-radius: 30px;
+    position: absolute;
+    z-index: 9;
+    left: 14px;
+    top: 34px;
+    --padding-start: 5px;
+    --padding-end: 5px;
+    --padding-top: 2px;
+    --padding-bottom: 2px;
+    color: black;
+}
 .image-section {
   width: 100%;
   height: 50vh;
@@ -156,3 +169,56 @@
   align-items: center;
 }
 
+.variant-container{
+  display: flex;
+  flex-direction: row;
+  gap: 20px;
+  margin-bottom: 1rem;
+  .variant-image-container{
+    width: 100px;
+    height: 100px;
+    overflow: hidden;
+    border-radius: 10px;
+    min-width: 100px;
+  }
+  .variant-image{
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
+    min-width: 100px;
+  }
+}
+
+.quantity-button{
+  --padding-start: 5px;
+  --padding-end: 5px;
+  --padding-top: 2px;
+  --padding-bottom: 2px;
+  /* gradient bg color */
+  --background-color: linear-gradient(to right, #01b6d8 0, #01c8c3 25%, #02d8b0 50%, #02d9b0 75%, #02e6a0 100%);
+  --background: linear-gradient(to right, #01b6d8 0, #01c8c3 25%, #02d8b0 50%, #02d9b0 75%, #02e6a0 100%);
+  color: #ffffff;
+}
+
+.cart-btn{
+  --background-color: linear-gradient(to right, #01b6d8 0, #01c8c3 25%, #02d8b0 50%, #02d9b0 75%, #02e6a0 100%);
+  --background: linear-gradient(to right, #01b6d8 0, #01c8c3 25%, #02d8b0 50%, #02d9b0 75%, #02e6a0 100%);
+  color: #ffffff;
+  --border-radius: 8px;
+  padding: 0px;
+  font-size: 16px;
+  font-weight: 600;
+  text-transform: none;
+  margin: 0px;
+  position: fixed;
+  bottom: 55px;
+  right: 5px;
+  left: 5px;
+  width: calc(100% - 10px);
+  z-index: 1000;
+  height: 50px;
+}
+
+.product-listing-container{
+  margin-bottom: 70px;
+}

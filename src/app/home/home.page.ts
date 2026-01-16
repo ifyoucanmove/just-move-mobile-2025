@@ -14,6 +14,7 @@ import { Platform, NavController } from '@ionic/angular/standalone';
 import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
 import { Subscription } from 'rxjs';
+import { RecipeService } from '../services/recipe';
 
 addIcons({
   menuOutline,
@@ -48,14 +49,20 @@ export class HomePage implements OnInit, OnDestroy {
   backButtonSubscription?: Subscription;
   lastBackPress = 0;
   backButtonPressCount = 0;
+  searchText: string = '';
 
+  recipes:any[] = [];
+  currentSlideIndex: number = 0;
+  touchStartX: number = 0;
+  touchEndX: number = 0;
   constructor(public router:Router, public authService:AuthService, private common:Common,
     public route:ActivatedRoute,
     public customerService:Customer,
     public challengeService:Challenges,
-    private shopifyService: Shopify,
+    public shopifyService: Shopify,
     private platform: Platform,
-    private navCtrl: NavController
+    private navCtrl: NavController,
+    public recipeService: RecipeService
   ) {
     addIcons({
       trophyOutline,
@@ -70,10 +77,6 @@ export class HomePage implements OnInit, OnDestroy {
     this.isSidebarOpen = !this.isSidebarOpen;
   }
 
-  goToProductDetail() {
-  //  this.router.navigate(['/product-detail']);
-  this.router.navigate(['/products']);
-  }
 
  
   
@@ -98,6 +101,21 @@ export class HomePage implements OnInit, OnDestroy {
     // Handle back button for double-tap to exit
     this.setupBackButtonHandler();
     }
+
+    console.log(this.authService.userDetails)
+    console.log(this.authService.currentUser,"s")
+    setTimeout(() => {
+      this.shopifyService.loadCartItems(this.authService.userDetails.email);
+    }, 3000);
+
+    this.recipeService.getRecipes().subscribe((res) => {
+     
+      //filter the recipes by the categories "Protein Shakes & Post-Workout" and top 4
+      this.recipes = res.filter((recipe:any) => recipe.category === "Protein Shakes & Post-Workout" && recipe.image?.url  ).slice(0, 4);
+      console.log(this.recipes,"recipes");
+    });
+    
+
   }
 
   setupBackButtonHandler() {
@@ -251,4 +269,54 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
 
+  search(){
+    if (this.searchText && this.searchText.trim()) {
+      this.router.navigate(['/products'], {
+        queryParams: { search: this.searchText.trim() }
+      });
+    } else {
+      this.router.navigate(['/products']);
+    }
+  }
+  onSearchClear() {
+    console.log("search clear");
+    this.searchText = '';
+  }
+
+  goToSlide(index: number) {
+    if (index >= 0 && index < this.recipes.length) {
+      this.currentSlideIndex = index;
+    }
+  }
+
+  onTouchStart(event: TouchEvent) {
+    this.touchStartX = event.touches[0].clientX;
+  }
+
+  onTouchMove(event: TouchEvent) {
+    this.touchEndX = event.touches[0].clientX;
+  }
+
+  onTouchEnd(event: TouchEvent) {
+    const swipeDistance = this.touchStartX - this.touchEndX;
+    const minSwipeDistance = 50; // Minimum distance for a swipe
+
+    if (Math.abs(swipeDistance) > minSwipeDistance) {
+      if (swipeDistance > 0) {
+        // Swipe left - next slide
+        if (this.currentSlideIndex < this.recipes.length - 1) {
+          this.currentSlideIndex++;
+        }
+      } else {
+        // Swipe right - previous slide
+        if (this.currentSlideIndex > 0) {
+          this.currentSlideIndex--;
+        }
+      }
+    }
+  }
+
+  goToProductDetail(id:string) {
+    this.router.navigate(['/product-detail', id]);
+  }
 }

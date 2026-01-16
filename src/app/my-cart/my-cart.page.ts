@@ -65,38 +65,7 @@ export class MyCartPage implements OnInit {
       this.shopifyService.cartItemsSayItLoud$,
     ]).subscribe((res) => {
       console.log("<<<<<<<<<<Cart items>>>>>>>>>>>></Cart>", res);
-      
-      let item = [
-        {
-            "price": {
-                "amount": "10.0",
-                "currencyCode": "USD"
-            },
-            "image": {
-                "url": "https://cdn.shopify.com/s/files/1/0515/8921/8473/files/74da21f7-4d8b-4dce-b1a2-615bbe0c240a.jpg?v=1732648084"
-            },
-            "availableForSale": true,
-            "id": "gid://shopify/ProductVariant/46833640308976",
-            "title": "$10.00",
-            "parentProductId": "gid://shopify/Product/9117133930736",
-            "parentProductVariants": [
-                {
-                    "price": {
-                        "amount": "10.0",
-                        "currencyCode": "USD"
-                    },
-                    "id": "gid://shopify/ProductVariant/46833640308976",
-                    "title": "$10.00",
-                    "availableForSale": true,
-                    "image": {
-                        "url": "https://cdn.shopify.com/s/files/1/0515/8921/8473/files/74da21f7-4d8b-4dce-b1a2-615bbe0c240a.jpg?v=1732648084"
-                    }
-                }
-            ],
-            "parentProductTitle": "Just Move $10 Gift Card",
-            "quantity": 2
-        }
-    ]
+
     
        this.unfilteredStores = [
         {
@@ -226,6 +195,8 @@ export class MyCartPage implements OnInit {
   }
 
   async confirmDelete(productId: string, store: string) {
+    console.log("productId", productId);
+    console.log("store", store);
     const alert = await this.alertController.create({
       header: "Confirm",
       mode: "ios",

@@ -2,18 +2,7 @@
   <div class="wrapper-content" *ngIf="recipe">
     <!-- add  back button -->
     <ion-button fill="clear"  
-    style="font-size: 18px;
-    --background: #ffffffa6;
-    --border-radius: 30px;
-    position: absolute;
-    z-index: 9;
-    left: 14px;
-    top: 34px;
-    --padding-start: 5px;
-    --padding-end: 5px;
-    --padding-top: 2px;
-    --padding-bottom: 2px;
-    color: black;" class="icon-button" (click)="goBack()">
+     class="icon-button" (click)="goBack()">
       <ion-icon name="chevron-back-outline"></ion-icon>
     </ion-button>
   <div class="image-section">
@@ -42,16 +31,56 @@
       ></div>
     </div>
 
-    <div class="favorites-section">
+  <!--   <div class="favorites-section">
       <span class="favorites-text">Add to Favorites</span>
       <ion-icon name="heart-outline" class="favorites-icon"></ion-icon>
+    </div> -->
+    @if(shopifyInventory.length > 0) {
+    <h2 class="ingredients-heading">Choose What Goes Into Your Recipe</h2>
+   <!--  product listing -->
+     <div class="product-listing-container">
+     @for (item of shopifyInventory; track $index) {
+     <div class="product-listing">
+      @for (variant of item.variants; track $index) {
+      <div class="variant-container">
+        <div class="variant-image-container">
+        <ion-img [src]="variant.image?.url" class="variant-image" alt="variant.title"></ion-img>
+      </div>
+        <div>
+        <h6 class="mt-0">{{item.title}} - {{variant.title}}</h6>
+        <p class="m-0">$ {{variant.price.amount}} </p><!-- 
+        <p class="mt-0"> {{variant.inventory_quantity}}</p> -->
+       <!--  add a increment and decrement button with quantity -->
+         @if(item.availableForSale) {
+       <div class="quantity d-flex align-items-center" >
+        <ion-button   (click)="decreaseQuantityInCart(variant) "
+        [disabled]="quantity[variant.id] == 0"
+        class="quantity-button"
+        size="small" ><ion-icon name="remove"></ion-icon></ion-button>
+        <ion-text  style="width: 25px; text-align: center;">{{ variantInCart ? variantInCart?.quantity : quantity[variant.id]}}</ion-text>
+        <ion-button (click)=" increaseQuantityInCart(variant) "
+        class="quantity-button"
+         size="small"><ion-icon name="add"></ion-icon></ion-button>
+      </div>}
+      @else {
+        <p class="m-0 text-danger">Out of Stock</p>
+      }
+      </div>
+      </div>
+    }
+     </div>
+    }
     </div>
+  }
 
   </div>
-  <div class="footer cta-button">
-    Let's Get Shakin'
-    
+  <div>
   </div>
+
+  @if(checkGetCartButton) {
+    <ion-button (click)="cartClicked()" class="cart-btn"> <ion-icon name="cart-outline"></ion-icon>Go to Cart</ion-button>
+  }
+ 
    
   </div>
   </div>

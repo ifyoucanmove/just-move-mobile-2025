@@ -3,16 +3,26 @@
 <ion-tabs>
   <ion-tab tab="home">
     <div id="home-page">
-      <ion-header>
-        <ion-toolbar>
-          <div class="header-top">
-            <h1 class="page-title">Home</h1>
-            <div class="header-icons">
-              <ion-button fill="clear"  style="--background:transparent;" class="icon-button" (click)="toggleSidebar()">
-                <ion-icon name="menu-outline"></ion-icon>
+      <ion-header [translucent]="false" class="yellow-header">
+        <ion-toolbar color="transparent">
+          <div class="header-content">
+            <div class="d-flex">
+              <ion-button fill="clear" class="menu-button"
+              style="--background:transparent;"
+              (click)="toggleSidebar()">
+                <ion-icon name="menu-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
               </ion-button>
-            
+            <ion-title class="header-title">Home</ion-title>
+           
             </div>
+
+            <ion-button fill="clear" class="menu-button position-relative"
+            style="--background:transparent;"
+            [routerLink]="['/my-cart']">
+            @if(shopifyService.cartTotalQuantity$.value > 0) {
+              <span class="cart-count">{{shopifyService.cartTotalQuantity$.value}}</span> }
+              <ion-icon name="cart-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
+            </ion-button>
           </div>
         </ion-toolbar>
       </ion-header>
@@ -23,43 +33,56 @@
   </ion-tab>
   <ion-tab tab="shakes">
     <div id="shakes-page">
-      <ion-header>
-        <ion-toolbar>
-          <div class="header-top">
-            <h1 class="page-title">Recipes</h1>
-            <div class="header-icons">
-              <ion-button fill="clear"  style="--background:transparent;" class="icon-button" (click)="toggleSidebar()">
-                <ion-icon name="menu-outline"></ion-icon>
+      <ion-header [translucent]="false" class="yellow-header">
+        <ion-toolbar color="transparent">
+          <div class="header-content">
+            <div class="d-flex">
+              <ion-button fill="clear" class="menu-button"
+              style="--background:transparent;"
+              (click)="toggleSidebar()">
+                <ion-icon name="menu-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
               </ion-button>
-            
-            </div>
-          </div>
-          <div class="header-bottom">
-            <ion-grid>
-              <ion-row>
-                <ion-col size="12" class="d-flex justify-content-end">
-                  <ion-button fill="clear"
-                   style="--background:transparent;" class="icon-button filter-button" (click)="openFilterDialog()">
-                   <ion-icon name="filter-outline"></ion-icon>
-                   <span class="filter-text">Filter</span>
-                  </ion-button>
-                </ion-col> 
-              </ion-row>
-            </ion-grid>
+            <ion-title class="header-title">Recipes</ion-title>
            
-          
+            </div>
+
+            <ion-button fill="clear" class="menu-button position-relative"
+            style="--background:transparent;"
+            [routerLink]="['/my-cart']">
+            @if(shopifyService.cartTotalQuantity$.value > 0) {
+              <span class="cart-count">{{shopifyService.cartTotalQuantity$.value}}</span> }
+              <ion-icon name="cart-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
+            </ion-button>
           </div>
-       <!--    <div class="tab-buttons">
-            <button class="tab-button active">Shakes</button>
-            <button class="tab-button">Show All</button>
-          </div> -->
+          @if(authService.isAdmin) {
+            <div class="search-container">
+              <ion-searchbar 
+              placeholder="Search Recipes" 
+              class="search-bar"
+              [(ngModel)]="searchText"
+              [showClearButton]="true"
+              (ionInput)="onSearchInput()"
+              (ionClear)="onSearchClear()">
+            </ion-searchbar> 
+            </div>
+          
+        }
         </ion-toolbar>
       </ion-header>
+      <!-- filter button float right-->
+    <div class="filter-button-container">
+      <ion-button fill="clear" class="filter-button"
+      style="--background:#FFD700;;"
+      (click)="openFilterDialog()">
+        <ion-icon name="filter-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
+      </ion-button>
+    </div>
      <!--  <ion-content style="height:70vh;"> -->
         <div class="content-ion">
+          @if(recipes.length > 0) {
         <div class="recipe-list">
+          @for (recipe of recipes; track $index) {
           <div class="recipe-item"
-          *ngFor="let recipe of recipes"
           (click)="goToProductDetail(recipe.id)">
             <div class="recipe-image-wrapper">
               <ion-img [src]="getRecipeImage(recipe)" 
@@ -70,30 +93,42 @@
              <!--  <span class="low-carb-badge">LOW-CARB</span> -->
               <h3 class="recipe-name">{{recipe.title}}</h3>
               <div class="recipe-badges">
+                @for (tag of recipe.tags; track $index) {
                 <span class="badge"
-                 *ngFor="let tag of recipe.tags"
-                >{{tag}}</span>
+                >{{tag}}</span>}
               </div>
             </div>
           </div>
-          
-        </div>
+        }
+        </div>}
+        @if(recipes.length === 0) {
+          <div class="example-content p-2 text-center">No data found</div>
+        }
       </div>
      <!--  </ion-content> -->
     </div>
   </ion-tab>
   <ion-tab tab="favorites">
     <div id="favorites-page">
-      <ion-header>
-        <ion-toolbar>
-          <div class="header-top">
-            <h1 class="page-title">Favorites</h1>
-            <div class="header-icons">
-              <ion-button fill="clear"  style="--background:transparent;" class="icon-button" (click)="toggleSidebar()">
-                <ion-icon name="menu-outline"></ion-icon>
+      <ion-header [translucent]="false" class="yellow-header">
+        <ion-toolbar color="transparent">
+          <div class="header-content">
+            <div class="d-flex">
+              <ion-button fill="clear" class="menu-button"
+              style="--background:transparent;"
+              (click)="toggleSidebar()">
+                <ion-icon name="menu-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
               </ion-button>
-            
-            </div>
+            <ion-title class="header-title">Favorites</ion-title>
+          </div>
+
+            <ion-button fill="clear" class="menu-button position-relative"
+            style="--background:transparent;"
+            [routerLink]="['/my-cart']">
+            @if(shopifyService.cartTotalQuantity$.value > 0) {
+              <span class="cart-count">{{shopifyService.cartTotalQuantity$.value}}</span> } 
+              <ion-icon name="cart-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
+            </ion-button>
           </div>
         </ion-toolbar>
       </ion-header>
@@ -104,16 +139,25 @@
   </ion-tab>
   <ion-tab tab="search">
     <div id="search-page">
-      <ion-header>
-        <ion-toolbar>
-          <div class="header-top">
-            <h1 class="page-title">Search</h1>
-            <div class="header-icons">
-              <ion-button fill="clear"  style="--background:transparent;" class="icon-button" (click)="toggleSidebar()">
-                <ion-icon name="menu-outline"></ion-icon>
-              </ion-button>
+      <ion-header [translucent]="false" class="yellow-header">
+        <ion-toolbar color="transparent">
+          <div class="header-content">
+            <div class="d-flex">
+              <ion-button fill="clear" class="menu-button"
+            style="--background:transparent;"
+            (click)="toggleSidebar()">
+              <ion-icon name="menu-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
+            </ion-button>
+            <ion-title class="header-title">Search</ion-title>
             
-            </div>
+</div>
+            <ion-button fill="clear" class="menu-button position-relative"
+            style="--background:transparent;"
+            [routerLink]="['/my-cart']">
+            @if(shopifyService.cartTotalQuantity$.value > 0) {
+              <span class="cart-count">{{shopifyService.cartTotalQuantity$.value}}</span> }
+              <ion-icon name="cart-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
+            </ion-button>
           </div>
         </ion-toolbar>
       </ion-header>

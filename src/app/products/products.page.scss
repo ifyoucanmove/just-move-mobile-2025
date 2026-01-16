@@ -1,3 +1,30 @@
+.search-container{
+  display: flex;
+  align-items: center;
+  padding: 10px 12px 12px 12px;
+  .search-btn{
+    --background: black;
+    --border-radius: 30px;
+    --box-shadow: none;
+    --color: white;
+    width: 110px;
+    font-size: 12px;
+    text-transform: lowercase;
+    height: 40px;
+  }
+}
+.search-bar {
+  --background: #ffffff;
+  --border-radius: 30px;
+  --box-shadow: none;
+  --placeholder-color: black;
+  /* padding: 8px 2px 12px 16px; */
+  
+  .searchbar-input {
+    font-size: 14px;
+  }
+}
+
 #shakes-page {
   ion-header {
     box-shadow: none;
@@ -289,8 +316,8 @@ ion-tab-bar {
   padding-bottom: 20px;
 }
 .filter-button {
-  --background: #dcdcdcba  !important;
-  background-color: #dcdcdcba !important;
+  --background: #FFD700  !important;
+  background-color: #FFD700 !important;
   --color: #000000;
   --border-radius: 10px !important;
   border-radius: 10px !important;
@@ -305,3 +332,8 @@ ion-tab-bar {
    text-transform: capitalize;
   }
  }
+.filter-button-container {
+  position: absolute;
+  right: 16px;
+  bottom: 30px;
+}

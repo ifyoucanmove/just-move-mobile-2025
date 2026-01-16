@@ -5,6 +5,7 @@ import { AuthService } from './services/auth';
 import { Auth, onAuthStateChanged, User } from '@angular/fire/auth';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, take } from 'rxjs/operators';
+import { Shopify } from './services/shopify';
 
 @Component({
   selector: 'app-root',
@@ -20,6 +21,7 @@ export class AppComponent implements OnInit, OnDestroy {
 
   constructor(
     public challengeService: Challenges,
+    private shopifyService: Shopify,
     private authService: AuthService
   ) {}
 
@@ -35,6 +37,7 @@ export class AppComponent implements OnInit, OnDestroy {
       const user = await this.authService.waitForAuthState();
       if (user || this.authService.currentUser) {
         // User is authenticated - navigate to home
+     
         this.ngZone.run(() => {
           this.router.navigate(['/home'], { replaceUrl: true });
         });

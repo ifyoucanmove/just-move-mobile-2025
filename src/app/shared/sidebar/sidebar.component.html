@@ -17,14 +17,15 @@
       <ion-icon name="beer-outline"></ion-icon>
       <span>Recipes</span>
     </div>}
-    <div class="sidebar-item" (click)="navigateTo('/products')">
+    @if(authService.isAdmin) {
+    <div class="sidebar-item"  >
       <ion-icon name="heart-outline"></ion-icon>
       <span>Favorites</span>
     </div>
-    <div class="sidebar-item" (click)="navigateTo('/products')">
+    <div class="sidebar-item"  >
       <ion-icon name="search-outline"></ion-icon>
       <span>Search</span>
-    </div>
+    </div>}
     <div class="sidebar-item" 
     [routerLink]="['/challenge/']"
     [queryParams]="{category: 'current-and-upcoming'}"
@@ -54,3 +55,10 @@
     <!-- logout -->
   </div>
 </div>
+
+@if(isLoading) {
+  <div class="loading-container">
+  <ion-spinner name="crescent" class="button-spinner"></ion-spinner>
+  <span>Logging out...</span>
+  </div>
+}

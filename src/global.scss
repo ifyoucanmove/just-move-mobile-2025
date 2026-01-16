@@ -57,7 +57,7 @@ ion-app {
     --padding-right: var(--ion-safe-area-right);
   }
   ion-tab{
-    padding-top: var(--ion-safe-area-top);
+   /*  padding-top: var(--ion-safe-area-top); */
     padding-bottom: var(--ion-safe-area-bottom);
     padding-left: var(--ion-safe-area-left);
     padding-right: var(--ion-safe-area-right);
@@ -341,4 +341,52 @@ ion-footer{
   --height: auto;
   --max-height: 80vh;
   --border-radius: 16px;
+}
+
+.yellow-header {
+  --background: #FFD700;
+  --color: #000000;
+  background-color: #FFD300;
+  box-shadow: none;
+  z-index: 0;
+  ion-toolbar {
+    --background: #FFD300 !important;
+    --color: #000000;
+    padding: 0; 
+  }
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 16px 8px 16px;
+}
+
+.header-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #000000;
+  margin: 0;
+  padding: 0;
+}
+
+.menu-button {
+  --color: #000000;
+  margin: 0;
+  --padding-start: 0;
+  --padding-end: 0;
+}
+.cart-count{
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background-color: #000000;
+  color: white !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: -5px;
+  right: 0px;
+  position: absolute;
 }
