@@ -10,6 +10,7 @@ import { Alert } from '../services/alert';
 import { Customer } from '../services/customer';
 import { AuthService } from '../services/auth';
 import { Location } from '@angular/common';
+import { Common } from '../services/common';
 
 addIcons({
   heartOutline,
@@ -44,6 +45,7 @@ export class ProductDetailPage implements OnInit {
      private alsertService : Alert,
      public customerService : Customer,
      private authService: AuthService,
+     private commonService: Common,
      private location: Location,
      private router: Router) { }
 
@@ -176,6 +178,9 @@ export class ProductDetailPage implements OnInit {
     this.shopifyService.addToCartsFb(cartItems, this.selectedStore).then(() => {
       console.log('Cart updated successfully');
       this.checkGetCartButton = true;
+      //show toast 
+      this.commonService.showSuccessToast('Item added to cart successfully',3000);
+
       loadingEl.dismiss();
      }).catch(error => {
       console.error('Error updating cart:', error);
