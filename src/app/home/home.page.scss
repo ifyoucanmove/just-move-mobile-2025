@@ -273,7 +273,10 @@ ion-card{
   align-items: center;
 
 }
-
+.challenge-card-container{
+  height: 22vw; width: 100%; --border-radius : 0px;
+  background-color: lightgray;
+}
 .skeleteon-thumbnail{
   height: 20vw; width: 100%; --border-radius : 10px;
 }

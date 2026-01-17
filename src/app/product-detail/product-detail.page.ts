@@ -34,7 +34,6 @@ export class ProductDetailPage implements OnInit {
   quantity: any = {};
   selectedStore = 'justMove';
   selectedVariant: any;
-  variantInCart : any = null;
   stores: string[] = ['justMove', 'pejaAmari', 'teamLashae', 'sayItLoud'];
 
   checkGetCartButton = false;
@@ -69,22 +68,16 @@ export class ProductDetailPage implements OnInit {
 
 
  async getVariants() {
+   this.checkGetCartButton = false;
     let shopifyInventory = await this.recipeService.getAllProducts(this.recipe.shopify_inventory);
     console.log(shopifyInventory,'shopifyInventory grapg');
     this.shopifyInventory = shopifyInventory;
-    setTimeout(() => {
-      this.checkProductInCart();
-    }, 1000);
-
-   /*  this.recipeService.getShopifyInventory(this.recipe.shopify_inventory).subscribe((res:any) => {
-      this.shopifyInventory = res;
-    console.log(this.shopifyInventory,'shopifyInventory');
-      setTimeout(() => {
-        this.checkProductInCart();
-      }, 3000);
-    },(err:any) => {
-      console.log(err);
-    }); */
+    for(const item of this.shopifyInventory){
+      for(const variant of item.variants){
+         this.quantity[variant.id] = 1;
+        
+      }
+    }
   }
 
   goBack() {
@@ -128,17 +121,23 @@ export class ProductDetailPage implements OnInit {
                 const foundVariant = res.find((item:any) => item.id === variant.id);
                 if(foundVariant){
                   //update quantity with foundVariant.quantity
-                  this.quantity[variant.id] = foundVariant.quantity;
+                //  this.quantity[variant.id] = foundVariant.quantity;
                   this.checkGetCartButton = true;
                  }
-                else{
-                  this.quantity[variant.id] = 0;
-                }
+              
               }
             }
 
             console.log(this.quantity,'quantity');
           }
+         /*  else{
+            for(const item of this.shopifyInventory){
+              for(const variant of item.variants){
+                 this.quantity[variant.id] = 1;
+                
+              }
+            }
+          } */
         });
       }
   /*   }); */
@@ -154,7 +153,7 @@ export class ProductDetailPage implements OnInit {
     console.log(existingItem,'existingItem',cartItems);
 
     if(existingItem){
-      existingItem.quantity = this.quantity[variantObject.id];
+      existingItem.quantity = existingItem.quantity + this.quantity[variantObject.id];
     }
     else{
       for(const item of this.shopifyInventory){
@@ -176,6 +175,7 @@ export class ProductDetailPage implements OnInit {
     this.shopifyService.setCart(this.selectedStore, cartItems);
     this.shopifyService.addToCartsFb(cartItems, this.selectedStore).then(() => {
       console.log('Cart updated successfully');
+      this.checkGetCartButton = true;
       loadingEl.dismiss();
      }).catch(error => {
       console.error('Error updating cart:', error);
@@ -196,7 +196,7 @@ export class ProductDetailPage implements OnInit {
       this.quantity[variant.id] = this.quantity[variant.id] ? this.quantity[variant.id] + 1 : 1;
       console.log(this.quantity,'quantity');
       
-      this.addToCart(variant);
+    //  this.addToCart(variant);
       
   }
 
@@ -209,12 +209,12 @@ export class ProductDetailPage implements OnInit {
      //map quantity with variant.id
      this.quantity[variant.id] = this.quantity[variant.id] ? this.quantity[variant.id] - 1 : 0;
      console.log(this.quantity,'quantity');
-     if(this.quantity[variant.id] > 0){
-      this.addToCart(variant);
+  /*    if(this.quantity[variant.id] > 0){
+     this.addToCart(variant);
      }
      else{
       this.deleteItem(variant.id, this.selectedStore);
-     }
+     } */
      
       
   }

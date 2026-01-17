@@ -83,17 +83,13 @@ export class HomePage implements OnInit, OnDestroy {
 
   ngOnInit() {
    console.log("changes")
-    //this.challengeService.loadAllChallengeData();
-    this.loadChallengeData("_status");
+     this.loadChallengeData("_status");
+  
     this.route.queryParams.subscribe((res) => {
      
       this.cat = res['category'];
 
-     /*  if (res['category'] == "current-and-upcoming") {
-        this.loadChallengeData("_status");
-      } else if (res['category'] == "past") {
-        this.loadChallengeData("_statusSuper");
-      } */
+
     });
 
     const currentUrl = this.router.url;

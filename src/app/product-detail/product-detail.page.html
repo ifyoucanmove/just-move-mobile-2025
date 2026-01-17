@@ -48,16 +48,17 @@
       </div>
         <div>
         <h6 class="mt-0">{{item.title}} - {{variant.title}}</h6>
+        <div class="d-flex align-items-center justify-content-between">
         <p class="m-0">$ {{variant.price.amount}} </p><!-- 
         <p class="mt-0"> {{variant.inventory_quantity}}</p> -->
        <!--  add a increment and decrement button with quantity -->
          @if(item.availableForSale) {
        <div class="quantity d-flex align-items-center" >
         <ion-button   (click)="decreaseQuantityInCart(variant) "
-        [disabled]="quantity[variant.id] == 0"
+        [disabled]="quantity[variant.id] == 1"
         class="quantity-button"
         size="small" ><ion-icon name="remove"></ion-icon></ion-button>
-        <ion-text  style="width: 25px; text-align: center;">{{ variantInCart ? variantInCart?.quantity : quantity[variant.id]}}</ion-text>
+        <ion-text  style="width: 25px; text-align: center;">{{  quantity[variant.id]}}</ion-text>
         <ion-button (click)=" increaseQuantityInCart(variant) "
         class="quantity-button"
          size="small"><ion-icon name="add"></ion-icon></ion-button>
@@ -65,6 +66,8 @@
       @else {
         <p class="m-0 text-danger">Out of Stock</p>
       }
+      </div>
+      <ion-button (click)="addToCart(variant)" class="add-to-cart-button">Add to Cart</ion-button>
       </div>
       </div>
     }

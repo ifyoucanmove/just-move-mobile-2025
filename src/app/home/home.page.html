@@ -56,18 +56,22 @@
 <ion-content class="ion-padding">
   @for (challenge of challengeDatas.slice(0, 1); track challenge.id) {
   <ion-card   (click)="challengeClicked(challenge)">
+    <div class="challenge-card-container">
     <img
-      (load)="challenge.loaded=true"
-      [hidden]="!challenge.loaded"
+    
       [src]="challenge.dashBannerUrl"
     />
-    @if(!challenge.loaded) {
+  </div>
+   <!--  @if(!challenge.loaded) {
     <div  [hidden]="challenge.loaded">
       <ion-thumbnail class="skeleteon-thumbnail" slot="start">
         <ion-skeleton-text animated></ion-skeleton-text>
       </ion-thumbnail>
     </div>
-  }
+  } 
+      (load)="challenge.loaded=true"
+      [hidden]="!challenge.loaded"
+  -->
     <ion-item lines="none" detail="true">
       <ion-list>
         <ion-text class="l1" color="primary">{{challenge.dashTitle}}</ion-text>
