@@ -153,27 +153,33 @@ export const routes: Routes = [
   },
   {
     path: 'my-cart',
-    loadComponent: () => import('./my-cart/my-cart.page').then( m => m.MyCartPage)
+    loadComponent: () => import('./my-cart/my-cart.page').then( m => m.MyCartPage),
+    canActivate: [authenticationGuard]
   },
   {
     path: 'my-store',
-    loadComponent: () => import('./my-store/my-store.page').then( m => m.MyStorePage)
+    loadComponent: () => import('./my-store/my-store.page').then( m => m.MyStorePage),
+    canActivate: [authenticationGuard]
   },
   {
     path: 'my-orders',
-    loadComponent: () => import('./my-orders/my-orders.page').then( m => m.MyOrdersPage)
+    loadComponent: () => import('./my-orders/my-orders.page').then( m => m.MyOrdersPage),
+    canActivate: [authenticationGuard]
   },
   {
     path: 'collection-details',
-    loadComponent: () => import('./collection-details/collection-details.page').then( m => m.CollectionDetailsPage)
+    loadComponent: () => import('./collection-details/collection-details.page').then( m => m.CollectionDetailsPage),
+    canActivate: [authenticationGuard]
   },
   {
     path: 'collection-details/:id',
-    loadComponent: () => import('./collection-details/collection-details.page').then( m => m.CollectionDetailsPage)
+    loadComponent: () => import('./collection-details/collection-details.page').then( m => m.CollectionDetailsPage),
+    canActivate: [authenticationGuard]
   },
   {
     path: 'shopify-details',
-    loadComponent: () => import('./shopify-details/shopify-details.page').then( m => m.ShopifyDetailsPage)
+    loadComponent: () => import('./shopify-details/shopify-details.page').then( m => m.ShopifyDetailsPage),
+    canActivate: [authenticationGuard]
   },
   {
     path: 'product-detail/:id',

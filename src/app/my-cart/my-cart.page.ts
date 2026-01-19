@@ -47,7 +47,7 @@ export class MyCartPage implements OnInit {
   }
 
   ngOnInit() {
-    this.shopifyService.loadCartItems(this.authService.userDetails.email);
+    this.shopifyService.loadCartItems(this.authService.currentUser?.email || '');
     this.route.queryParams.subscribe((param) => {
       if (param) {
         this.selectedStore = param["store"];
@@ -64,8 +64,6 @@ export class MyCartPage implements OnInit {
       this.shopifyService.cartItemsTeamLashae$,
       this.shopifyService.cartItemsSayItLoud$,
     ]).subscribe((res) => {
-      console.log("<<<<<<<<<<Cart items>>>>>>>>>>>></Cart>", res);
-
     
        this.unfilteredStores = [
         {
@@ -102,22 +100,19 @@ export class MyCartPage implements OnInit {
         },
       ]; 
       this.stores.sort((a:any, b:any) => b.length - a.length);
-     
-      console.log("All stores", this.stores);
+ 
       this.filterStores();
     });
   }
 
   ngAfterViewInit(): void {
     const nativeEl = this.accordionGroup;
-    console.log("Native Element", nativeEl);
     if(nativeEl){
       nativeEl.value = this.selectedStore;
     }
   }
 
   filterStores() {
-    console.log("Unfiltered stores", this.unfilteredStores);
     
     const selected = this.unfilteredStores.find((store:any) => store.store === this.selectedStore);
     this.stores = this.unfilteredStores.filter(
@@ -132,9 +127,7 @@ export class MyCartPage implements OnInit {
       this.stores = [this.stores[0], ...this.stores.slice(1).sort((a:any, b:any) => b.length - a.length)];
       if (!this.selectedStore) {
         this.selectedStore = this.stores.map((store:any) => store.store);
-        console.log("seleddcted store", this.selectedStore);
-        
-        this.changeDetector.detectChanges();
+         this.changeDetector.detectChanges();
       }
       
     }
@@ -152,11 +145,6 @@ export class MyCartPage implements OnInit {
     }, 0);
   }
 
-  accordionChange(event: any) {
-    
-    this.selectedStore = event.detail.value;
-    console.log(this.selectedStore);
-  }
 
   increaseQuantity(productId: string, store:any) {
     const cartItems = this.shopifyService.getCart(store);
@@ -195,8 +183,7 @@ export class MyCartPage implements OnInit {
   }
 
   async confirmDelete(productId: string, store: string) {
-    console.log("productId", productId);
-    console.log("store", store);
+  
     const alert = await this.alertController.create({
       header: "Confirm",
       mode: "ios",
@@ -245,14 +232,10 @@ export class MyCartPage implements OnInit {
     this.loadingCtrl.create().then(async (loadingEl) => {
       loadingEl.present();
       try {
-        console.log("Store", store);
-        
-        this.shopifyService.updateStoreFrontClinet(store);
+         this.shopifyService.updateStoreFrontClinet(store);
          let items: any[] = [];
         _.each(this.shopifyService.getCart(store), (item) => {
-          console.log("Item,", item);
-          
-          items.push({
+           items.push({
             quantity: item.quantity,
             merchandiseId: item.id,
           });
@@ -264,14 +247,12 @@ export class MyCartPage implements OnInit {
          ]; */
          
         let email = this.authService.userDetails.email;
-        console.log("email", items);
         await this.shopifyService.updateShopifyCustomer(email,store, this.customerService.customerSubscribed$.value) // temp call
         let data = await this.shopifyService.createCheckoutId(items, email);
       // alert(JSON.stringify(data));
         loadingEl.dismiss();
         if (data && !data.errors && data.cartCreate.cart.id) {
           const webUrl = data.cartCreate.cart.checkoutUrl;
-          console.log("OPENINIG URL", webUrl);
           Browser.open({ url: webUrl });
         } else {
           console.log(data);

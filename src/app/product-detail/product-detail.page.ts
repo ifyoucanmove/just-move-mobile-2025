@@ -11,6 +11,7 @@ import { Customer } from '../services/customer';
 import { AuthService } from '../services/auth';
 import { Location } from '@angular/common';
 import { Common } from '../services/common';
+import { IonSpinner } from '@ionic/angular/standalone';
 
 addIcons({
   heartOutline,
@@ -24,7 +25,7 @@ addIcons({
   templateUrl: './product-detail.page.html',
   styleUrls: ['./product-detail.page.scss'],
   standalone: true,
-  imports: [SharedModule]
+  imports: [SharedModule,IonSpinner]
 })
 export class ProductDetailPage implements OnInit {
 
@@ -38,6 +39,7 @@ export class ProductDetailPage implements OnInit {
   stores: string[] = ['justMove', 'pejaAmari', 'teamLashae', 'sayItLoud'];
 
   checkGetCartButton = false;
+  isLoading = false;
   constructor(private route: ActivatedRoute,
      private recipeService: RecipeService,
      private shopifyService: Shopify,
@@ -50,14 +52,12 @@ export class ProductDetailPage implements OnInit {
      private router: Router) { }
 
   ngOnInit() {
-    console.log(this.authService.userDetails.email,'userDetails');
     this.shopifyService.loadCartItems(this.authService.userDetails.email);
     this.route.params.subscribe((params) => {
       this.id = params['id'];
       this.recipeService.getRecipeById(this.id).subscribe((res:any) => {
         this.recipe = res;
-        console.log(this.recipe);
-        if(this.recipe.shopify_inventory?.length > 0) {
+      if(this.recipe.shopify_inventory?.length > 0) {
           this.getVariants();
          
         }
@@ -72,7 +72,6 @@ export class ProductDetailPage implements OnInit {
  async getVariants() {
    this.checkGetCartButton = false;
     let shopifyInventory = await this.recipeService.getAllProducts(this.recipe.shopify_inventory);
-    console.log(shopifyInventory,'shopifyInventory grapg');
     this.shopifyInventory = shopifyInventory;
     for(const item of this.shopifyInventory){
       for(const variant of item.variants){
@@ -148,8 +147,9 @@ export class ProductDetailPage implements OnInit {
 
 
   addToCart(variantObject: any) {
-   this.loadingCtrl.create().then(loadingEl=>{
-    loadingEl.present();
+   this.isLoading = true;
+  /*  this.loadingCtrl.create().then(loadingEl=>{
+    loadingEl.present(); */
     const cartItems = this.shopifyService.getCart(this.selectedStore);
     const existingItem = cartItems.find((item) => item.id === variantObject.id);
     console.log(existingItem,'existingItem',cartItems);
@@ -180,13 +180,14 @@ export class ProductDetailPage implements OnInit {
       this.checkGetCartButton = true;
       //show toast 
       this.commonService.showSuccessToast('Item added to cart successfully',3000);
-
-      loadingEl.dismiss();
+      this.isLoading = false;
+     /*  loadingEl.dismiss(); */
      }).catch(error => {
       console.error('Error updating cart:', error);
       this.alsertService.showFirebaseAlert(error);
+      this.isLoading = false;
     });
-   })
+ /*   }) */
   }
 
 

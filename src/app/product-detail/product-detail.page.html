@@ -88,3 +88,12 @@
   </div>
   </div>
 </ion-content>
+
+
+<!-- show loading spinner if isLoading is true -->
+ @if(isLoading) {
+ <div class="loading-container">
+ <ion-spinner name="crescent" class="loading-spinner"></ion-spinner>
+
+ </div>
+ }

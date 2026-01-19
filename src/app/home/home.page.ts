@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { addIcons } from 'ionicons';
 import { menuOutline, heartOutline, closeOutline, trophyOutline, cartOutline, receiptOutline, storefrontOutline } from 'ionicons/icons';
 import { CommonModule } from '@angular/common';
@@ -13,7 +13,7 @@ import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { Platform, NavController } from '@ionic/angular/standalone';
 import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
-import { Subscription } from 'rxjs';
+import { combineLatest, Subscription } from 'rxjs';
 import { RecipeService } from '../services/recipe';
 
 addIcons({
@@ -62,6 +62,7 @@ export class HomePage implements OnInit, OnDestroy {
     public shopifyService: Shopify,
     private platform: Platform,
     private navCtrl: NavController,
+    private changeDetector: ChangeDetectorRef,
     public recipeService: RecipeService
   ) {
     addIcons({
@@ -82,7 +83,6 @@ export class HomePage implements OnInit, OnDestroy {
   
 
   ngOnInit() {
-   console.log("changes")
      this.loadChallengeData("_status");
   
     this.route.queryParams.subscribe((res) => {
@@ -90,6 +90,17 @@ export class HomePage implements OnInit, OnDestroy {
       this.cat = res['category'];
 
 
+    });
+
+    combineLatest([
+      this.shopifyService.cartItemsJustMove$,
+      this.shopifyService.cartItemsPejaAmari$,
+      this.shopifyService.cartItemsTeamLashae$,
+      this.shopifyService.cartItemsSayItLoud$,
+    ]).subscribe((res) => {
+    
+    
+    
     });
 
     const currentUrl = this.router.url;
@@ -100,15 +111,14 @@ export class HomePage implements OnInit, OnDestroy {
 
     console.log(this.authService.userDetails)
     console.log(this.authService.currentUser,"s")
-    setTimeout(() => {
-      this.shopifyService.loadCartItems(this.authService.userDetails.email);
-    }, 3000);
+      this.shopifyService.loadCartItems(this.authService.currentUser?.email || ''); 
+      this.changeDetector.detectChanges();
 
     this.recipeService.getRecipes().subscribe((res) => {
      
       //filter the recipes by the categories "Protein Shakes & Post-Workout" and top 4
       this.recipes = res.filter((recipe:any) => recipe.category === "Protein Shakes & Post-Workout" && recipe.image?.url  ).slice(0, 4);
-      console.log(this.recipes,"recipes");
+    
     });
     
 
@@ -163,11 +173,9 @@ export class HomePage implements OnInit, OnDestroy {
 
   loadChallengeData(type:any) {
     try {
-        console.log("Inside try catch",type);
 
         this.challengeService.getNormalChallenges(type).subscribe(
           (res) => {
-            console.log(res);
             this.challengeDatas = res;
             this.loadActiveChallenges();
           },
@@ -197,7 +205,7 @@ export class HomePage implements OnInit, OnDestroy {
     // return  challenge.expirationDate.toDate().getTime() > new Date().getTime();
     // });
 
-    console.log("CHallenge Purchases", this.challengePurchases);
+
 
     if (this.cat == "current-and-upcoming") {
       this.allActiveChallenges.sort((a:any, b:any) => {
@@ -213,13 +221,11 @@ export class HomePage implements OnInit, OnDestroy {
         (parseInt(challenge.weekTotalCount, 10) - 1) * 7 +
         parseInt(challenge.weekFinalDayCount, 10);
     });
-    console.log(this.allActiveChallenges);
 
 
   }
 
   async challengeClicked(challenge: any) {
-    console.log("challenge", challenge);
 
     const email = this.authService.currentUser?.email;
     if (!email) {
@@ -275,7 +281,6 @@ export class HomePage implements OnInit, OnDestroy {
     }
   }
   onSearchClear() {
-    console.log("search clear");
     this.searchText = '';
   }
 

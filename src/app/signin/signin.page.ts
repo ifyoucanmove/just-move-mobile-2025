@@ -50,12 +50,10 @@ export class SigninPage implements OnInit {
  async signin() {
     if (this.isLoading) return; // Prevent multiple clicks
     
-    console.log(this.signinForm.value);
     this.isLoading = true;
     
     try{
       let result = await this.authService.signInWithEmailAndPassword(this.signinForm.value.email, this.signinForm.value.password);
-      console.log(result);
       if(result){
        // this.common.showSuccessToast('Sign in successful');
         // Load challenge data after successful login
