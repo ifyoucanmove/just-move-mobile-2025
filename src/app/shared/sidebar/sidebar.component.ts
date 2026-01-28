@@ -66,6 +66,8 @@ export class SidebarComponent implements OnInit {
         this.isLoading = true;
         // Cleanup challenges data and subscriptions
         this.challengeService.cleanup();
+        // Clear tutorial localStorage
+        localStorage.removeItem('product_detail_tutorial_shown');
         await this.authService.signOut();
         
         this.router.navigate(['/welcome'], { replaceUrl: true });

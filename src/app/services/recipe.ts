@@ -31,6 +31,8 @@ const cred: any = {
 export class RecipeService {
  
   client = createStorefrontApiClient(cred.justMove);
+
+  swiperRecipes:any[] = [];
 constructor(
  public firestore: Firestore
 ) {
@@ -103,14 +105,14 @@ getShopifyInventory(ids:any) {
   async getAllProducts(ids:any) {
     const productQuery = `
       query {
-        products(first: 200) {
+        products(first: 250) {
           edges {
             node {
               id
               title
               descriptionHtml
               availableForSale
-              variants(first: 200) {
+              variants(first: 250) {
                 edges {
                   node {
                     id
@@ -145,6 +147,7 @@ getShopifyInventory(ids:any) {
       //i have array of ids, i want to filter the productsData with the ids
       console.log(productsData,'filteredProducts');
       let graphId = this.addShopifyProductGid(ids)
+      console.log(graphId,'graphId');
       const filteredProducts = productsData.filter((item: any) => graphId.includes(item.node.id));
       console.log(filteredProducts,'filteredProducts');
       const mappedProducts = filteredProducts.map((item: any) =>

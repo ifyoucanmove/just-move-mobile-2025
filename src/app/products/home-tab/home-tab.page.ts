@@ -1,37 +1,30 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { addIcons } from 'ionicons';
-  import { menuOutline, heartOutline, closeOutline, trophyOutline, cartOutline, receiptOutline, storefrontOutline } from 'ionicons/icons';
-import { CommonModule } from '@angular/common';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { SharedModule } from '../shared/shared/shared-module';
-import { AuthService } from '../services/auth';
-import { Common } from '../services/common';
-import { Customer } from '../services/customer';
-import { Challenges } from '../services/challenges';
-import { Shopify } from '../services/shopify';
-import { SidebarComponent } from '../shared/sidebar/sidebar.component';
+import { Subscription } from 'rxjs';
+import { AuthService } from 'src/app/services/auth';
+import { SharedModule } from 'src/app/shared/shared/shared-module';
+import { Common } from 'src/app/services/common';
+import { Customer } from 'src/app/services/customer';
+import { Challenges } from 'src/app/services/challenges';
+import { Shopify } from 'src/app/services/shopify';
+import { SidebarComponent } from 'src/app/shared/sidebar/sidebar.component';
 import { Platform, NavController } from '@ionic/angular/standalone';
 import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
-import { Subscription } from 'rxjs';
-import { RecipeService } from '../services/recipe';
-
-addIcons({
-  menuOutline,
-  heartOutline,
-  closeOutline
-});
+import { RecipeService } from 'src/app/services/recipe';
+import { addIcons } from 'ionicons';
+import { menuOutline, heartOutline, closeOutline, trophyOutline, cartOutline, receiptOutline, storefrontOutline } from 'ionicons/icons';
+import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: 'home.page.html',
-  styleUrls: ['home.page.scss'],
-  imports: [
-   SharedModule,
-   SidebarComponent
-  ],
+  selector: 'app-home-tab',
+  templateUrl: './home-tab.page.html',
+  styleUrls: ['./home-tab.page.scss'],
+  standalone: true,
+  imports: [SharedModule,SidebarComponent]
 })
-export class HomePage implements OnInit, OnDestroy {
+export class HomeTabPage implements OnInit {
+
   selectedCategory = 'Shakes';
   categories = ['Shakes', 'Smoothie Bowls', 'Juices', 'Teas'];
   favoriteCount = 113;
@@ -55,14 +48,14 @@ export class HomePage implements OnInit, OnDestroy {
   currentSlideIndex: number = 0;
   touchStartX: number = 0;
   touchEndX: number = 0;
-  constructor(public router:Router, public authService:AuthService, private common:Common,
+  constructor(public router:Router, public authService:AuthService, public common:Common,
     public route:ActivatedRoute,
     public customerService:Customer,
     public challengeService:Challenges,
     public shopifyService: Shopify,
     private platform: Platform,
     private navCtrl: NavController,
-    public recipeService: RecipeService
+    public recipeService: RecipeService,
   ) {
     addIcons({
       trophyOutline,
@@ -74,7 +67,7 @@ export class HomePage implements OnInit, OnDestroy {
 
   
   toggleSidebar() {
-    this.isSidebarOpen = !this.isSidebarOpen;
+    this.common.isSidebarOpen = !this.common.isSidebarOpen;
   }
 
 
@@ -92,7 +85,7 @@ export class HomePage implements OnInit, OnDestroy {
     });
 
     const currentUrl = this.router.url;
-    if (currentUrl == '/home') {
+    if (currentUrl == '/products/home-tab') {
     // Handle back button for double-tap to exit
     this.setupBackButtonHandler();
     }
@@ -103,13 +96,19 @@ export class HomePage implements OnInit, OnDestroy {
    
 
     this.recipeService.getRecipes().subscribe((res) => {
-     
-      //filter the recipes by the categories "Protein Shakes & Post-Workout" and top 4
-      this.recipesHome = res.filter((recipe:any) => recipe.category === "Protein Shakes" && recipe.image?.url  ).slice(0, 4);
-    
+     let shake = environment.categoryList[0].value || 'Protein Shakes';
+      //filter the recipes by the categories "Protein Shakes" and top 4
+      this.recipesHome = res.filter((recipe:any) => recipe.category === shake && recipe.image?.url  ).slice(0, 4);
+      this.recipeService.swiperRecipes = this.recipesHome;
+      console.log(this.recipeService.swiperRecipes,'swiperRecipes');
     });
     
 
+  }
+
+  ionViewWillEnter() {
+    this.recipeService.swiperRecipes = this.recipesHome;
+    console.log(this.recipeService.swiperRecipes,'swiperRecipes');
   }
 
   setupBackButtonHandler() {
@@ -121,7 +120,7 @@ export class HomePage implements OnInit, OnDestroy {
         const currentUrl = this.router.url;
         
         // Only handle back button when route is /home
-        if (currentUrl !== '/home') {
+        if (currentUrl !== '/products/home-tab') {
           // Not on home route - allow default back button behavior by using NavController
           this.navCtrl.back();
           return;
@@ -306,6 +305,7 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   goToProductDetail(id:string) {
-    this.router.navigate(['/product-detail', id]);
+    this.router.navigate(['/product-detail', id],{queryParams : {redirect : 'home-tab'}});
   }
 }
+

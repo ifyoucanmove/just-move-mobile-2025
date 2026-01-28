@@ -40,7 +40,7 @@ export class SignupPage implements OnInit {
     if(user){
       // Load challenge data if user is already logged in
       this.challengeService.loadAllChallengeData();
-      this.router.navigate(['/home'], { replaceUrl: true });
+      this.router.navigate(['/products/home-tab'], { replaceUrl: true });
     }
   /*   this.signupForm = this.fb.group({
       name: ['', [Validators.required]],
@@ -113,7 +113,7 @@ export class SignupPage implements OnInit {
           this.common.showSuccessToast('Sign up successful');
           // Load challenge data after successful signup
           this.challengeService.loadAllChallengeData();
-          this.router.navigate(['/home'], { replaceUrl: true });
+          this.router.navigate(['/products/home-tab'], { replaceUrl: true });
         }
       }catch(error:any){
         if(error.code === 'auth/email-already-in-use'){

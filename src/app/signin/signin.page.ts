@@ -35,7 +35,7 @@ export class SigninPage implements OnInit {
     if(user){
       // Load challenge data if user is already logged in
       this.challengeService.loadAllChallengeData();
-      this.router.navigate(['/home'], { replaceUrl: true });
+      this.router.navigate(['/products/home-tab'], { replaceUrl: true });
     }
   }
 
@@ -43,7 +43,7 @@ export class SigninPage implements OnInit {
     // route to home if user is already logged in
     const user = this.authService.currentUser;
     if(user){
-      this.router.navigate(['/home'], { replaceUrl: true });
+      this.router.navigate(['/products/home-tab'], { replaceUrl: true });
     }
   }
 
@@ -58,7 +58,7 @@ export class SigninPage implements OnInit {
        // this.common.showSuccessToast('Sign in successful');
         // Load challenge data after successful login
         this.challengeService.loadAllChallengeData();
-        this.router.navigate(['/home'], { replaceUrl: true });
+        this.router.navigate(['/products/home-tab'], { replaceUrl: true });
       }
     }catch(error:any){
       console.log(error);

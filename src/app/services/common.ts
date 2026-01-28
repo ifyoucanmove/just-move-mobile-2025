@@ -5,6 +5,8 @@ import { ToastController, AlertController } from '@ionic/angular/standalone';
   providedIn: 'root',
 })
 export class Common {
+
+  isSidebarOpen: boolean = false;
   private toastController = inject(ToastController);
   private alertController = inject(AlertController);
 

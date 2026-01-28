@@ -1,5 +1,6 @@
 <ion-content [fullscreen]="true" class="product-detail-content">
-  <div class="wrapper-content" *ngIf="recipe">
+  @if(recipe) {
+  <div class="wrapper-content" #wrapperContent>
     <!-- add  back button -->
     <ion-button fill="clear"  
      class="icon-button" (click)="goBack()">
@@ -31,10 +32,15 @@
       ></div>
     </div>
 
-  <!--   <div class="favorites-section">
+    <div class="favorites-section">
       <span class="favorites-text">Add to Favorites</span>
-      <ion-icon name="heart-outline" class="favorites-icon"></ion-icon>
-    </div> -->
+       @if(!checkFavorites(this.id)) { 
+      <ion-icon name="heart-outline" class="favorites-icon" (click)="addToFavorites(recipe)"></ion-icon>
+       } 
+      @if(checkFavorites(this.id)) { 
+      <ion-icon name="heart" class="favorites-icon" (click)="removeFromFavorites(recipe)"></ion-icon>
+      } 
+    </div> 
     @if(shopifyInventory.length > 0) {
     <h2 class="ingredients-heading">Choose What Goes Into Your Recipe</h2>
    <!--  product listing -->
@@ -87,6 +93,7 @@
    
   </div>
   </div>
+}
 </ion-content>
 
 
@@ -97,3 +104,26 @@
 
  </div>
  }
+
+
+<!-- Tutorial Overlay - Walkthrough Style -->
+@if(showTutorial) {
+<div class="tutorial-overlay" #tutorialOverlay>
+  <ion-button fill="clear" class="tutorial-close-btn" (click)="closeTutorial()">
+    Ok
+  </ion-button>
+  <!-- Pointing Arrow on Right -->
+  <div class="tutorial-arrow-right ">
+      <!-- close icon -->
+
+    <div class="arrow-container">
+      <img src="assets/images/left-arrow.png" class="arrow-icon">
+      <div class="swipe-indicator">
+        <span>Swipe Right to see next recipe</span>
+      </div>
+    </div>
+  </div>
+
+ 
+</div>
+}

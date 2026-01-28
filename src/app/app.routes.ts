@@ -36,6 +36,29 @@ export const routes: Routes = [
   {
     path: 'products',
     loadComponent: () => import('./products/products.page').then( m => m.ProductsPage),
+    children: [
+      {
+        path: '',
+        redirectTo: 'home-tab',
+        pathMatch: 'full'
+      },
+      {
+        path: 'home-tab',
+        loadComponent: () => import('./products/home-tab/home-tab.page').then( m => m.HomeTabPage)
+      },
+      {
+        path: 'recipe-tab',
+        loadComponent: () => import('./products/recipe-tab/recipe-tab.page').then( m => m.RecipeTabPage)
+      },
+      {
+        path: 'fav-tab',
+        loadComponent: () => import('./products/fav-tab/fav-tab.page').then( m => m.FavTabPage)
+      },
+      {
+        path: 'search-tab',
+        loadComponent: () => import('./products/search-tab/search-tab.page').then( m => m.SearchTabPage)
+      }
+    ],
     canActivate: [authenticationGuard]
   },
   {
@@ -191,8 +214,4 @@ export const routes: Routes = [
     redirectTo: 'welcome',
     pathMatch: 'full',
   },
-
-  
-  
-
 ];

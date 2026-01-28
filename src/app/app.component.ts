@@ -39,7 +39,7 @@ export class AppComponent implements OnInit, OnDestroy {
         // User is authenticated - navigate to home
      
         this.ngZone.run(() => {
-          this.router.navigate(['/home'], { replaceUrl: true });
+          this.router.navigate(['/products/home-tab'], { replaceUrl: true });
         });
         this.challengeService.loadAllChallengeData();
       }

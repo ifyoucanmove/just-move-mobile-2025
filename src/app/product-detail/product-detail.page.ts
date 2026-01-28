@@ -1,23 +1,30 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { addIcons } from 'ionicons';
-import { add, cartOutline, heartOutline, remove } from 'ionicons/icons';
+import { add, cartOutline, heartOutline, remove, closeOutline, arrowBackOutline, arrowForwardOutline, chevronBackOutline, chevronForwardOutline } from 'ionicons/icons';
 import { SharedModule } from '../shared/shared/shared-module';
 import { ActivatedRoute, Router } from '@angular/router';
 import { RecipeService } from '../services/recipe';
 import { Shopify, SHOPIFY_SORT_KEY, ShopifyStores } from '../services/shopify';
-import { LoadingController } from '@ionic/angular';
+import { GestureController, LoadingController } from '@ionic/angular';
 import { Alert } from '../services/alert';
 import { Customer } from '../services/customer';
 import { AuthService } from '../services/auth';
 import { Location } from '@angular/common';
 import { Common } from '../services/common';
 import { IonSpinner } from '@ionic/angular/standalone';
+import { Gesture } from '@ionic/angular';
+import { Favorites } from '../services/favorites';
 
 addIcons({
   heartOutline,
   remove,
   add,
-  cartOutline
+  cartOutline,
+  closeOutline,
+  arrowBackOutline,
+  arrowForwardOutline,
+  chevronBackOutline,
+  chevronForwardOutline
 });
 
 @Component({
@@ -27,7 +34,10 @@ addIcons({
   standalone: true,
   imports: [SharedModule,IonSpinner]
 })
-export class ProductDetailPage implements OnInit {
+export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
+
+  @ViewChild('wrapperContent', { read: ElementRef }) wrapperContent!: ElementRef;
+  @ViewChild('tutorialOverlay', { read: ElementRef }) tutorialOverlay!: ElementRef;
 
   recipe: any;
   id: string = '';
@@ -40,6 +50,28 @@ export class ProductDetailPage implements OnInit {
 
   checkGetCartButton = false;
   isLoading = false;
+  private swipeGesture?: Gesture;
+  private tutorialSwipeGesture?: Gesture;
+  redirect: string | null = null;
+  showTutorial = false;
+  currentTutorialStep = 0;
+  private readonly TUTORIAL_STORAGE_KEY = 'product_detail_tutorial_shown';
+  
+  tutorialSteps = [
+    {
+      icon: 'arrow-back-outline',
+      title: 'Swipe Left',
+      description: 'Swipe left to go to the previous recipe',
+      position: 'left'
+    },
+    {
+      icon: 'arrow-forward-outline',
+      title: 'Swipe Right',
+      description: 'Swipe right to go to the next recipe',
+      position: 'right'
+    }
+  ];
+  favorites: any[] = [];
   constructor(private route: ActivatedRoute,
      private recipeService: RecipeService,
      private shopifyService: Shopify,
@@ -49,12 +81,17 @@ export class ProductDetailPage implements OnInit {
      private authService: AuthService,
      private commonService: Common,
      private location: Location,
-     private router: Router) { }
+     public favoritesService: Favorites,
+     private router: Router,
+     private gestureCtrl: GestureController) { }
 
   ngOnInit() {
+    this.getFavorites();
     this.shopifyService.loadCartItems(this.authService.userDetails.email);
+    this.checkTutorialStatus();
     this.route.params.subscribe((params) => {
       this.id = params['id'];
+      console.log(this.id,'id');
       this.recipeService.getRecipeById(this.id).subscribe((res:any) => {
         this.recipe = res;
       if(this.recipe.shopify_inventory?.length > 0) {
@@ -65,6 +102,153 @@ export class ProductDetailPage implements OnInit {
     },(err:any) => {
       console.log(err);
     });
+    this.route.queryParams.subscribe((params) => {
+      this.redirect = params['redirect'];
+    });
+  }
+
+  checkTutorialStatus() {
+    const tutorialShown = localStorage.getItem(this.TUTORIAL_STORAGE_KEY);
+   // this.showTutorial = true;
+   //    this.setupTutorialSwipeGesture();
+    if (!tutorialShown) {
+      // Show tutorial after a short delay to ensure page is loaded
+      setTimeout(() => {
+        this.showTutorial = true;
+        // Setup tutorial swipe gesture after tutorial is shown
+        setTimeout(() => {
+          this.setupTutorialSwipeGesture();
+        }, 100);
+      }, 500);
+    }
+  }
+
+  closeTutorial() {
+    console.log('closeTutorial');
+    this.showTutorial = false;
+    localStorage.setItem(this.TUTORIAL_STORAGE_KEY, 'true');
+    this.currentTutorialStep = 0;
+    // Clean up tutorial gesture
+    if (this.tutorialSwipeGesture) {
+      this.tutorialSwipeGesture.destroy();
+      this.tutorialSwipeGesture = undefined;
+    }
+  }
+
+  setupTutorialSwipeGesture() {
+    if (!this.tutorialOverlay?.nativeElement) {
+      // Retry if element is not available yet
+      setTimeout(() => {
+        this.setupTutorialSwipeGesture();
+      }, 100);
+      return;
+    }
+
+    // Destroy existing gesture if any
+    if (this.tutorialSwipeGesture) {
+      this.tutorialSwipeGesture.destroy();
+    }
+
+    const element = this.tutorialOverlay.nativeElement;
+    this.tutorialSwipeGesture = this.gestureCtrl.create({
+      el: element,
+      gestureName: 'tutorial-swipe',
+      threshold: 15,
+      onEnd: (ev) => {
+        const deltaX = ev.deltaX;
+        const threshold = 100; 
+        console.log(deltaX,'deltaX');
+        setTimeout(() => {
+        this.closeTutorial();
+        }, 1000);
+        if (Math.abs(deltaX) > threshold) {
+          if (deltaX > 0) {
+            // Swipe right - go to previous recipe
+         //   this.navigateToRecipe('previous');
+          } else {
+            // Swipe left - go to next recipe
+          //  this.navigateToRecipe('next');
+          }
+        }
+      }
+    });
+
+    this.tutorialSwipeGesture.enable();
+  }
+
+  nextTutorialStep() {
+    if (this.currentTutorialStep < this.tutorialSteps.length - 1) {
+      this.currentTutorialStep++;
+    } else {
+      this.closeTutorial();
+    }
+  }
+
+  previousTutorialStep() {
+    if (this.currentTutorialStep > 0) {
+      this.currentTutorialStep--;
+    }
+  }
+
+  skipTutorial() {
+    this.closeTutorial();
+  }
+
+  ngAfterViewInit() {
+    // Wait for the view to be fully rendered, especially since wrapperContent is inside @if
+    setTimeout(() => {
+      this.setupSwipeGesture();
+    }, 100);
+  }
+
+  ngOnDestroy() {
+    if (this.swipeGesture) {
+      this.swipeGesture.destroy();
+    }
+    if (this.tutorialSwipeGesture) {
+      this.tutorialSwipeGesture.destroy();
+    }
+  }
+
+  setupSwipeGesture() {
+    if (!this.wrapperContent?.nativeElement) {
+      // Retry if element is not available yet
+      setTimeout(() => {
+        this.setupSwipeGesture();
+      }, 100);
+      return;
+    }
+
+    // Destroy existing gesture if any
+    if (this.swipeGesture) {
+      this.swipeGesture.destroy();
+    }
+
+    const element = this.wrapperContent.nativeElement;
+    this.swipeGesture = this.gestureCtrl.create({
+      el: element,
+      gestureName: 'swipe',
+      threshold: 15,
+      onMove: (ev) => {
+        // Optional: Add visual feedback during swipe
+      },
+      onEnd: (ev) => {
+        const deltaX = ev.deltaX;
+        const threshold = 100; // Minimum swipe distance
+
+        if (Math.abs(deltaX) > threshold) {
+          if (deltaX > 0) {
+            // Swipe right - go to previous recipe
+            this.navigateToRecipe('previous');
+          } else {
+            // Swipe left - go to next recipe
+            this.navigateToRecipe('next');
+          }
+        }
+      }
+    });
+
+    this.swipeGesture.enable();
   }
 
 
@@ -73,6 +257,7 @@ export class ProductDetailPage implements OnInit {
    this.checkGetCartButton = false;
     let shopifyInventory = await this.recipeService.getAllProducts(this.recipe.shopify_inventory);
     this.shopifyInventory = shopifyInventory;
+    console.log(this.shopifyInventory,'shopifyInventory');
     for(const item of this.shopifyInventory){
       for(const variant of item.variants){
          this.quantity[variant.id] = 1;
@@ -82,7 +267,13 @@ export class ProductDetailPage implements OnInit {
   }
 
   goBack() {
-    this.location.back();
+   /*  this.location.back(); */
+   if(this.redirect === 'home-tab'){
+    this.router.navigate(['/products/home-tab']);
+   }
+   else{
+    this.router.navigate(['/products/recipe-tab']);
+   }
   }
 
   getCartItem$( store : string){
@@ -250,6 +441,97 @@ export class ProductDetailPage implements OnInit {
 
   cartClicked(){
     this.router.navigate(['/my-cart/'], {queryParams : {store : this.selectedStore}});
+  }
+
+  async navigateToRecipe(direction: 'next' | 'previous') {
+    const swiperRecipes = this.recipeService.swiperRecipes;
+    if (!swiperRecipes || swiperRecipes.length === 0) {
+      return;
+    }
+
+    // Find current recipe index in swiperRecipes array
+    const currentIndex = swiperRecipes.findIndex((r: any) => r.id === this.id);
+    
+    if (currentIndex === -1) {
+      // Current recipe not in swiperRecipes, navigate to first recipe
+      if (swiperRecipes.length > 0) {
+        this.router.navigate(['/product-detail', swiperRecipes[0].id]);
+      }
+      return;
+    }
+
+    // Check boundaries and show toast if trying to swipe beyond limits
+    if (direction === 'next') {
+      // Swiping left to go to next recipe
+      if (currentIndex >= swiperRecipes.length - 1) {
+        // Already at the last recipe
+        await this.commonService.showErrorToast('You have reached the last recipe', 2000);
+        return;
+      }
+    } else {
+      // Swiping right to go to previous recipe
+      if (currentIndex <= 0) {
+        // Already at the first recipe
+        await this.commonService.showErrorToast('You have reached the first recipe', 2000);
+        return;
+      }
+    }
+
+    // Calculate next index
+    const nextIndex = direction === 'next' ? currentIndex + 1 : currentIndex - 1;
+    const nextRecipe = swiperRecipes[nextIndex];
+    
+    if (nextRecipe && nextRecipe.id) {
+      this.router.navigate(['/product-detail', nextRecipe.id],{queryParams : {redirect : this.redirect}});
+    }
+  }
+
+  addToFavorites(recipe: any) {
+    console.log(recipe,'recipe');
+    let favObj={
+      id: this.id,
+      postId: this.id,
+      email: this.authService.userDetails.email,
+      title: recipe.title,
+      dateCreated: new Date(),
+      image: recipe.image?.url,
+      description: recipe.description,
+      ingredients: recipe.ingredients,
+      categories: recipe.category,
+      type: 'justmove-recipe'
+    }
+    console.log(favObj,'favObj');
+   this.favoritesService.addFavoriteItem(favObj).subscribe((res:any) => {
+      console.log(res,'res');
+      this.commonService.showSuccessToast('Added to favorites',3000);
+    },(err:any) => {
+      console.log(err,'err');
+    });
+  }
+
+  removeFromFavorites(recipe: any) {
+    
+    const favorite = this.favorites.find((item:any) => item.postId === this.id);
+    console.log(favorite,'favorite');
+    this.favoritesService.deleteFavoriteItem(favorite.id).subscribe((res:any) => {
+      console.log(res,'res');
+      this.commonService.showSuccessToast('Removed from favorites',3000);
+    },(err:any) => {
+      console.log(err,'err');
+    });
+  }
+
+  checkFavorites(id:string) {
+    return this.favorites.filter((item:any) => item.postId === id).length > 0;
+  }
+
+  getFavorites() {
+    this.favoritesService.getFavorites(this.authService.userDetails.email).subscribe((res:any) => {
+      console.log(res,'getFavorites');
+      this.favorites = res;
+    },(err:any) => {
+      console.log(err,'getFavorites error');
+    });
   }
 
 }
