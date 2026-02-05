@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule, Location } from '@angular/common';
 import { FormBuilder, FormGroup, FormsModule, Validators } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { IonContent, IonHeader, IonSpinner, IonTitle, IonToolbar } from '@ionic/angular/standalone';
 import { SharedModule } from '../shared/shared/shared-module';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth';
@@ -13,11 +13,12 @@ import { Challenges } from '../services/challenges';
   templateUrl: './signin.page.html',
   styleUrls: ['./signin.page.scss'],
   standalone: true,
-  imports: [SharedModule]
+  imports: [SharedModule,IonSpinner]
 })
 export class SigninPage implements OnInit {
   signinForm!:FormGroup;
   showPassword: boolean = false;
+  isLoading: boolean = false;
   constructor(public fb:FormBuilder,
     public authService:AuthService,public common:Common,
     public location:Location,public router:Router,
@@ -34,7 +35,7 @@ export class SigninPage implements OnInit {
     if(user){
       // Load challenge data if user is already logged in
       this.challengeService.loadAllChallengeData();
-      this.router.navigate(['/home'], { replaceUrl: true });
+      this.router.navigate(['/products/home-tab'], { replaceUrl: true });
     }
   }
 
@@ -42,20 +43,22 @@ export class SigninPage implements OnInit {
     // route to home if user is already logged in
     const user = this.authService.currentUser;
     if(user){
-      this.router.navigate(['/home'], { replaceUrl: true });
+      this.router.navigate(['/products/home-tab'], { replaceUrl: true });
     }
   }
 
  async signin() {
-    console.log(this.signinForm.value);
+    if (this.isLoading) return; // Prevent multiple clicks
+    
+    this.isLoading = true;
+    
     try{
       let result = await this.authService.signInWithEmailAndPassword(this.signinForm.value.email, this.signinForm.value.password);
-      console.log(result);
       if(result){
-        this.common.showSuccessToast('Sign in successful');
+       // this.common.showSuccessToast('Sign in successful');
         // Load challenge data after successful login
         this.challengeService.loadAllChallengeData();
-        this.router.navigate(['/home'], { replaceUrl: true });
+        this.router.navigate(['/products/home-tab'], { replaceUrl: true });
       }
     }catch(error:any){
       console.log(error);
@@ -72,7 +75,8 @@ export class SigninPage implements OnInit {
       else{
         this.common.showErrorToast('Something went wrong');
       }
-
+    } finally {
+      this.isLoading = false;
     }
   }
   togglePasswordVisibility() {

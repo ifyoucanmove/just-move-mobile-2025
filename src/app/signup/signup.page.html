@@ -76,8 +76,15 @@ Products with all amazing recipes
             
             <ion-button class="primary-button mt-2"
             (click)="signup()"
-            [disabled]="signupForm.invalid"
-            type="submit">Sign Up</ion-button>
+            [disabled]="signupForm.invalid || isLoading"
+            type="submit">
+              @if(isLoading) {
+                <ion-spinner name="crescent" class="button-spinner"></ion-spinner>
+                <span style="margin-left: 8px;">Signing Up...</span>
+              } @else {
+                Sign Up
+              }
+            </ion-button>
           </form>
          </div>
       </ion-col>

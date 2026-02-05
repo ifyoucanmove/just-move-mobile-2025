@@ -15,8 +15,8 @@ export const welcomeGuard: CanActivateFn = async (route, state) => {
     
     // If user is authenticated, redirect to home before loading welcome page
     if (user || authService.currentUser) {
-      console.log('[welcomeGuard] Redirecting to /home');
-      router.navigate(['/home'], { replaceUrl: true });
+      console.log('[welcomeGuard] Redirecting to /products/home-tab');
+      router.navigate(['/products/home-tab'], { replaceUrl: true });
       return false; // Prevent welcome page from loading
     }
     

@@ -29,7 +29,6 @@ export class CardFooterComponent  implements OnInit {
     this.selectedStore= this.shopifyService.selectedStore;
     this.afAuth.onAuthStateChanged(user=>{
       this.getCartItem$(this.selectedStore)?.subscribe(res=>{
-        console.log("Cart Items", res);
         if(res.length){
           this.total = res.reduce((sum, item) => {
             return sum + item.price.amount * item.quantity;
@@ -70,7 +69,6 @@ export class CardFooterComponent  implements OnInit {
 
   cartClicked(){
     this.selectedStore = 'justMove';
-    console.log("Selected Store", this.selectedStore);
     this.router.navigate(['/my-cart/'], {queryParams : {store : 'justMove'}});
   }
 

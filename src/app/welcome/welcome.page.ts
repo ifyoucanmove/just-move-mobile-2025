@@ -20,7 +20,7 @@ export class WelcomePage implements OnInit {
     const user = await this.authService.waitForAuthState();
     if(user){
       // Redirect to home if somehow we got here (shouldn't happen due to guard)
-      this.router.navigate(['/home'], { replaceUrl: true });
+      this.router.navigate(['/products/home-tab'], { replaceUrl: true });
     }
   }
 
@@ -28,7 +28,7 @@ export class WelcomePage implements OnInit {
     //check if user is already logged in
     const user = this.authService.currentUser;
     if(user){
-      this.router.navigate(['/home'], { replaceUrl: true });
+      this.router.navigate(['/products/home-tab'], { replaceUrl: true });
     }else{
       this.router.navigate(['/signin']);
     }

@@ -28,7 +28,7 @@ export class ForgetPasswordPage implements OnInit {
  async ngOnInit() {
     const user = await this.authService.waitForAuthState();
     if(user){
-      this.router.navigate(['/home']);
+      this.router.navigate(['/products/home-tab']);
     }
   }
 

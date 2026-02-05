@@ -70,3 +70,19 @@ ion-grid{
         --border-width: 2px;
     }
 }
+
+.button-spinner {
+    width: 16px;
+    height: 16px;
+    --color: white;
+}
+
+.primary-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+    &[disabled] {
+        opacity: 0.6;
+    }
+}

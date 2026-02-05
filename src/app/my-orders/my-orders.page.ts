@@ -24,7 +24,7 @@ import { AuthService } from '../services/auth';
   templateUrl: './my-orders.page.html',
   styleUrls: ['./my-orders.page.scss'],
   standalone: true,
-  imports: [SharedModule,MainHeaderComponent, ShopifyStorePipe]
+  imports: [SharedModule,MainHeaderComponent]
 })
 export class MyOrdersPage implements OnInit {
 

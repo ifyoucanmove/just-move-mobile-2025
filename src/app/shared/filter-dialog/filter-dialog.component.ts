@@ -15,7 +15,7 @@ addIcons({
   templateUrl: './filter-dialog.component.html',
   styleUrls: ['./filter-dialog.component.scss'],
   standalone: true,
-  imports: [SharedModule, CommonModule, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon, IonContent]
+  imports: [SharedModule, CommonModule, IonHeader, IonToolbar, IonTitle, IonButtons, IonButton, IonIcon]
 })
 export class FilterDialogComponent implements OnInit {
 

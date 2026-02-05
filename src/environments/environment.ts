@@ -21,10 +21,11 @@ export const environment = {
     measurementId: "G-W6L0018E97",
   },
   categoryList: [
-    {value: 'Pancakes & Waffles', text: 'Pancakes & Waffles'},
+    {value: 'Protein Shakes', text: 'Protein Shakes'},
+    {value: 'Post-Workout Shakes', text: 'Post-Workout Shakes'},
     {value: 'Breakfast, Brunch & Lunch', text: 'Breakfast, Brunch & Lunch'},
-    {value: 'Protein Shakes & Post-Workout', text: 'Protein Shakes & Post-Workout'},
     {value: 'Yogurt Bowls & Smoothie Bowls', text: 'Yogurt Bowls & Smoothie Bowls'},
+    {value: 'Pancakes & Waffles', text: 'Pancakes & Waffles'},
     {value: 'Snacks, Baked Goods & Dips', text: 'Snacks, Baked Goods & Dips'}
   ],
   

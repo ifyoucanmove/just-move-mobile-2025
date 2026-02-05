@@ -42,8 +42,15 @@ Products with all amazing recipes
             </div>
             <ion-button class="primary-button mt-4" 
             (click)="signin()"
-            [disabled]="signinForm.invalid"
-            type="submit">Sign In</ion-button>
+            [disabled]="signinForm.invalid || isLoading"
+            type="submit">
+              @if(isLoading) {
+                <ion-spinner name="crescent" class="button-spinner"></ion-spinner>
+                <span style="margin-left: 8px;">Signing In...</span>
+              } @else {
+                Sign In
+              }
+            </ion-button>
           </form>
          </div>
       </ion-col>

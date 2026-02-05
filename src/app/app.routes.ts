@@ -36,6 +36,29 @@ export const routes: Routes = [
   {
     path: 'products',
     loadComponent: () => import('./products/products.page').then( m => m.ProductsPage),
+    children: [
+      {
+        path: '',
+        redirectTo: 'home-tab',
+        pathMatch: 'full'
+      },
+      {
+        path: 'home-tab',
+        loadComponent: () => import('./products/home-tab/home-tab.page').then( m => m.HomeTabPage)
+      },
+      {
+        path: 'recipe-tab',
+        loadComponent: () => import('./products/recipe-tab/recipe-tab.page').then( m => m.RecipeTabPage)
+      },
+      {
+        path: 'fav-tab',
+        loadComponent: () => import('./products/fav-tab/fav-tab.page').then( m => m.FavTabPage)
+      },
+      {
+        path: 'search-tab',
+        loadComponent: () => import('./products/search-tab/search-tab.page').then( m => m.SearchTabPage)
+      }
+    ],
     canActivate: [authenticationGuard]
   },
   {
@@ -153,27 +176,33 @@ export const routes: Routes = [
   },
   {
     path: 'my-cart',
-    loadComponent: () => import('./my-cart/my-cart.page').then( m => m.MyCartPage)
+    loadComponent: () => import('./my-cart/my-cart.page').then( m => m.MyCartPage),
+    canActivate: [authenticationGuard]
   },
   {
     path: 'my-store',
-    loadComponent: () => import('./my-store/my-store.page').then( m => m.MyStorePage)
+    loadComponent: () => import('./my-store/my-store.page').then( m => m.MyStorePage),
+    canActivate: [authenticationGuard]
   },
   {
     path: 'my-orders',
-    loadComponent: () => import('./my-orders/my-orders.page').then( m => m.MyOrdersPage)
+    loadComponent: () => import('./my-orders/my-orders.page').then( m => m.MyOrdersPage),
+    canActivate: [authenticationGuard]
   },
   {
     path: 'collection-details',
-    loadComponent: () => import('./collection-details/collection-details.page').then( m => m.CollectionDetailsPage)
+    loadComponent: () => import('./collection-details/collection-details.page').then( m => m.CollectionDetailsPage),
+    canActivate: [authenticationGuard]
   },
   {
     path: 'collection-details/:id',
-    loadComponent: () => import('./collection-details/collection-details.page').then( m => m.CollectionDetailsPage)
+    loadComponent: () => import('./collection-details/collection-details.page').then( m => m.CollectionDetailsPage),
+    canActivate: [authenticationGuard]
   },
   {
     path: 'shopify-details',
-    loadComponent: () => import('./shopify-details/shopify-details.page').then( m => m.ShopifyDetailsPage)
+    loadComponent: () => import('./shopify-details/shopify-details.page').then( m => m.ShopifyDetailsPage),
+    canActivate: [authenticationGuard]
   },
   {
     path: 'product-detail/:id',
@@ -185,8 +214,4 @@ export const routes: Routes = [
     redirectTo: 'welcome',
     pathMatch: 'full',
   },
-
-  
-  
-
 ];
