@@ -231,7 +231,12 @@ export class AuthService {
       if (Capacitor.isNativePlatform()) {
         // Native: use Capacitor GoogleAuth plugin
         const googleUser = await GoogleAuth.signIn();
+        console.log('[Google] Full response:', JSON.stringify(googleUser));
         const idToken = googleUser.authentication.idToken;
+        console.log('[Google] idToken present:', !!idToken, 'length:', idToken?.length);
+        if (!idToken) {
+          throw new Error('Google sign-in failed - no ID token returned');
+        }
         const credential = GoogleAuthProvider.credential(idToken);
         userCredential = await signInWithCredential(this.auth, credential);
       } else {
@@ -291,14 +296,14 @@ export class AuthService {
   async signInWithApple() {
     try {
       const rawNonce = this.generateNonce();
-      const hashedNonce = this.sha256(rawNonce);
+      const hashedNonce = await this.sha256(rawNonce);
 
       const options: SignInWithAppleOptions = {
         clientId: environment.appleClientId || 'com.justmove.supplement',
         redirectURI: environment.appleRedirectUri || 'https://ifyoucanmove-dev.firebaseapp.com/__/auth/handler',
         scopes: 'email name',
         state: 'state',
-        nonce: hashedNonce
+        nonce: rawNonce  // Plugin passes this to Apple, which hashes it internally
       };
 
       const result: SignInWithAppleResponse = await SignInWithApple.authorize(options);
@@ -308,8 +313,7 @@ export class AuthService {
         throw new Error('Apple sign-in failed - no identity token');
       }
 
-      // Create Firebase credential using OAuthProvider for Apple
-      // rawNonce (unhashed) goes to Firebase, hashedNonce was sent to Apple
+      // Firebase needs the raw nonce — it hashes it and compares with Apple's token
       const provider = new OAuthProvider('apple.com');
       const credential = provider.credential({
         idToken: result.response.identityToken,
@@ -375,96 +379,13 @@ export class AuthService {
 
   /**
    * SHA256 hash a string (needed for Apple Sign-In nonce)
-   * Pure JS implementation - no crypto.subtle dependency
    */
-  private sha256(input: string): string {
-    function rightRotate(value: number, amount: number) {
-      return (value >>> amount) | (value << (32 - amount));
-    }
-
-    const mathPow = Math.pow;
-    const maxWord = mathPow(2, 32);
-
-    const k: number[] = [];
-    let i, j;
-    const words: number[] = [];
-
-    const h = [
-      0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
-      0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
-    ];
-
-    // Pre-processing - compute k values
-    let primeCounter = 0;
-    const isComposite: { [key: number]: boolean } = {};
-    for (let candidate = 2; primeCounter < 64; candidate++) {
-      if (!isComposite[candidate]) {
-        for (i = 0; i < 313; i += candidate) {
-          isComposite[i] = true;
-        }
-        k[primeCounter] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
-        primeCounter++;
-      }
-    }
-
-    // Encode string to bytes
-    const bytes: number[] = [];
-    for (i = 0; i < input.length; i++) {
-      const charCode = input.charCodeAt(i);
-      if (charCode < 128) {
-        bytes.push(charCode);
-      } else if (charCode < 2048) {
-        bytes.push(192 | (charCode >> 6), 128 | (charCode & 63));
-      } else {
-        bytes.push(224 | (charCode >> 12), 128 | ((charCode >> 6) & 63), 128 | (charCode & 63));
-      }
-    }
-
-    const lengthBits = bytes.length * 8;
-    bytes.push(0x80);
-    while (bytes.length % 64 !== 56) bytes.push(0);
-    // Append length as 64-bit big-endian
-    for (i = 56; i >= 0; i -= 8) {
-      bytes.push((lengthBits >>> i) & 0xff);
-    }
-
-    // Process each 512-bit block
-    for (j = 0; j < bytes.length;) {
-      const w: number[] = [];
-      for (i = 0; i < 16; i++) {
-        w[i] = (bytes[j++] << 24) | (bytes[j++] << 16) | (bytes[j++] << 8) | bytes[j++];
-      }
-      for (i = 16; i < 64; i++) {
-        const s0 = rightRotate(w[i - 15], 7) ^ rightRotate(w[i - 15], 18) ^ (w[i - 15] >>> 3);
-        const s1 = rightRotate(w[i - 2], 17) ^ rightRotate(w[i - 2], 19) ^ (w[i - 2] >>> 10);
-        w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
-      }
-
-      let [a, b, c, d, e, f, g, hh] = h;
-
-      for (i = 0; i < 64; i++) {
-        const S1 = rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25);
-        const ch = (e & f) ^ (~e & g);
-        const temp1 = (hh + S1 + ch + k[i] + w[i]) | 0;
-        const S0 = rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22);
-        const maj = (a & b) ^ (a & c) ^ (b & c);
-        const temp2 = (S0 + maj) | 0;
-
-        hh = g; g = f; f = e; e = (d + temp1) | 0;
-        d = c; c = b; b = a; a = (temp1 + temp2) | 0;
-      }
-
-      h[0] = (h[0] + a) | 0; h[1] = (h[1] + b) | 0;
-      h[2] = (h[2] + c) | 0; h[3] = (h[3] + d) | 0;
-      h[4] = (h[4] + e) | 0; h[5] = (h[5] + f) | 0;
-      h[6] = (h[6] + g) | 0; h[7] = (h[7] + hh) | 0;
-    }
-
-    let hash = '';
-    for (i = 0; i < 8; i++) {
-      hash += ('00000000' + (h[i] >>> 0).toString(16)).slice(-8);
-    }
-    return hash;
+  private async sha256(input: string): Promise<string> {
+    const encoder = new TextEncoder();
+    const data = encoder.encode(input);
+    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+    const hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
   }
 
 }
