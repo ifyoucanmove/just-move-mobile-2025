@@ -1,0 +1,99 @@
+{
+  "project_info": {
+    "project_number": "975192045133",
+    "firebase_url": "https://ifyoucanmove-dev.firebaseio.com",
+    "project_id": "ifyoucanmove-dev",
+    "storage_bucket": "ifyoucanmove-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:975192045133:android:7e1b11af7e19a36611ce04",
+        "android_client_info": {
+          "package_name": "com.justmove.supplement"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "975192045133-csr1tssdu5tvl4v4bld5s4sqihtv0u6q.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.justmove.supplement",
+            "certificate_hash": "beafb637efe51baad9c1e397598cb7234570921c"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnDDKGuiO76LJ1ma4CI8U-lLxKhY_OIh8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "975192045133-dhu413ebr9m0d1i3s7sbecvk8acnnha9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "975192045133-6f9jnf5rouuvlm7b387a88o7nqb4bcnk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.movefitness.ifyoucanmove"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:975192045133:android:699dfc569e3b599711ce04",
+        "android_client_info": {
+          "package_name": "com.movefitness.ifyoucanmove"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "975192045133-hegd8d50gr77pd3a50t39kh1ac0t76ub.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.movefitness.ifyoucanmove",
+            "certificate_hash": "678139d364a63bb3362d36c3136eac00731bd730"
+          }
+        },
+        {
+          "client_id": "975192045133-jef8lir197919g270hnj8u49ru1i0h59.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.movefitness.ifyoucanmove",
+            "certificate_hash": "179c445bc1696b29379530b4a401d17043bc1bfd"
+          }
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDnDDKGuiO76LJ1ma4CI8U-lLxKhY_OIh8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "975192045133-dhu413ebr9m0d1i3s7sbecvk8acnnha9.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "975192045133-6f9jnf5rouuvlm7b387a88o7nqb4bcnk.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.movefitness.ifyoucanmove"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

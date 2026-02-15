@@ -4,4 +4,12 @@
     <string name="title_activity_main">Just Move Supplement</string>
     <string name="package_name">com.justmove.supplement</string>
     <string name="custom_url_scheme">com.justmove.supplement</string>
+
+    <!-- Google Sign-In: Get this from Firebase Console > Project Settings > Your apps > Web client ID -->
+    <string name="server_client_id">975192045133-dhu413ebr9m0d1i3s7sbecvk8acnnha9.apps.googleusercontent.com</string>
+
+    <!-- Facebook Login: Get these from Facebook Developer Console -->
+    <string name="facebook_app_id">YOUR_FACEBOOK_APP_ID</string>
+    <string name="facebook_client_token">YOUR_FACEBOOK_CLIENT_TOKEN</string>
+    <string name="fb_login_protocol_scheme">fbYOUR_FACEBOOK_APP_ID</string>
 </resources>

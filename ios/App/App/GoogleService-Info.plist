@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>975192045133-iq95sofj1atd132kagg3l2r3bgih05ql.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.975192045133-iq95sofj1atd132kagg3l2r3bgih05ql</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>975192045133-csr1tssdu5tvl4v4bld5s4sqihtv0u6q.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCu2dxBnGWjH-8xDfaHMdAUsUHq2pIyzVw</string>
+	<key>GCM_SENDER_ID</key>
+	<string>975192045133</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.justmove.supplement</string>
+	<key>PROJECT_ID</key>
+	<string>ifyoucanmove-dev</string>
+	<key>STORAGE_BUCKET</key>
+	<string>ifyoucanmove-dev.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:975192045133:ios:0dd014cd40031a2e11ce04</string>
+	<key>DATABASE_URL</key>
+	<string>https://ifyoucanmove-dev.firebaseio.com</string>
+</dict>
+</plist>

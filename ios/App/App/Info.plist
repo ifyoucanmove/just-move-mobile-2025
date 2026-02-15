@@ -47,5 +47,45 @@
 	<true/>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Google iOS Client</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.975192045133-iq95sofj1atd132kagg3l2r3bgih05ql</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Google Server Client</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>com.googleusercontent.apps.975192045133-dhu413ebr9m0d1i3s7sbecvk8acnnha9</string>
+			</array>
+		</dict>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Facebook</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>fb321355232061965</string>
+			</array>
+		</dict>
+	</array>
+	<key>FacebookAppID</key>
+	<string>321355232061965</string>
+	<key>FacebookClientToken</key>
+	<string>f947fb0a89289fae27b7c81c0df8fd03</string>
+	<key>FacebookDisplayName</key>
+	<string>Just Move Supplement</string>
+	<key>LSApplicationQueriesSchemes</key>
+	<array>
+		<string>fbapi</string>
+		<string>fb-messenger-share-api</string>
+		<string>fbauth2</string>
+		<string>fbshareextension</string>
+	</array>
 </dict>
 </plist>

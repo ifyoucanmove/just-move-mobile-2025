@@ -1,9 +1,13 @@
 import { Injectable, inject } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User } from '@angular/fire/auth';
+import { Auth, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User, GoogleAuthProvider, FacebookAuthProvider, OAuthProvider, signInWithCredential, signInWithPopup } from '@angular/fire/auth';
 import { collection, collectionSnapshots, doc, Firestore, query, setDoc, where } from '@angular/fire/firestore';
-import { map } from 'rxjs';
+import { firstValueFrom, map } from 'rxjs';
 import { Customer } from './customer';
 import { environment } from 'src/environments/environment';
+import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+import { FacebookLogin } from '@capacitor-community/facebook-login';
+import { SignInWithApple, SignInWithAppleOptions, SignInWithAppleResponse } from '@capacitor-community/apple-sign-in';
+import { Capacitor } from '@capacitor/core';
 
 @Injectable({
   providedIn: 'root',
@@ -16,9 +20,13 @@ export class AuthService {
   private authStateResolver?: (user: User | null) => void;
   userDetails: any;
   isAdmin: boolean = false;
+  private googleAuthInitialized = false;
   constructor(private customerService: Customer){
     console.log('[AuthService] Constructor started');
-    
+
+    // Initialize Google Auth once at startup for native platforms
+    this.initGoogleAuth();
+
     // Create a promise that resolves when auth state is determined
     this.authStateReady = new Promise((resolve) => {
       this.authStateResolver = resolve;
@@ -180,13 +188,283 @@ export class AuthService {
       const token = await user?.getIdToken();
       if(!token) return localStorage.getItem("token");
       console.log("token after try", token);
-      
+
       return token;
     } catch (e) {
       console.log("In catch", localStorage.getItem("token"));
-      
+
       return localStorage.getItem("token");
     }
+  }
+
+  // ============ SOCIAL SIGN-IN METHODS ============
+
+  private async initGoogleAuth() {
+    if (this.googleAuthInitialized || !Capacitor.isNativePlatform()) return;
+    try {
+      const platform = Capacitor.getPlatform();
+      if (platform === 'android') {
+        // Android: pass web clientId explicitly
+        await GoogleAuth.initialize({
+          clientId: environment.googleClientId,
+          scopes: ['profile', 'email'],
+          grantOfflineAccess: true
+        });
+      } else {
+        // iOS: let the plugin read CLIENT_ID from GoogleService-Info.plist
+        await GoogleAuth.initialize({
+          scopes: ['profile', 'email'],
+          grantOfflineAccess: true
+        });
+      }
+      this.googleAuthInitialized = true;
+      console.log('[AuthService] GoogleAuth initialized for', platform);
+    } catch (error) {
+      console.error('[AuthService] GoogleAuth init failed:', error);
+    }
+  }
+
+  async signInWithGoogle() {
+    try {
+      let userCredential;
+
+      if (Capacitor.isNativePlatform()) {
+        // Native: use Capacitor GoogleAuth plugin
+        const googleUser = await GoogleAuth.signIn();
+        const idToken = googleUser.authentication.idToken;
+        const credential = GoogleAuthProvider.credential(idToken);
+        userCredential = await signInWithCredential(this.auth, credential);
+      } else {
+        // Web: use Firebase popup
+        const provider = new GoogleAuthProvider();
+        provider.addScope('profile');
+        provider.addScope('email');
+        userCredential = await signInWithPopup(this.auth, provider);
+      }
+
+      console.log('Firebase user:', userCredential.user);
+      await this.createOrUpdateSocialUser(
+        userCredential.user,
+        'google',
+        userCredential.user.displayName || userCredential.user.email || ''
+      );
+      return userCredential;
+    } catch (error: any) {
+      console.error('Google sign-in error:', error);
+      throw error;
+    }
+  }
+
+  async signInWithFacebook() {
+    try {
+      let userCredential;
+
+      if (Capacitor.isNativePlatform()) {
+        // Native: use Capacitor FacebookLogin plugin
+        const result = await FacebookLogin.login({ permissions: ['email', 'public_profile'] });
+        if (!result.accessToken) {
+          throw new Error('Facebook login failed - no access token');
+        }
+        const credential = FacebookAuthProvider.credential(result.accessToken.token);
+        userCredential = await signInWithCredential(this.auth, credential);
+      } else {
+        // Web: use Firebase popup
+        const provider = new FacebookAuthProvider();
+        provider.addScope('email');
+        provider.addScope('public_profile');
+        userCredential = await signInWithPopup(this.auth, provider);
+      }
+
+      console.log('Firebase user:', userCredential.user);
+      const userName = userCredential.user.displayName || userCredential.user.email || '';
+      await this.createOrUpdateSocialUser(userCredential.user, 'facebook', userName);
+      return userCredential;
+    } catch (error: any) {
+      console.error('Facebook sign-in error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Sign in with Apple using Capacitor plugin (iOS only)
+   */
+  async signInWithApple() {
+    try {
+      const rawNonce = this.generateNonce();
+      const hashedNonce = this.sha256(rawNonce);
+
+      const options: SignInWithAppleOptions = {
+        clientId: environment.appleClientId || 'com.justmove.supplement',
+        redirectURI: environment.appleRedirectUri || 'https://ifyoucanmove-dev.firebaseapp.com/__/auth/handler',
+        scopes: 'email name',
+        state: 'state',
+        nonce: hashedNonce
+      };
+
+      const result: SignInWithAppleResponse = await SignInWithApple.authorize(options);
+      console.log('Apple sign-in result:', result);
+
+      if (!result.response || !result.response.identityToken) {
+        throw new Error('Apple sign-in failed - no identity token');
+      }
+
+      // Create Firebase credential using OAuthProvider for Apple
+      // rawNonce (unhashed) goes to Firebase, hashedNonce was sent to Apple
+      const provider = new OAuthProvider('apple.com');
+      const credential = provider.credential({
+        idToken: result.response.identityToken,
+        rawNonce: rawNonce
+      });
+
+      // Sign in to Firebase with the credential
+      const userCredential = await signInWithCredential(this.auth, credential);
+      console.log('Firebase user:', userCredential.user);
+
+      // Get user name (Apple may provide it on first sign-in only)
+      const userName = result.response.givenName
+        ? `${result.response.givenName} ${result.response.familyName || ''}`.trim()
+        : userCredential.user.displayName || userCredential.user.email || '';
+
+      // Check if user exists in Firestore, if not create
+      await this.createOrUpdateSocialUser(userCredential.user, 'apple', userName);
+
+      return userCredential;
+    } catch (error: any) {
+      console.error('Apple sign-in error:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Create or update user in Firestore after social sign-in
+   */
+  private async createOrUpdateSocialUser(user: User, loginType: string, name: string) {
+    try {
+      const existingUsers = await firstValueFrom(this.getUserByEmail(user.email || ''));
+
+      if (existingUsers && existingUsers.length > 0) {
+        const dateNow = new Date();
+        await setDoc(doc(this.firestore, 'users', user.uid), {
+          dateEdited: dateNow,
+          lastLogin: dateNow
+        }, { merge: true });
+        console.log('Existing user updated');
+      } else {
+        await this.addUserToFirestore(user, loginType, true, user.email || '', name);
+        console.log('New social user created');
+      }
+    } catch (error) {
+      console.error('Error creating/updating social user:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Generate a random nonce for Apple Sign-In
+   */
+  private generateNonce(length: number = 32): string {
+    const charset = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let result = '';
+    const values = new Uint8Array(length);
+    crypto.getRandomValues(values);
+    for (let i = 0; i < length; i++) {
+      result += charset[values[i] % charset.length];
+    }
+    return result;
+  }
+
+  /**
+   * SHA256 hash a string (needed for Apple Sign-In nonce)
+   * Pure JS implementation - no crypto.subtle dependency
+   */
+  private sha256(input: string): string {
+    function rightRotate(value: number, amount: number) {
+      return (value >>> amount) | (value << (32 - amount));
+    }
+
+    const mathPow = Math.pow;
+    const maxWord = mathPow(2, 32);
+
+    const k: number[] = [];
+    let i, j;
+    const words: number[] = [];
+
+    const h = [
+      0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a,
+      0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19
+    ];
+
+    // Pre-processing - compute k values
+    let primeCounter = 0;
+    const isComposite: { [key: number]: boolean } = {};
+    for (let candidate = 2; primeCounter < 64; candidate++) {
+      if (!isComposite[candidate]) {
+        for (i = 0; i < 313; i += candidate) {
+          isComposite[i] = true;
+        }
+        k[primeCounter] = (mathPow(candidate, 1 / 3) * maxWord) | 0;
+        primeCounter++;
+      }
+    }
+
+    // Encode string to bytes
+    const bytes: number[] = [];
+    for (i = 0; i < input.length; i++) {
+      const charCode = input.charCodeAt(i);
+      if (charCode < 128) {
+        bytes.push(charCode);
+      } else if (charCode < 2048) {
+        bytes.push(192 | (charCode >> 6), 128 | (charCode & 63));
+      } else {
+        bytes.push(224 | (charCode >> 12), 128 | ((charCode >> 6) & 63), 128 | (charCode & 63));
+      }
+    }
+
+    const lengthBits = bytes.length * 8;
+    bytes.push(0x80);
+    while (bytes.length % 64 !== 56) bytes.push(0);
+    // Append length as 64-bit big-endian
+    for (i = 56; i >= 0; i -= 8) {
+      bytes.push((lengthBits >>> i) & 0xff);
+    }
+
+    // Process each 512-bit block
+    for (j = 0; j < bytes.length;) {
+      const w: number[] = [];
+      for (i = 0; i < 16; i++) {
+        w[i] = (bytes[j++] << 24) | (bytes[j++] << 16) | (bytes[j++] << 8) | bytes[j++];
+      }
+      for (i = 16; i < 64; i++) {
+        const s0 = rightRotate(w[i - 15], 7) ^ rightRotate(w[i - 15], 18) ^ (w[i - 15] >>> 3);
+        const s1 = rightRotate(w[i - 2], 17) ^ rightRotate(w[i - 2], 19) ^ (w[i - 2] >>> 10);
+        w[i] = (w[i - 16] + s0 + w[i - 7] + s1) | 0;
+      }
+
+      let [a, b, c, d, e, f, g, hh] = h;
+
+      for (i = 0; i < 64; i++) {
+        const S1 = rightRotate(e, 6) ^ rightRotate(e, 11) ^ rightRotate(e, 25);
+        const ch = (e & f) ^ (~e & g);
+        const temp1 = (hh + S1 + ch + k[i] + w[i]) | 0;
+        const S0 = rightRotate(a, 2) ^ rightRotate(a, 13) ^ rightRotate(a, 22);
+        const maj = (a & b) ^ (a & c) ^ (b & c);
+        const temp2 = (S0 + maj) | 0;
+
+        hh = g; g = f; f = e; e = (d + temp1) | 0;
+        d = c; c = b; b = a; a = (temp1 + temp2) | 0;
+      }
+
+      h[0] = (h[0] + a) | 0; h[1] = (h[1] + b) | 0;
+      h[2] = (h[2] + c) | 0; h[3] = (h[3] + d) | 0;
+      h[4] = (h[4] + e) | 0; h[5] = (h[5] + f) | 0;
+      h[6] = (h[6] + g) | 0; h[7] = (h[7] + hh) | 0;
+    }
+
+    let hash = '';
+    for (i = 0; i < 8; i++) {
+      hash += ('00000000' + (h[i] >>> 0).toString(16)).slice(-8);
+    }
+    return hash;
   }
 
 }

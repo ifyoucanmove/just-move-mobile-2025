@@ -36,4 +36,15 @@ export const environment = {
     "fQhcfS7h1mdozCoqfBULx9UIgbX2", //rasheek  shrasheek@gmail.com
     "TEWNlEATaaZ5iWhJ0RMsXITyBld2", //QA2 qa2@mentorem.com
   ],
+
+  // Social Auth Configuration (Production)
+  // Get Google Web Client ID from Firebase Console > Authentication > Sign-in method > Google
+  googleClientId: '975192045133-dhu413ebr9m0d1i3s7sbecvk8acnnha9.apps.googleusercontent.com',
+
+  // Facebook App ID from Facebook Developer Console
+  facebookAppId: '321355232061965',
+
+  // Apple Sign-In configuration (iOS only)
+  appleClientId: 'com.justmove.supplement',
+  appleRedirectUri: 'https://ifyoucanmove-dev.firebaseapp.com/__/auth/handler',
 };
