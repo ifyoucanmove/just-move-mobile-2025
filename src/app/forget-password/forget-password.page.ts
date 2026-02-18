@@ -49,15 +49,54 @@ export class ForgetPasswordPage implements OnInit {
         }
       }catch(error:any){
         console.log(error);
-      
-        if(error.code === 'auth/invalid-email'){
+        this.handleFirebaseError(error);
+        /* if(error.code === 'auth/invalid-email'){
           this.common.showErrorToast('Invalid email');
         }
         else{
-          this.common.showErrorToast('Failed to send password reset email');        }
+          this.common.showErrorToast('Failed to send password reset email');        } */
       }
     }else{
       console.log('Form is not valid');
+    }
+  }
+
+  handleFirebaseError(error: any) {
+    console.log(error.code);
+    switch (error.code) {
+      case 'auth/invalid-email':
+        console.log('Invalid email format.');
+        this.common.showErrorToast('Invalid email');
+        break;
+  
+      case 'auth/user-not-found':
+        console.log('No user found with this email.');
+        this.common.showErrorToast('No user found with this email');
+        break;
+  
+      case 'auth/missing-email':
+        console.log('Email is required.');
+        this.common.showErrorToast('Email is required');
+        break;
+  
+      case 'auth/too-many-requests':
+        console.log('Too many attempts. Try again later.');
+        this.common.showErrorToast('Too many attempts. Try again later.');
+        break;
+  
+      case 'auth/network-request-failed':
+        console.log('Network error. Check your internet connection.');
+        this.common.showErrorToast('Network error. Check your internet connection.');
+        break;
+  
+      case 'auth/internal-error':
+        console.log('Internal server error.');
+        this.common.showErrorToast('Internal server error.');
+        break;
+  
+      default:
+        console.log('Unknown error:', error.message);
+        this.common.showErrorToast('Unknown error');
     }
   }
 

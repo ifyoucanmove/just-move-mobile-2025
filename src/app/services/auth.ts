@@ -106,12 +106,12 @@ export class AuthService {
     }
   }
 
-  async signUpWithEmailAndPassword(email: string, password: string, name: string) {
+  async signUpWithEmailAndPassword(email: string, password: string, fname: string, lname: string) {
     try {
       const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
       //add user to firestore in new function
       console.log(userCredential.user);
-      let result = await this.addUserToFirestore(userCredential.user,'email',false, email, name);
+      let result = await this.addUserToFirestore(userCredential.user,'email',false, email, fname, lname);
    
       //send email verification
       await sendEmailVerification(userCredential.user);
@@ -121,14 +121,14 @@ export class AuthService {
     }
   }
 
-  async addUserToFirestore(user: any,login:string, verified: boolean,email: string, name: string) {
+  async addUserToFirestore(user: any,login:string, verified: boolean,email: string, fname: string, lname: string) {
     try {
       const dateNow = new Date();
       const data: any = {
         uid: user.uid,
         email: email || null,
-        fname:name,
-        lname:'',
+        fname:fname,
+        lname:lname,
         photoURL: user.photoURL || null,
         dateCreated: dateNow,
         dateEdited: dateNow,
@@ -350,7 +350,7 @@ export class AuthService {
         }, { merge: true });
         console.log('Existing user updated');
       } else {
-        await this.addUserToFirestore(user, loginType, true, user.email || '', name);
+        await this.addUserToFirestore(user, loginType, true, user.email || '', name,'');
         console.log('New social user created');
       }
     } catch (error) {

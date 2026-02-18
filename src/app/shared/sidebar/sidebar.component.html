@@ -8,6 +8,18 @@
     </ion-button>
   </div>
   <div class="sidebar-content">
+      <!-- user profile -->
+  <div class="user-profile">
+    @if(authService.userDetails?.photoURL) {
+      <img class="user-profile-image" [src]="authService.userDetails?.photoURL" alt="User Profile" />
+    }@else {
+      <ion-icon name="person-outline"></ion-icon>
+    }
+    <span>{{authService.userDetails?.fname}} {{authService.userDetails?.lname}}</span>
+    @if(authService.userDetails?.email) {
+      <span class="user-email">{{authService.userDetails?.email}}</span>
+    }
+  </div>
    <!--  <div class="sidebar-item" (click)="navigateTo('/home')">
       <ion-icon name="home-outline"></ion-icon>
       <span>Home</span>

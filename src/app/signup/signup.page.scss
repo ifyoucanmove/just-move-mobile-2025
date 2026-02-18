@@ -86,3 +86,19 @@ ion-grid{
         opacity: 0.6;
     }
 }
+
+
+.highlight-text{
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--primary-color);
+    text-align: center;
+    line-height: 1.5;
+    margin-left: 0px;
+    margin-right: 0px;
+    padding: 10px;
+    background-color: aliceblue;
+    padding: 10px;
+    border-radius: 10px;
+    border-left: 3px solid #004FFF;
+}

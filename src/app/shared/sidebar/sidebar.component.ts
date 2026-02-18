@@ -5,7 +5,7 @@ import { Common } from '../../services/common';
 import { Challenges } from '../../services/challenges';
 import { SharedModule } from '../shared/shared-module';
 import { addIcons } from 'ionicons';
-import { homeOutline, beerOutline, heartOutline, searchOutline, trophyOutline, cartOutline, receiptOutline, storefrontOutline, logOutOutline, closeOutline } from 'ionicons/icons';
+import { homeOutline, beerOutline, heartOutline, searchOutline, trophyOutline, cartOutline, receiptOutline, storefrontOutline, logOutOutline, closeOutline, personOutline } from 'ionicons/icons';
 import { IonSpinner } from '@ionic/angular/standalone';
 
 addIcons({
@@ -18,7 +18,8 @@ addIcons({
   receiptOutline,
   storefrontOutline,
   logOutOutline,
-  closeOutline
+  closeOutline,
+  personOutline
 });
 
 @Component({

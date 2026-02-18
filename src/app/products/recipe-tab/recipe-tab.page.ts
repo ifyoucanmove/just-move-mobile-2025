@@ -217,13 +217,13 @@ export class RecipeTabPage implements OnInit {
     let favObj={
       id: recipe.id,
       postId: recipe.id,
-      email: this.authService.userDetails.email,
-      title: recipe.title,
+      email: this.authService.userDetails.email || null,
+      title: recipe.title || null,
       dateCreated: new Date(),
-      image: recipe.image?.url,
-      description: recipe.description,
-      ingredients: recipe.ingredients,
-      categories: recipe.category,
+      image: recipe.image?.url || null,
+      description: recipe.description || null,
+      ingredients: recipe.ingredients || null,
+      categories: recipe.category || null,
       type: 'justmove-recipe'
     }
     console.log(favObj,'favObj');

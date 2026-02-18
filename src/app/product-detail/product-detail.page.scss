@@ -385,11 +385,12 @@
   /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); */
  // backdrop-filter: blur(10px);
   animation: indicatorFade 2s ease-in-out infinite;
-  color: white;
+  color: white !important;
   span {
     font-size: 16px;
     font-weight: 600;
     /* color: #01b6d8; */
+    color: white !important;
     letter-spacing: 0.5px;
     text-transform: uppercase;
   }
@@ -431,7 +432,7 @@
 
 .tutorial-close-btn{
   position: absolute;
-  bottom: 20px;
+  bottom: 50px;
   right: 10px;
   z-index: 10001;
   font-size: 20px;

@@ -71,22 +71,61 @@ export class SigninPage implements OnInit {
     }catch(error:any){
       console.log(error);
       //if auth/invalid-credential
-      if(error.code === 'auth/invalid-credential'){
-        this.common.showErrorToast('Invalid credentials');
-      }
-      else if(error.code === 'auth/user-not-found'){
-        this.common.showErrorToast('User not found');
-      }
-      else if(error.code === 'auth/wrong-password'){
-        this.common.showErrorToast('Wrong password');
-      }
-      else{
-        this.common.showErrorToast('Something went wrong');
-      }
+      this.handleLoginError(error);
     } finally {
       this.isLoading = false;
     }
   }
+
+  handleLoginError(error: any) {
+    switch (error.code) {
+  
+      case 'auth/invalid-email':
+        this.common.showErrorToast('Invalid email format.');
+        break;
+  
+      case 'auth/user-not-found':
+        this.common.showErrorToast('No account found with this email.');
+        break;
+  
+      case 'auth/wrong-password':
+        this.common.showErrorToast('Incorrect password.');
+        break;
+  
+      case 'auth/invalid-credential':
+        this.common.showErrorToast('Invalid email or password.');
+        break;
+  
+      case 'auth/user-disabled':
+        this.common.showErrorToast('This account has been disabled.');
+        break;
+  
+      case 'auth/too-many-requests':
+        this.common.showErrorToast('Too many failed attempts. Try again later.');
+        break;
+  
+      case 'auth/network-request-failed':
+        this.common.showErrorToast('Network error. Check internet connection.');
+        break;
+  
+      case 'auth/internal-error':
+        this.common.showErrorToast('Internal server error.');
+        break;
+  
+      case 'auth/missing-email':
+        this.common.showErrorToast('Email is required.');
+        break;
+  
+      case 'auth/missing-password':
+        this.common.showErrorToast('Password is required.');
+        break;
+  
+      default:
+        this.common.showErrorToast('Unknown error:', error.message);
+    }
+  }
+
+
   togglePasswordVisibility() {
     this.showPassword = !this.showPassword;
   }
