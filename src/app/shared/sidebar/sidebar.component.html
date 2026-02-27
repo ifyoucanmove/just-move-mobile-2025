@@ -45,7 +45,12 @@
       <ion-icon name="trophy-outline"></ion-icon>
       <span>Challenges</span>
     </div>
-    
+    @if(authService.isAdmin) {
+    <div class="sidebar-item" (click)="navigateTo('/products/recipe-tab')">
+      <ion-icon name="restaurant-outline"></ion-icon>
+      <span>My Recipes</span>
+    </div>
+  }
     <!--  my cart -->
     <div class="sidebar-item" (click)="navigateTo('/my-cart')">
       <ion-icon name="cart-outline"></ion-icon>

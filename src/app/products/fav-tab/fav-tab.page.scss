@@ -79,9 +79,21 @@
   }
 
 .favorites-section{
+  .icon-button{
+    background: linear-gradient(to right, #01b6d8 0, #01c8c3 25%, #02d8b0 50%, #02d9b0 75%, #02e6a0 100%); //danger color bootstrap
+    border: radius 50px;
+    padding: 5px;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50px;
+    color: white;
+  }
   ion-icon{
-    font-size: 20px;
-    color: red;
+    font-size: 30px;
+    color: white;
     cursor: pointer;
   }
 }

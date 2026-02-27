@@ -11,7 +11,7 @@ import { Shopify } from '../services/shopify';
 import { AuthService } from '../services/auth';
 import { Subscription } from 'rxjs';
 import { addIcons } from 'ionicons';
-import { menuOutline, heartOutline, closeOutline, trophyOutline, cartOutline, receiptOutline, storefrontOutline } from 'ionicons/icons';
+import { menuOutline, heartOutline, closeOutline, trophyOutline, cartOutline, receiptOutline, storefrontOutline, restaurantOutline } from 'ionicons/icons';
 import { Customer } from '../services/customer';
 import { Challenges } from '../services/challenges';
 import { Common } from '../services/common';
@@ -37,7 +37,8 @@ export class ProductsPage implements OnInit {
         trophyOutline,
         cartOutline,
         receiptOutline,
-        storefrontOutline
+        storefrontOutline,
+        restaurantOutline
       });
     }
 

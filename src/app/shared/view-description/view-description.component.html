@@ -1,0 +1,18 @@
+<ion-header style="border-bottom: 1px solid #e0e0e0; box-shadow: none;">
+  <!-- <ion-toolbar class="m-0 p-0"> -->
+    <div class="d-flex py-2 px-3 align-items-center justify-content-between">
+    <ion-title class="m-0 p-0">Description</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  <!-- </ion-toolbar> -->
+</div>
+</ion-header>
+
+<!-- <ion-content> -->
+  <div class="view-description-content">
+    <p class="description-text" [innerHTML]="description"></p>
+  </div>
+<!-- </ion-content> -->

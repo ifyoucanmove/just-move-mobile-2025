@@ -1,0 +1,12 @@
+.view-description-content {
+  padding: 16px;
+  height: 500px;
+  overflow-y: auto;
+  .description-text {
+    font-size: 16px;
+    line-height: 1.6;
+    color: var(--ion-text-color);
+    margin: 0;
+    white-space: pre-wrap;
+  }
+}

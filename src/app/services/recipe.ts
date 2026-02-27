@@ -42,7 +42,7 @@ constructor(
 
 getRecipes() {
   const aCollection = collection(this.firestore, 'recipes');
-  let q = query(aCollection, orderBy('timestamp', 'desc'));
+  let q = query(aCollection,where('active', '==', true), orderBy('timestamp', 'desc'));
   
   let items$ = collectionData(q, { idField: 'id' });
   console.log('q', items$);
@@ -59,32 +59,6 @@ getRecipeById(id:string) {
 
   }
 
-getRecipeByCategory(category: string) {
-  const recipesRef = collection(this.firestore, 'recipes');
-  const q = query(recipesRef, where('category', '==', category));
-  return collectionSnapshots(q).pipe(
-    map((snapshots: any) =>
-      snapshots.map((snapshot: any) => ({
-        id: snapshot.id,
-        ...snapshot.data()
-      }))
-    ))
-  }
-
-  public getallRecipe() {
-    
-    const recipesRef = collection(this.firestore, "recipes");
-    
-  
-    return collectionSnapshots(recipesRef).pipe(
-      map((snapshots: any) =>
-        snapshots.map((snapshot: any) => ({
-          id: snapshot.id,
-          ...snapshot.data()
-        }))
-      )
-    );
-}
 
 getShopifyInventory(ids:any) {
   console.log('ids', ids);

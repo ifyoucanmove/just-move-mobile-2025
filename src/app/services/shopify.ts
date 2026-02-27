@@ -520,7 +520,7 @@ export class Shopify {
       }
       this.pageInfo = (data && data.products.pageInfo) || [];
       let productsData = (data && data.products.edges) || [];
-  
+      console.log(productsData,'productsData');
       // Map over products and attach their variants within the product object itself
       const mappedProducts = _.map(productsData, (item) => {
         const product = {
@@ -631,6 +631,7 @@ export class Shopify {
                 productType
                 isGiftCard
                 tags
+                descriptionHtml
                 variants(first: 30) {
                   edges {
                    node {
@@ -681,7 +682,7 @@ export class Shopify {
         console.log("DATA ", data);
         this.collectionsPageInfo = (data && data?.collection?.products?.pageInfo) || [];
         let productsData = (data && data?.collection?.products?.edges) || [];
-  
+        console.log(productsData,'productsData');
       // Map over products and attach their variants within the product object itself
       const mappedProducts = _.map(productsData, (item) => {
         const product = {
