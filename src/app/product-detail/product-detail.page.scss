@@ -177,7 +177,7 @@
   display: flex;
   flex-direction: row;
   gap: 20px;
-  margin-bottom: 1rem;
+  margin-bottom: 0rem;
   .variant-image-container{
     width: 100px;
     height: 100px;
@@ -191,14 +191,59 @@
     object-fit: cover;
     min-width: 100px;
   }
-}
+  .variant-details{
+    flex: 1;
+    min-width: 0;
+  }
+  .variant-chips-row{
+    margin-bottom: 10px;
+  }
+  .variant-chips{
+    display: flex;
+    flex-wrap: wrap;
+   /*  overflow-x: auto;
+    width: 100%; */
+    gap: 8px;
+  }
+  .variant-chip{
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid var(--ion-color-medium);
+    background: var(--ion-background-color);
+    color: var(--ion-text-color);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s, border-color 0.2s, color 0.2s;
+    white-space: nowrap;
+    &:hover{
+      border-color: var(--primary-color);
+      color: var(--primary-color);
+    }
+    &.selected{
+      background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+      border-color: transparent;
+      color: #ffffff;
+    }
+  }
 
+}
+.price-quantity-row{
+  margin-bottom: 8px;
+}
+.price{
+  font-weight: 600;
+  font-size: 16px;
+}
+.quantity-value{
+  width: 25px;
+  text-align: center;
+}
 .quantity-button{
-  --padding-start: 5px;
-  --padding-end: 5px;
-  --padding-top: 2px;
-  --padding-bottom: 2px;
-  /* gradient bg color */
+  --padding-start: 7px;
+    --padding-end: 7px;
+    --padding-top: 7px;
+    --padding-bottom: 7px;
   --background-color: linear-gradient(to right, #01b6d8 0, #01c8c3 25%, #02d8b0 50%, #02d9b0 75%, #02e6a0 100%);
   --background: linear-gradient(to right, #01b6d8 0, #01c8c3 25%, #02d8b0 50%, #02d9b0 75%, #02e6a0 100%);
   color: #ffffff;
@@ -385,11 +430,12 @@
   /* box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15); */
  // backdrop-filter: blur(10px);
   animation: indicatorFade 2s ease-in-out infinite;
-  color: white;
+  color: white !important;
   span {
     font-size: 16px;
     font-weight: 600;
     /* color: #01b6d8; */
+    color: white !important;
     letter-spacing: 0.5px;
     text-transform: uppercase;
   }
@@ -431,7 +477,7 @@
 
 .tutorial-close-btn{
   position: absolute;
-  bottom: 20px;
+  bottom: 50px;
   right: 10px;
   z-index: 10001;
   font-size: 20px;
@@ -454,4 +500,16 @@
 .add-to-cart-button{
   display: flex;
   justify-self: center;
+}
+.description-text{
+  font-size: 14px;
+  color: var(--primary-color);
+  text-decoration: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  .description-icon{
+    font-size: 14px;
+  }
 }

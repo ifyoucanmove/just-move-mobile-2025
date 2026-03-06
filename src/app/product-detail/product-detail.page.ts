@@ -6,6 +6,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RecipeService } from '../services/recipe';
 import { Shopify, SHOPIFY_SORT_KEY, ShopifyStores } from '../services/shopify';
 import { GestureController, LoadingController } from '@ionic/angular';
+import { ModalController } from '@ionic/angular/standalone';
+import { ViewDescriptionComponent } from '../shared/view-description/view-description.component';
 import { Alert } from '../services/alert';
 import { Customer } from '../services/customer';
 import { AuthService } from '../services/auth';
@@ -32,7 +34,7 @@ addIcons({
   templateUrl: './product-detail.page.html',
   styleUrls: ['./product-detail.page.scss'],
   standalone: true,
-  imports: [SharedModule,IonSpinner]
+  imports: [SharedModule, IonSpinner]
 })
 export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
 
@@ -44,6 +46,8 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
   shopifyInventory: any = [];
 
   quantity: any = {};
+  /** Selected variant per product (key: product id, value: variant object). Initially first variant. */
+  selectedVariantByProductId: Record<string, any> = {};
   selectedStore = 'justMove';
   selectedVariant: any;
   stores: string[] = ['justMove', 'pejaAmari', 'teamLashae', 'sayItLoud'];
@@ -83,7 +87,8 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
      private location: Location,
      public favoritesService: Favorites,
      private router: Router,
-     private gestureCtrl: GestureController) { }
+     private gestureCtrl: GestureController,
+     private modalCtrl: ModalController) { }
 
   ngOnInit() {
     this.getFavorites();
@@ -257,13 +262,26 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
    this.checkGetCartButton = false;
     let shopifyInventory = await this.recipeService.getAllProducts(this.recipe.shopify_inventory);
     this.shopifyInventory = shopifyInventory;
+    this.selectedVariantByProductId = {};
     console.log(this.shopifyInventory,'shopifyInventory');
     for(const item of this.shopifyInventory){
       for(const variant of item.variants){
          this.quantity[variant.id] = 1;
-        
+      }
+      // Initially select first variant per product
+      if (item.variants?.length) {
+        this.selectedVariantByProductId[item.id] = item.variants[0];
       }
     }
+  }
+
+  getSelectedVariant(item: any): any {
+    return this.selectedVariantByProductId[item.id] ?? item.variants?.[0];
+  }
+
+  selectVariant(item: any, variant: any) {
+    if (!item?.variants?.length || !variant) return;
+    this.selectedVariantByProductId[item.id] = variant;
   }
 
   goBack() {
@@ -491,13 +509,13 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
     let favObj={
       id: this.id,
       postId: this.id,
-      email: this.authService.userDetails.email,
+      email: this.authService.userDetails.email || null,
       title: recipe.title,
       dateCreated: new Date(),
-      image: recipe.image?.url,
-      description: recipe.description,
-      ingredients: recipe.ingredients,
-      categories: recipe.category,
+      image: recipe.image?.url || null,
+      description: recipe.description || null,
+      ingredients: recipe.ingredients || null,
+      categories: recipe.category || null,
       type: 'justmove-recipe'
     }
     console.log(favObj,'favObj');
@@ -533,5 +551,12 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
       console.log(err,'getFavorites error');
     });
   }
-
+  async viewDescription(description: string) {
+    const modal = await this.modalCtrl.create({
+      component: ViewDescriptionComponent,
+      componentProps: { description: description || '' },
+      cssClass: 'view-description-modal'
+    });
+    await modal.present();
+  }
 }

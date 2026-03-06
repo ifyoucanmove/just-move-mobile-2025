@@ -30,12 +30,21 @@ Products with all amazing recipes
           <form [formGroup]="signupForm">
             <div class="form-input-wrapper">
             <ion-input type="text" class="form-input"
-             placeholder="Name" formControlName="name"
-             [class.error]="nameControl?.invalid && nameControl?.touched"></ion-input>
+             placeholder="First Name" formControlName="fname"
+             [class.error]="fnameControl?.invalid && fnameControl?.touched"></ion-input>
              </div>
-             <div class="error-message" *ngIf="nameControl?.invalid && nameControl?.touched">
-               <ion-text color="danger">Name is required</ion-text>
+             <div class="error-message" *ngIf="fnameControl?.invalid && fnameControl?.touched">
+               <ion-text color="danger">First Name is required</ion-text>
              </div>
+
+             <div class="form-input-wrapper">
+              <ion-input type="text" class="form-input"
+               placeholder="Last Name" formControlName="lname"
+               [class.error]="lnameControl?.invalid && lnameControl?.touched"></ion-input>
+               </div>
+               <div class="error-message" *ngIf="lnameControl?.invalid && lnameControl?.touched">
+                 <ion-text color="danger">Last Name is required</ion-text>
+               </div>
              
              <div class="form-input-wrapper">
             <ion-input type="email" class="form-input" placeholder="Email" formControlName="email"
@@ -91,11 +100,16 @@ Products with all amazing recipes
     </ion-row>
     <ion-row class="mt-3">
       <ion-col size="12">
+        <div class="d-flex align-items-center justify-content-center">
+          <ion-text class="text-center highlight-text">If you have a Shopify account, please create an account using the same email. Otherwise create a new account.</ion-text>
+        </div>
+      </ion-col>
+      <ion-col size="12">
         <div class="d-flex align-items-center justify-content-center ">
           <ion-text>Already have an account? &nbsp;</ion-text>
           <a href="javascript:void(0)" (click)="goToSignin()">Sign In</a>
         </div>
-        <div class="d-flex align-items-center justify-content-center mt-2">
+      <!--   <div class="d-flex align-items-center justify-content-center mt-2">
           <b>OR</b>
         </div>
         <div class="d-flex align-items-center justify-content-center my-2">
@@ -108,7 +122,7 @@ Products with all amazing recipes
           <a href="javascript:void(0)">
             <ion-img src="assets/images/icons/gmail.png" class="social-icon"></ion-img>
           </a>
-        </div>
+        </div> -->
       </ion-col>
     </ion-row>
    </ion-grid>

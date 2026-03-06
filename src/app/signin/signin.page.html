@@ -55,21 +55,25 @@ Products with all amazing recipes
          </div>
       </ion-col>
     </ion-row>
-    <ion-row class="mt-3">
+    <ion-row class="mt-1">
+      <ion-col size="12">
+        <div class="d-flex align-items-center justify-content-center">
+          <ion-text class="text-center highlight-text">If you have a Shopify account, please create an account using the same email. Otherwise create a new account.</ion-text>
+        </div>
+      </ion-col>
       <ion-col size="12">
         <div class="d-flex align-items-center justify-content-center ">
           <ion-text>Don't have an account? &nbsp;</ion-text>
           <a href="javascript:void(0)" (click)="goToSignup()">Sign Up</a>
         </div>
       
-        <div class="d-flex align-items-center justify-content-center mt-2">
+       <!--  <div class="d-flex align-items-center justify-content-center mt-2">
           <b>OR</b>
         </div>
         <div class="d-flex align-items-center justify-content-center my-2">
           <ion-text>Sign in with the following:</ion-text>
         </div>
         <div class="d-flex align-items-center justify-content-center gap-2">
-          <!-- Facebook Sign-In -->
           <a href="javascript:void(0)" (click)="signInWithFacebook()" [class.disabled]="isSocialLoading.facebook">
             @if(isSocialLoading.facebook) {
               <ion-spinner name="crescent" class="social-spinner"></ion-spinner>
@@ -77,7 +81,6 @@ Products with all amazing recipes
               <ion-img src="assets/images/icons/fb.png" class="social-icon"></ion-img>
             }
           </a>
-          <!-- Google Sign-In -->
           <a href="javascript:void(0)" (click)="signInWithGoogle()" [class.disabled]="isSocialLoading.google">
             @if(isSocialLoading.google) {
               <ion-spinner name="crescent" class="social-spinner"></ion-spinner>
@@ -85,7 +88,6 @@ Products with all amazing recipes
               <ion-img src="assets/images/icons/gmail.png" class="social-icon"></ion-img>
             }
           </a>
-          <!-- Apple Sign-In (iOS only) -->
           @if(showAppleSignIn) {
             <a href="javascript:void(0)" (click)="signInWithApple()" [class.disabled]="isSocialLoading.apple" class="apple-signin-btn">
               @if(isSocialLoading.apple) {
@@ -95,7 +97,7 @@ Products with all amazing recipes
               }
             </a>
           }
-        </div>
+        </div> -->
       </ion-col>
     </ion-row>
    </ion-grid>
