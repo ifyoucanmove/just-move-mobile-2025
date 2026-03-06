@@ -9,8 +9,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Initialize Facebook SDK
-        Settings.shared.appID = "321355232061965"
-        Settings.shared.clientToken = "f947fb0a89289fae27b7c81c0df8fd03"
+        Settings.shared.appID = "1388246432414406"
+        Settings.shared.clientToken = "ed72127b8ef02c04f6e8b58962fb5c5b"
         Settings.shared.displayName = "Just Move Supplement"
         ApplicationDelegate.shared.application(application, didFinishLaunchingWithOptions: launchOptions)
         return true

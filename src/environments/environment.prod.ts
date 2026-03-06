@@ -42,7 +42,7 @@ export const environment = {
   googleClientId: '975192045133-dhu413ebr9m0d1i3s7sbecvk8acnnha9.apps.googleusercontent.com',
 
   // Facebook App ID from Facebook Developer Console
-  facebookAppId: '321355232061965',
+  facebookAppId: '1388246432414406',
 
   // Apple Sign-In configuration (iOS only)
   appleClientId: 'com.justmove.supplement',

@@ -70,14 +70,14 @@
 			<string>Facebook</string>
 			<key>CFBundleURLSchemes</key>
 			<array>
-				<string>fb321355232061965</string>
+				<string>fb1388246432414406</string>
 			</array>
 		</dict>
 	</array>
 	<key>FacebookAppID</key>
-	<string>321355232061965</string>
+	<string>1388246432414406</string>
 	<key>FacebookClientToken</key>
-	<string>f947fb0a89289fae27b7c81c0df8fd03</string>
+	<string>ed72127b8ef02c04f6e8b58962fb5c5b</string>
 	<key>FacebookDisplayName</key>
 	<string>Just Move Supplement</string>
 	<key>LSApplicationQueriesSchemes</key>

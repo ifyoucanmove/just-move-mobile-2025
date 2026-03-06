@@ -266,12 +266,17 @@ export class AuthService {
 
       if (Capacitor.isNativePlatform()) {
         // Native: use Capacitor FacebookLogin plugin
+        console.log('[Facebook] Step 1: Calling FacebookLogin.login()...');
         const result = await FacebookLogin.login({ permissions: ['email', 'public_profile'] });
+        console.log('[Facebook] Step 2: Got result:', JSON.stringify(result));
         if (!result.accessToken) {
           throw new Error('Facebook login failed - no access token');
         }
+        console.log('[Facebook] Step 3: Creating Firebase credential...');
         const credential = FacebookAuthProvider.credential(result.accessToken.token);
+        console.log('[Facebook] Step 4: Calling signInWithCredential...');
         userCredential = await signInWithCredential(this.auth, credential);
+        console.log('[Facebook] Step 5: Firebase auth SUCCESS');
       } else {
         // Web: use Firebase popup
         const provider = new FacebookAuthProvider();
