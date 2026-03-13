@@ -5,7 +5,7 @@ import { ActivatedRoute } from '@angular/router';
 import { User } from '../services/user';
 import { Customer } from '../services/customer';
 import { addIcons } from 'ionicons';
-import { add, remove, trash } from 'ionicons/icons';
+import { add, remove, trash, warning, linkOutline } from 'ionicons/icons';
 import { AlertController } from '@ionic/angular/standalone';
 import { LoadingController } from '@ionic/angular/standalone';
 import { combineLatest } from 'rxjs';
@@ -15,6 +15,8 @@ import { SharedModule } from '../shared/shared/shared-module';
 import { MainHeaderComponent } from '../shared/main-header/main-header.component';
 import { Alert } from '../services/alert';
 import { AuthService } from '../services/auth';
+import { Common } from '../services/common';
+import { Logging } from '../services/logging';
 
 @Component({
   selector: 'app-my-cart',
@@ -32,6 +34,7 @@ export class MyCartPage implements OnInit {
  
   @ViewChild("accordionGroup", { static: true }) accordionGroup!: any;
 
+  showWarning = false;
   constructor(
     private shopifyService: Shopify,
     private alertController: AlertController,
@@ -41,12 +44,24 @@ export class MyCartPage implements OnInit {
     private alsertService: Alert,
     private userService: User,
     public customerService : Customer,
-    public authService: AuthService
+    public authService: AuthService,
+    private commonService: Common,
+    public logService: Logging
+
   ) {
-    addIcons({remove, add, trash})
+    addIcons({ remove, add, trash, warning, linkOutline })
   }
 
   ngOnInit() {
+    this.logService.logActivity({
+      activity: 'My cart page loaded.',
+      page: 'my-cart'
+    });
+    this.commonService.isUserInCalifornia().then((isCalifornia) => {
+      if (isCalifornia) {
+        this.showWarning = true;
+      }
+    });
     this.shopifyService.loadCartItems(this.authService.currentUser?.email || '');
     this.route.queryParams.subscribe((param) => {
       if (param) {
@@ -149,7 +164,7 @@ export class MyCartPage implements OnInit {
   increaseQuantity(productId: string, store:any) {
     const cartItems = this.shopifyService.getCart(store);
     const item = cartItems.find((item) => item.id === productId);
-
+    console.log(item,'item');
     if (item) {
       item.quantity++;
       this.shopifyService.setCart(store, cartItems);
@@ -157,9 +172,34 @@ export class MyCartPage implements OnInit {
         .addToCartsFb(cartItems, store)
         .then(() => {
          console.log("Cart updated successfully");
+         this.logService.logActivity(
+          {
+            activity: 'increase quantity button clicked.',
+            page: 'my-cart',
+            payload: {
+              variantId: productId,
+              productId: item.parentProductId,
+              productTitle: item.parentProductTitle,
+              store: store
+            }
+          }
+        );
         })
         .catch((error) => {
           console.error("Error updating cart:", error);
+          this.logService.logError(
+            {
+              error: error,
+              activity: 'increase quantity button clicked.',
+              page: 'my-cart',
+              payload:{
+                variantId: productId,
+                productId: item.parentProductId,
+                productTitle: item.parentProductTitle,
+                store: store
+              }
+            }
+          );
         });
     }
   }
@@ -175,14 +215,39 @@ export class MyCartPage implements OnInit {
         .addToCartsFb(cartItems, store)
         .then(() => {
           console.log("Cart updated successfully");
+          this.logService.logActivity(
+            {
+              activity: 'decrease quantity button clicked.',
+              page: 'my-cart',
+              payload: {
+                variantId: productId,
+                productId: item.parentProductId,
+                productTitle: item.parentProductTitle,
+                  store: store
+              }
+            }
+          );
         })
         .catch((error) => {
           console.error("Error updating cart:", error);
+          this.logService.logError(
+            {
+              error: error,
+              activity: 'decrease quantity button clicked.',
+              page: 'my-cart',
+              payload: {
+                variantId: productId,
+                productId: item.parentProductId,
+                productTitle: item.parentProductTitle,
+                store: store
+              }
+            }
+          );
         });
     }
   }
 
-  async confirmDelete(productId: string, store: string) {
+  async confirmDelete(item: any, store: string) {
   
     const alert = await this.alertController.create({
       header: "Confirm",
@@ -197,7 +262,7 @@ export class MyCartPage implements OnInit {
         {
           text: "Yes",
           handler: () => {
-            this.deleteItem(productId, store);
+            this.deleteItem(item, store);
           },
         },
       ],
@@ -205,11 +270,11 @@ export class MyCartPage implements OnInit {
     await alert.present();
   }
 
-  deleteItem(productId: string, store: string) {
+  deleteItem(product: any, store: string) {
     this.loadingCtrl.create().then((loadingEl) => {
       loadingEl.present();
       const cartItems = this.shopifyService.getCart(store);
-      const updatedCartItems = cartItems.filter((item) => item.id !== productId);
+      const updatedCartItems = cartItems.filter((item) => item.id !== product.id);
 
       this.shopifyService.setCart(store, cartItems);
       this.shopifyService
@@ -218,17 +283,42 @@ export class MyCartPage implements OnInit {
           loadingEl.dismiss();
        //   this.logService.logActivity('cart', `removed-${productId}-${store}`)
           console.log("Item deleted and cart updated successfully");
+          this.logService.logActivity(
+            {
+              activity: 'Delete item from cart button clicked.',
+              page: 'my-cart',
+              payload: {
+                variantId: product.id,
+                productId: product.parentProductId,
+                productTitle: product.parentProductTitle,
+                store: store
+              }
+            }
+          );
         })
         .catch((error) => {
           loadingEl.dismiss();
           console.error("Error updating cart:", error);
           this.alsertService.showFirebaseAlert(error);
+          this.logService.logError(
+            {
+              error: error,
+              activity: 'Delete item from cart button clicked.',
+              page: 'my-cart',
+              payload: {
+                variantId: product.id,
+                productId: product.parentProductId,
+                productTitle: product.parentProductTitle,
+                store: store
+              }
+            }
+          );
         });
     });
   }
 
   checkout(store: string) {
-
+console.log("Checkout button clicked", store);
     this.loadingCtrl.create().then(async (loadingEl) => {
       loadingEl.present();
       try {
@@ -250,6 +340,17 @@ export class MyCartPage implements OnInit {
         await this.shopifyService.updateShopifyCustomer(email,store, this.customerService.customerSubscribed$.value) // temp call
         let data = await this.shopifyService.createCheckoutId(items, email);
       // alert(JSON.stringify(data));
+      this.logService.logActivity(
+        {
+          activity: 'Checkout button clicked.',
+          page: 'my-cart',
+          payload: {
+            store: store,
+            module: "shopify",
+            checkoutId: data.cartCreate.cart.id
+          }
+        }
+      );
         loadingEl.dismiss();
         if (data && !data.errors && data.cartCreate.cart.id) {
           const webUrl = data.cartCreate.cart.checkoutUrl;
@@ -261,6 +362,17 @@ export class MyCartPage implements OnInit {
       } catch (error) {
         loadingEl.dismiss();
         this.alsertService.showFirebaseAlert(error);
+        this.logService.logError(
+          {
+            error: error,
+            activity: 'Checkout button clicked.',
+            page: 'my-cart',
+            payload: {
+              store: store,
+              module: "shopify"
+            }
+          }
+        );
       }
     });
   }

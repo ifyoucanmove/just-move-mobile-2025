@@ -7,6 +7,7 @@ import { Auth } from '@angular/fire/auth';
 import { addIcons } from 'ionicons';
 import { cart } from 'ionicons/icons';
 import { SharedModule } from '../shared/shared/shared-module';
+import { Logging } from '../services/logging';
 
 @Component({
   selector: 'app-card-footer',
@@ -21,6 +22,7 @@ export class CardFooterComponent  implements OnInit {
   selectedStore : string = '';
   constructor(private shopifyService : Shopify,
      private router : Router, private authService : AuthService,
+     public logService: Logging,
       private afAuth : Auth, public customerService : Customer) {
     addIcons({cart})
    }
@@ -70,6 +72,15 @@ export class CardFooterComponent  implements OnInit {
   cartClicked(){
     this.selectedStore = 'justMove';
     this.router.navigate(['/my-cart/'], {queryParams : {store : 'justMove'}});
+    this.logService.logActivity(
+      {
+        activity: 'Cart clicked.',
+        page: 'card-footer',
+        payload: {
+          store: this.selectedStore
+        }
+      }
+    );
   }
 
 }

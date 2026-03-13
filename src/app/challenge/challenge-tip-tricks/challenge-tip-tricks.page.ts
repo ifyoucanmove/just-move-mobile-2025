@@ -14,6 +14,7 @@ import { AuthService } from 'src/app/services/auth';
 import { MoodCaptureComponent } from 'src/app/shared/mood-capture/mood-capture.component';
 import { CompletedHistoryComponent } from 'src/app/shared/completed-history/completed-history.component';
 import { MainHeaderComponent } from 'src/app/shared/main-header/main-header.component';
+import { Logging } from 'src/app/services/logging';
 @Component({
   selector: 'app-challenge-tip-tricks',
   templateUrl: './challenge-tip-tricks.page.html',
@@ -42,7 +43,8 @@ export class ChallengeTipTricksPage implements OnInit {
     private customerService : Customer,
     private userService: User,
     private modalCtrl : ModalController,
-    private authService: AuthService
+    private authService: AuthService,
+    public logService: Logging
   ) {}
 
   ngOnInit() {
@@ -52,6 +54,14 @@ export class ChallengeTipTricksPage implements OnInit {
       this.challengeId = this.challengeService.challengeDatas[selectedIndex].id;
       this.watchDataLoaded = false;
       this.loadVideoWatchData();
+      this.logService.logActivity({
+        activity: 'Challenge tip tricks page loaded.',
+        page: 'challenge-tip-tricks',
+        payload: {
+          challengeId: this.challengeId || '',
+          module: "challenge"
+        }
+      });
     });
     this.userId = this.userService.email;
   }
@@ -145,9 +155,27 @@ export class ChallengeTipTricksPage implements OnInit {
                   let payload = {
                     resource :"challenge-warmup", type:"completed", challengeId:this.challengeId, warmupvideo: videoName  , numberOfCompletion: data.watchCount, module :"challenge"
                   }
+                  this.logService.logActivity(
+                    {
+                      activity: 'completed warm up video.',
+                      page: 'challenge-tip-tricks',
+                      payload: payload,
+                    }
+                  );
                 },
                 (err) => {
-                
+                  this.logService.logError(
+                    {
+                      error: err,
+                      activity: 'Error completing warm up video.',
+                      page: 'challenge-tip-tricks',
+                      payload: {
+                        challengeId: this.challengeId,
+                        warmupvideo: videoName,
+                        module: "challenge"
+                      }
+                    }
+                  );
                 }
               );
             },
@@ -161,9 +189,27 @@ export class ChallengeTipTricksPage implements OnInit {
         let payload = {
           resource :"challenge-warmup", type:"completed", challengeId:this.challengeId, warmupvideo: videoName  , numberOfCompletion: data.watchCount, module :"challenge"
         }
+        this.logService.logActivity(
+          {
+            activity: 'completed warm up video.',
+            page: 'challenge-tip-tricks',
+            payload: payload,
+          }
+        );
       },
       (err) => {
-       
+        this.logService.logError(
+          {
+            error: err,
+            activity: 'Error completing warm up video.',
+            page: 'challenge-tip-tricks',
+            payload: {
+              challengeId: this.challengeId,
+              warmupvideo: videoName,
+              module: "challenge"
+            }
+          }
+        );
       }
     );
     }
@@ -191,6 +237,13 @@ export class ChallengeTipTricksPage implements OnInit {
     let payload= {
       resource :"challenge-warmup", type:"view", challengeId:this.challengeId, warmupvideo: name , module :"challenge"
     }
+    this.logService.logActivity(
+      {
+        activity: 'video played.',
+        page: 'challenge-tip-tricks',
+        payload: payload,
+      }
+    );
   }
 
   async completedHistory(name: string){

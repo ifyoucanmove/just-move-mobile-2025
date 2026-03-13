@@ -8,6 +8,7 @@ import { ToastController } from '@ionic/angular/standalone';
 import { LoadingController } from '@ionic/angular/standalone';
 import { Firestore } from '@angular/fire/firestore';
 import { MainHeaderComponent } from '../main-header/main-header.component';
+import { Logging } from 'src/app/services/logging';
 
 @Component({
   selector: 'app-mood-capture',
@@ -41,7 +42,8 @@ export class MoodCaptureComponent  implements OnInit {
     private toastCtrl: ToastController,
     private loadingCtrl : LoadingController,
     private userService : User,
-    private firestoreService : Firestore
+    private firestoreService : Firestore,
+    public logService: Logging
   ) {
     this.workoutForm = this.fb.group({
       beforeEnergy: ['', Validators.required],
@@ -52,6 +54,7 @@ export class MoodCaptureComponent  implements OnInit {
   }
 
   ngOnInit() {
+    console.log("data", this.data);
     if (this.data) {
       this.workoutForm.patchValue(this.data.energyData);
     }
@@ -96,11 +99,35 @@ export class MoodCaptureComponent  implements OnInit {
           await this.service.updateMoodData(this.data.id, {
             energyData: this.workoutForm.value
           }).toPromise();
+          this.logService.logActivity({
+            activity: 'mood data updated.',
+            page: 'mood-capture',
+            payload: {
+              resource: 'mood-data',
+              type: 'update',
+              challengeId: this.data.challengeId,
+              title: this.data.title,
+              category: this.data.category,
+              energyData: this.data.energyData
+            }
+          });
           loadingEl.dismiss();
           this.modalCtrl.dismiss(true);
         } catch (err) {
           loadingEl.dismiss();
-      
+          this.logService.logError({
+            error: err,
+            activity: 'mood data updated.',
+            page: 'mood-capture',
+            payload: {
+              resource: 'mood-data',
+              type: 'update',
+              challengeId: this.data.challengeId,
+              title: this.data.title,
+              category: this.data.category,
+              energyData: this.data.energyData
+            }
+          });
         }
       })
     }
@@ -149,8 +176,33 @@ export class MoodCaptureComponent  implements OnInit {
 
     this.service.setDocument('completed', id, data).subscribe((res)=>{
       this.modalCtrl.dismiss(true);
+      this.logService.logActivity({
+        activity: 'mood data saved.',
+        page: 'mood-capture',
+        payload: {
+          resource: 'mood-data',
+          type: 'save',
+          challengeId: this.data.challengeId,
+          title: "Day Energy",
+          category: "day-energy",
+          energyData: this.workoutForm.value
+        }
+      });
     }, (err)=>{
       console.log(err);
+      this.logService.logError({
+        error: err,
+        activity: 'mood data saved.',
+        page: 'mood-capture',
+        payload: {
+          resource: 'mood-data',
+          type: 'save',
+          challengeId: this.data.challengeId,
+          title: "Day Energy",
+          category: "day-energy",
+          energyData: this.workoutForm.value
+        }
+      });
     })
   }
 

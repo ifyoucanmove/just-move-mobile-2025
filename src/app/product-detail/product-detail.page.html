@@ -59,21 +59,21 @@
           </div>
            <div class="variant-details">
              <h6 class="mt-0">{{ item.title }}</h6>
-             @if(item.variants.length > 1) {
-             <div class="variant-chips-row">
-               <div class="variant-chips">
-                 @for (v of item.variants; track v.id) {
-                   <button
-                     type="button"
-                     class="variant-chip"
-                     [class.selected]="selectedVariant?.id === v.id"
-                     (click)="selectVariant(item, v)">
-                     {{ v.title }}
-                   </button>
-                 }
-               </div>
-             </div>
-             }
+             @if (item.variants.length > 1) {
+              <div class="variant-select-row">
+                <ion-select
+                  [value]="selectedVariant?.id"
+                  (ionChange)="onVariantChange(item, $event)"
+                  interface="popover"
+                  [interfaceOptions]="{ side: 'bottom', alignment: 'start' }"
+                  placeholder="Select variant"
+                  class="variant-select">
+                  @for (v of item.variants; track v.id) {
+                    <ion-select-option [value]="v.id">{{ v.title }}</ion-select-option>
+                  }
+                </ion-select>
+              </div>
+            }
            
        
              @if (item.descriptionHtml) {

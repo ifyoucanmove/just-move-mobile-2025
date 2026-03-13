@@ -2,11 +2,22 @@
   <app-main-header [headerType]="1" buttonType="back-icon" title="My Cart"></app-main-header>
 </ion-header>
 
-<ion-content >
+<ion-content>
 
+  <div class="california-warning" *ngIf="showWarning">
+    <div class="california-warning-header">
+      <ion-icon name="warning" class="california-warning-icon" aria-hidden="true"></ion-icon>
+      <h2 class="california-warning-title">CALIFORNIA WARNING</h2>
+    </div>
+    <p class="california-warning-text">
+      Consuming this product can expose you to chemicals including Lead, which is known to the State of California to cause cancer and birth defects or other reproductive harm.
+    </p>
+    <p class="california-warning-more">For more information, go to</p>
+    <a href="https://www.P65Warnings.ca.gov/food" target="_blank" rel="noopener noreferrer" class="california-warning-url">www.P65Warnings.ca.gov/food</a>
+  </div>
 
-<div class="accordon-container">
-  <p class="desc" >You have items from store, please make sure to checkout and pay.</p>
+  <div class="accordon-container">
+    <p class="desc">You have items from store, please make sure to checkout and pay.</p>
 
 <!--   <ion-accordion-group [value]="selectedStore" (ionChange)="accordionChange($event)"   #accordionGroup>
     <ion-accordion *ngFor="let store of stores; trackBy: trackByStore" class="accordion"
@@ -16,7 +27,7 @@
       <ion-item class="header-item" [ngClass]="[store.cssClass]" slot="header" lines="none">
         <div class="main-div">
           <h1>{{ store.store  }}</h1> <!-- Use your pipe to convert the store name -->
-          <p>{{ store.length }} Items Added</p> <!-- Show actual number of items -->
+          <p>{{ store.length }} Item(s) Added</p> <!-- Show actual number of items -->
         </div>
         <img slot="end" [src]="store.imageUrl" />
       </ion-item>
@@ -45,7 +56,7 @@
             </div>
             <div class="trash-div" >
              <div>
-              <ion-icon  (click)="confirmDelete(item.id, store.store)" name="trash"></ion-icon>
+              <ion-icon  (click)="confirmDelete(item, store.store)" name="trash"></ion-icon>
              </div>
             </div>
         

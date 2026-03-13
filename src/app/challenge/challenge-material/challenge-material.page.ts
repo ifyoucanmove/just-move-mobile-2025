@@ -4,6 +4,7 @@ import { MainHeaderComponent } from 'src/app/shared/main-header/main-header.comp
 import { Challenges } from 'src/app/services/challenges';
 import { ActivatedRoute } from '@angular/router';
 import { Customer } from 'src/app/services/customer';
+import { Logging } from 'src/app/services/logging';
 
 @Component({
   selector: 'app-challenge-material',
@@ -58,12 +59,21 @@ export class ChallengeMaterialPage implements OnInit {
   constructor(
     private challengeService: Challenges,
     private route: ActivatedRoute,
-    private customerService: Customer
+    private customerService: Customer,
+    public logService: Logging
   ) {}
 
   ngOnInit() {
     this.route.queryParams.subscribe((res) => {
       this.loadDatas();
+    });
+    this.logService.logActivity({
+      activity: 'Challenge material page loaded.',
+      page: 'challenge-material',
+      payload: {
+        challengeId: this.challengeService.challengeDatas[this.challengeService.selectedChallengeIndex].id || '',
+        module: "challenge"
+      }
     });
   }
 
@@ -154,6 +164,18 @@ export class ChallengeMaterialPage implements OnInit {
     this.materialPDFUrlSuper3 = this.challengeService.challengeDatas[
       selectedIndex
     ].materialPDFUrlSuper3;
+
+    this.logService.logActivity(
+      {
+        activity: 'challenge material page loaded.',
+        page: 'challenge-material',
+        challengeId: this.challengeService.challengeDatas[selectedIndex].id,
+        module: "challenge",
+        payload: {
+          material: this.title,
+        },
+      }
+    );
   }
 
   openUrl(url:string, tilte?: string) {
@@ -162,6 +184,13 @@ export class ChallengeMaterialPage implements OnInit {
     let payload = {
       resource:"challenge-material" , type:"view", material:this.title ,  challengeId: this.challengeService.challengeDatas[this.challengeService.selectedChallengeIndex].id , module :"challenge"
     }
+    this.logService.logActivity(
+      {
+        activity: 'challenge material page loaded.',
+        page: 'challenge-material',
+        payload: payload,
+      }
+    );
    }
 }
 

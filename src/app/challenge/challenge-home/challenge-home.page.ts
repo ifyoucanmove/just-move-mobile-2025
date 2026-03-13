@@ -11,6 +11,7 @@ import { Auth } from '@angular/fire/auth';
 import { User } from 'src/app/services/user';
 import { SharedModule } from 'src/app/shared/shared/shared-module';
 import { MainHeaderComponent } from 'src/app/shared/main-header/main-header.component';
+import { Logging } from 'src/app/services/logging';
 
 @Component({
   selector: 'app-challenge-home',
@@ -68,7 +69,8 @@ export class ChallengeHomePage implements OnInit {
     private completedService: Completed,
     private afAuth: Auth,
     private customerService: Customer,
-    private userService: User
+    private userService: User,
+    private logService: Logging
   ) {}
 
   ionViewWillLeave() {
@@ -356,6 +358,13 @@ export class ChallengeHomePage implements OnInit {
       challengeId: this.challengeId,
       module: "challenge",
     };
+    this.logService.logActivity(
+      {
+        activity: 'challenge preview video played.',
+        page: 'challenge-home',
+        payload: payload,
+      }
+    );
   }
 
   addMeasurement(){

@@ -8,6 +8,7 @@ import { AuthService } from '../services/auth';
 import { Common } from '../services/common';
 import { Challenges } from '../services/challenges';
 import { Capacitor } from '@capacitor/core';
+import { Logging } from '../services/logging';
 
 @Component({
   selector: 'app-signin',
@@ -26,7 +27,7 @@ export class SigninPage implements OnInit {
     apple: false
   };
   showAppleSignIn: boolean = Capacitor.getPlatform() !== 'android';
-  constructor(public fb:FormBuilder,
+  constructor(public fb:FormBuilder,public logService:Logging,
     public authService:AuthService,public common:Common,
     public location:Location,public router:Router,
     private challengeService: Challenges) {
@@ -45,6 +46,10 @@ export class SigninPage implements OnInit {
       this.challengeService.loadAllChallengeData();
       this.router.navigate(['/products/home-tab'], { replaceUrl: true });
     }
+    this.logService.logActivity({
+      activity: 'Sign in page loaded.',
+      page: 'signin'
+    });
   }
 
   ionViewWillEnter() {
@@ -67,11 +72,30 @@ export class SigninPage implements OnInit {
         // Load challenge data after successful login
         this.challengeService.loadAllChallengeData();
         this.router.navigate(['/products/home-tab'], { replaceUrl: true });
+        this.logService.logActivity(
+          {
+            activity: 'Sign in successful.',
+            page: 'signin',
+            payload: {
+              email: this.signinForm.value.email,
+            },
+          }
+        );
       }
     }catch(error:any){
       console.log(error);
       //if auth/invalid-credential
       this.handleLoginError(error);
+      this.logService.logError(
+        {
+          error: error,
+          activity: 'Sign in button clicked.',
+          page: 'signin',
+          payload: {
+            email: this.signinForm.value.email,
+          },
+        }
+      );
     } finally {
       this.isLoading = false;
     }

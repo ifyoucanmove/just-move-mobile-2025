@@ -15,6 +15,7 @@ import { RecipeService } from 'src/app/services/recipe';
 import { addIcons } from 'ionicons';
 import { menuOutline, heartOutline, closeOutline, trophyOutline, cartOutline, receiptOutline, storefrontOutline } from 'ionicons/icons';
 import { environment } from 'src/environments/environment';
+import { Logging } from 'src/app/services/logging';
 
 @Component({
   selector: 'app-home-tab',
@@ -56,6 +57,7 @@ export class HomeTabPage implements OnInit {
     private platform: Platform,
     private navCtrl: NavController,
     public recipeService: RecipeService,
+    public logService: Logging
   ) {
     addIcons({
       trophyOutline,
@@ -102,7 +104,14 @@ export class HomeTabPage implements OnInit {
       this.recipeService.swiperRecipes = this.recipesHome;
       console.log(this.recipeService.swiperRecipes,'swiperRecipes');
     });
-    
+    this.logService.logActivity({
+      activity: 'Home tab page loaded.',
+      page: 'home-tab'
+    });
+
+    this.logService.getActivity().subscribe((res) => {
+      console.log(res,'activity');
+    });
 
   }
 
@@ -168,10 +177,32 @@ export class HomeTabPage implements OnInit {
           },
           (err) => {
             console.log(err);
+            this.logService.logError(
+              {
+                error: err,
+                activity: 'Error loading challenge data.',
+                page: 'home-tab',
+                payload: {
+                  category: this.cat || '',
+                  type: type,
+                }
+              }
+            );
           }
         );
       } catch (error) {
         console.log("error from tryc ", error);
+        this.logService.logError(
+          {
+            error: error,
+            activity: 'Error loading challenge data.',
+            page: 'home-tab',
+            payload: {
+              category: this.cat || '',
+              type: type,
+            }
+          }
+        );
       }
 
   }
@@ -227,6 +258,15 @@ export class HomeTabPage implements OnInit {
       if (hasPurchased) {
         // User has purchased - navigate to challenge content
         this.router.navigateByUrl("challenge/challenge-home/" + challenge.id);
+        this.logService.logActivity(
+          {
+            activity: 'Challenge clicked.Challenge purchased.',
+            page: 'home-tab',
+            payload: {
+              challengeId: challenge.id,
+            }
+          }
+        );
       } else {
         // User has NOT purchased - ask for confirmation before redirecting to checkout
         const result = await this.common.showConfirmDialog(
@@ -246,15 +286,45 @@ export class HomeTabPage implements OnInit {
 
           if (checkoutUrl) {
             // Open Shopify checkout in browser
+
             await Browser.open({ url: checkoutUrl });
+            this.logService.logActivity(
+              {
+                activity: 'Challenge clicked.Challenge purchased.',
+                page: 'home-tab',
+                payload: {
+                  challengeId: challenge.id
+                }
+              }
+            );
           } else {
             this.common.showErrorToast('Unable to load checkout. Please try again.');
+            this.logService.logError(
+              {
+                error: 'Unable to load checkout.',
+                activity: 'Challenge clicked.Error loading checkout.',
+                page: 'home-tab',
+                payload: {
+                  challengeId: challenge.id,
+                }
+              }
+            );
           }
         }
       }
     } catch (error) {
       console.error('Error in challengeClicked:', error);
       this.common.showErrorToast('Error checking purchase status. Please try again.');
+      this.logService.logError(
+        {
+          error: error,
+          activity: 'Challenge clicked.',
+          page: 'home-tab',
+          payload: {
+            challengeId: challenge.id,
+          }
+        }
+      );
     }
   }
 
@@ -263,6 +333,15 @@ export class HomeTabPage implements OnInit {
       this.router.navigate(['/products/home-tab'], {
         queryParams: { search: this.searchTextHome.trim() }
       });
+      this.logService.logActivity(
+        {
+          activity: 'Search clicked.',
+          page: 'home-tab',
+          payload: {
+            searchText: this.searchTextHome.trim(),
+          }
+        }
+      );
     } else {
       this.router.navigate(['/products/home-tab']);
     }
@@ -306,6 +385,15 @@ export class HomeTabPage implements OnInit {
 
   goToProductDetail(id:string) {
     this.router.navigate(['/product-detail', id],{queryParams : {redirect : 'home-tab'}});
+    this.logService.logActivity(
+      {
+        activity: 'Go to product detail page.',
+        page: 'home-tab',
+        payload: {
+          recipeId: id,
+        }
+      }
+    );
   }
 }
 

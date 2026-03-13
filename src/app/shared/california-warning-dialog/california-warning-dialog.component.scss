@@ -1,0 +1,59 @@
+.california-warning-dialog {
+  padding: 16px;
+}
+
+.california-warning-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.california-warning-icon {
+  font-size: 28px;
+  color: #f5a623;
+  flex-shrink: 0;
+}
+
+.california-warning-title {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #000000;
+}
+
+.california-warning-text {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #000000;
+}
+
+.california-warning-more {
+  margin: 0 0 4px 0;
+  font-size: 14px;
+  color: #000000;
+}
+
+.california-warning-url {
+  display: inline-block;
+  margin-bottom: 20px;
+  font-size: 14px;
+  color: #1976d2;
+  text-decoration: underline;
+  word-break: break-all;
+
+  &:hover {
+    color: #1565c0;
+  }
+}
+
+.ok-button {
+  --background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+  --border-radius: 8px;
+  font-weight: 600;
+  text-transform: none;
+  margin-top: 8px;
+}

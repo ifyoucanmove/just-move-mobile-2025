@@ -16,6 +16,7 @@ import { Favorites } from 'src/app/services/favorites';
 import { Byo } from 'src/app/services/byo';
 import { CompletedHistoryComponent } from 'src/app/shared/completed-history/completed-history.component';
 import { MoodCaptureComponent } from 'src/app/shared/mood-capture/mood-capture.component';
+import { Logging } from 'src/app/services/logging';
 
 @Component({
   selector: 'app-challenge-day',
@@ -88,6 +89,7 @@ export class ChallengeDayPage implements OnInit {
     private afAuth: Auth,
     private byoService: Byo,
     private favoriteService : Favorites,
+    public logService: Logging,
     private userService: User
   ) {
     addIcons({heartOutline, heart, caretBackOutline, caretForwardOutline})
@@ -122,9 +124,14 @@ export class ChallengeDayPage implements OnInit {
         day : this.id
       };
 
-    //  this.logService.logActivity("challenge-day", this.title + " - " + this.id, '', payload);
-    //  this.logService.logChallengeDayAccess(this.userId, this.challengeId, this.id);
-
+     this.logService.logActivity(
+      {
+        activity: 'challenge day page loaded.',
+        page: 'challenge-day',
+        payload: payload,
+      }
+     );
+   
       this.promoImage = this.challengeService.challengeDatas[selectedIndex].nextAdBannerUrl;
       this.promoHeader = this.challengeService.challengeDatas[selectedIndex].nextAdBannerHeader;
       this.adTitle = this.challengeService.challengeDatas[selectedIndex].adTitle;
@@ -390,10 +397,28 @@ export class ChallengeDayPage implements OnInit {
                     day : this.id,
                     numberOfCompletion : data.watchCount
                   };
-                //  this.logService.logActivity("challenge-day", `completed - ${this.title} - ${this.id} (${data.watchCount})`, '', payload);
+                 this.logService.logActivity(
+                  {
+                    activity: 'completed challenge day video.',
+                    page: 'challenge-day',
+                    payload: payload,
+                  }
+                 );
                 },
                 (err) => {
-               //   this.logService.logError("challenge-day", JSON.stringify(err));
+                  this.logService.logError(
+                    {
+                      error: err,
+                      activity: 'Error completing challenge day video.',
+                      page: 'challenge-day',
+                      payload: {
+                        challengeId: this.challengeId,
+                        module: "challenge",
+                        day : this.id,
+                        numberOfCompletion : data.watchCount
+                      }
+                    }
+                  );
                 }
               );
             },
@@ -413,12 +438,30 @@ export class ChallengeDayPage implements OnInit {
             day : this.id,
             numberOfCompletion : data.watchCount
           };
-        //  this.logService.logActivity("challenge-day", `completed - ${this.title} - ${this.id} (${data.watchCount})`, '', payload);
+          this.logService.logActivity(
+            {
+              activity: 'completed challenge day video.',
+              page: 'challenge-day',
+              payload: payload,
+            }
+          );
 
 
         },
         (err) => {
-       //   this.logService.logError("challenge-day", JSON.stringify(err));
+          this.logService.logError(
+            {
+              error: err,
+              activity: 'Error completing challenge day video.',
+              page: 'challenge-day',
+              payload: {
+                challengeId: this.challengeId,
+                module: "challenge",
+                day : this.id,
+                numberOfCompletion : data.watchCount
+              }
+            }
+          );
         }
       );
     }
@@ -433,7 +476,13 @@ export class ChallengeDayPage implements OnInit {
       module: "challenge",
       day : this.id
     };
-  //  this.logService.logActivity("challenge-day", `video-played - ${this.title} - ${this.id}`, '', payload);
+    this.logService.logActivity(
+      {
+        activity: 'video played.',
+        page: 'challenge-day',
+        payload: payload,
+      }
+    );
   }
 
   getDuration(duration:any): string {
@@ -527,10 +576,23 @@ export class ChallengeDayPage implements OnInit {
       (res) => {
         console.log(res);
 
-
+        this.logService.logActivity(
+          {
+            activity: 'Add to fav button clicked.',
+            page: 'challenge-day',
+            payload: favItem,
+          }
+        );
       },
       (err) => {
-      
+        this.logService.logError(
+          {
+            error: err,
+            activity: 'Add to fav button clicked.',
+            page: 'challenge-day',
+            payload: favItem
+          }
+        );
       }
     );
   }
@@ -540,8 +602,23 @@ export class ChallengeDayPage implements OnInit {
     const favoriteList = JSON.parse(localStorage.getItem(key) || '[]');
     const favItem = favoriteList.filter((item: { postId: string; }) => item.postId === this.challengeId + ":" + this.id)[0];
     this.favoriteService.deleteFavoriteItem(favItem.id).subscribe((res) => {
-   //   this.logService.logActivity(  'challenge-day', `favorite-removed  - ${this.title} - day ${this.id}`, '',{resource :"challenge-day", type:"remove-favourite", challengeId:this.challengeId, day:this.id , module :"challenge"});
+      this.logService.logActivity(
+        {
+          activity: 'Remove from fav button clicked.',
+          page: 'challenge-day',
+          payload: favItem,
+        }
+      );
 
+    },(err) => {
+      this.logService.logError(
+        {
+          error: err,
+          activity: 'Remove from fav button clicked.',
+          page: 'challenge-day',
+          payload: favItem
+        }
+      );
     });
   }
 

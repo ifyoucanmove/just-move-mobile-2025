@@ -15,6 +15,7 @@ import { App } from '@capacitor/app';
 import { Browser } from '@capacitor/browser';
 import { Subscription } from 'rxjs';
 import { RecipeService } from '../services/recipe';
+import { Logging } from '../services/logging';
 
 addIcons({
   menuOutline,
@@ -62,7 +63,8 @@ export class HomePage implements OnInit, OnDestroy {
     public shopifyService: Shopify,
     private platform: Platform,
     private navCtrl: NavController,
-    public recipeService: RecipeService
+    public recipeService: RecipeService,
+    public logService: Logging
   ) {
     addIcons({
       trophyOutline,
@@ -108,7 +110,16 @@ export class HomePage implements OnInit, OnDestroy {
       this.recipesHome = res.filter((recipe:any) => recipe.category === "Protein Shakes" && recipe.image?.url  ).slice(0, 4);
     
     });
-    
+    this.logService.logActivity(
+      {
+        activity: 'Home page loaded.',
+        page: 'home'
+      }
+    );
+
+    this.logService.getActivity().subscribe((res) => {
+      console.log(res,'activity');
+    });
 
   }
 
@@ -169,10 +180,26 @@ export class HomePage implements OnInit, OnDestroy {
           },
           (err) => {
             console.log(err);
+            this.logService.logError(
+              {
+                error: err,
+                activity: 'Error loading challenge data.',
+                page: 'home',
+                payload: {}
+              }
+            );
           }
         );
       } catch (error) {
         console.log("error from tryc ", error);
+        this.logService.logError(
+          {
+            error: error,
+            activity: 'Error loading challenge data.',
+            page: 'home',
+            payload: {}
+          }
+        );
       }
 
   }
@@ -214,7 +241,14 @@ export class HomePage implements OnInit, OnDestroy {
   }
 
   async challengeClicked(challenge: any) {
-
+    this.logService.logActivity({
+      activity: 'Challenge clicked.',
+      page: 'home',
+      payload: {
+        challengeId: challenge.id || '',
+        module: "challenge"
+      }
+    });
     const email = this.authService.currentUser?.email;
     if (!email) {
       this.common.showInfoToast('Please login to access challenges');
@@ -226,6 +260,14 @@ export class HomePage implements OnInit, OnDestroy {
       const hasPurchased = await this.customerService.hasChallengePurchase(email, challenge.id);
 
       if (hasPurchased) {
+        this.logService.logActivity({
+          activity: 'Challenge clicked.Challenge purchased.',
+          page: 'home',
+          payload: {
+            challengeId: challenge.id || '',
+            module: "challenge"
+          }
+        });
         // User has purchased - navigate to challenge content
         this.router.navigateByUrl("challenge/challenge-home/" + challenge.id);
       } else {
@@ -246,6 +288,14 @@ export class HomePage implements OnInit, OnDestroy {
           );
 
           if (checkoutUrl) {
+            this.logService.logActivity({
+              activity: 'Challenge clicked.Challenge purchased.Checkout URL created.',
+              page: 'home',
+              payload: {
+                challengeId: challenge.id || '',
+                module: "challenge"
+              }
+            });
             // Open Shopify checkout in browser
             await Browser.open({ url: checkoutUrl });
           } else {
@@ -256,6 +306,14 @@ export class HomePage implements OnInit, OnDestroy {
     } catch (error) {
       console.error('Error in challengeClicked:', error);
       this.common.showErrorToast('Error checking purchase status. Please try again.');
+      this.logService.logError(
+        {
+          error: error,
+          activity: 'Challenge clicked.',
+          page: 'home',
+          payload: {}
+        }
+      );
     }
   }
 

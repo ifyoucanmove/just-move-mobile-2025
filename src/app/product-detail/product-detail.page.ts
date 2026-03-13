@@ -6,8 +6,9 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { RecipeService } from '../services/recipe';
 import { Shopify, SHOPIFY_SORT_KEY, ShopifyStores } from '../services/shopify';
 import { GestureController, LoadingController } from '@ionic/angular';
-import { ModalController } from '@ionic/angular/standalone';
+import { IonSelect, IonSelectOption, ModalController } from '@ionic/angular/standalone';
 import { ViewDescriptionComponent } from '../shared/view-description/view-description.component';
+import { CaliforniaWarningDialogComponent } from '../shared/california-warning-dialog/california-warning-dialog.component';
 import { Alert } from '../services/alert';
 import { Customer } from '../services/customer';
 import { AuthService } from '../services/auth';
@@ -16,6 +17,7 @@ import { Common } from '../services/common';
 import { IonSpinner } from '@ionic/angular/standalone';
 import { Gesture } from '@ionic/angular';
 import { Favorites } from '../services/favorites';
+import { Logging } from '../services/logging';
 
 addIcons({
   heartOutline,
@@ -34,7 +36,7 @@ addIcons({
   templateUrl: './product-detail.page.html',
   styleUrls: ['./product-detail.page.scss'],
   standalone: true,
-  imports: [SharedModule, IonSpinner]
+  imports: [SharedModule, IonSpinner, IonSelect, IonSelectOption]
 })
 export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
 
@@ -87,13 +89,20 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
      private location: Location,
      public favoritesService: Favorites,
      private router: Router,
+     private logService: Logging,
      private gestureCtrl: GestureController,
      private modalCtrl: ModalController) { }
 
   ngOnInit() {
+   
     this.getFavorites();
     this.shopifyService.loadCartItems(this.authService.userDetails.email);
     this.checkTutorialStatus();
+    this.commonService.isUserInCalifornia().then((isCalifornia) => {
+      if (isCalifornia) {
+        this.showCaliforniaWarningDialog();
+      }
+    });
     this.route.params.subscribe((params) => {
       this.id = params['id'];
       console.log(this.id,'id');
@@ -106,9 +115,27 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
       });
     },(err:any) => {
       console.log(err);
+      this.logService.logError(
+        {
+          error: err,
+          activity: 'Error loading product detail.',
+          page: 'product-detail',
+          payload: {
+            id: this.id,
+          }
+        }
+      );
     });
     this.route.queryParams.subscribe((params) => {
       this.redirect = params['redirect'];
+    });
+
+    this.logService.logActivity({
+      activity: 'Recipe detail page loaded.',
+      page: 'recipe-detail',
+      payload: {
+        recipeId: this.id || '',
+      }
     });
   }
 
@@ -284,6 +311,25 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
     this.selectedVariantByProductId[item.id] = variant;
   }
 
+  async showCaliforniaWarningDialog() {
+    this.logService.logActivity(
+      {
+        activity: 'Show California warning dialog.',
+        page: 'product-detail',
+        payload: {
+          id: this.id,
+        }
+      }
+    );
+    setTimeout(async () => {
+      const modal = await this.modalCtrl.create({
+        component: CaliforniaWarningDialogComponent,
+        cssClass: 'california-warning-modal'
+      });
+      await modal.present();
+    }, 500);
+  }
+
   goBack() {
    /*  this.location.back(); */
    if(this.redirect === 'home-tab'){
@@ -391,10 +437,38 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
       this.commonService.showSuccessToast('Item added to cart successfully',3000);
       this.isLoading = false;
      /*  loadingEl.dismiss(); */
+     console.log(variantObject,'variantObject');
+     this.logService.logActivity(
+      {
+        activity: 'Add to cart button clicked.',
+        page: 'product-detail',
+        payload: {
+          recipeId: this.id,
+          productId: variantObject.id,
+          productTitle: variantObject.title,
+          store: this.selectedStore,
+          module: "shopify"
+        }
+      }
+    );
      }).catch(error => {
       console.error('Error updating cart:', error);
       this.alsertService.showFirebaseAlert(error);
       this.isLoading = false;
+      this.logService.logError(
+        {
+          error: error,
+          activity: 'Add to cart button clicked.',
+          page: 'product-detail',
+            payload: {
+              recipeId: this.id,
+              productId: variantObject.id,
+              productTitle: variantObject.title,
+              store: this.selectedStore,
+              module: "shopify"
+          },
+        }
+      );
     });
  /*   }) */
   }
@@ -411,7 +485,19 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
       this.quantity[variant.id] = this.quantity[variant.id] ? this.quantity[variant.id] + 1 : 1;
       console.log(this.quantity,'quantity');
       
-    //  this.addToCart(variant);
+       this.logService.logActivity(
+        {
+          activity: 'Increase quantity in cart button clicked.',
+          page: 'product-detail',
+          payload: {
+            recipeId: this.id,
+            productId: variant.id,
+            productTitle: variant.title,
+            store: this.selectedStore,
+            module: "shopify"
+          }
+        }
+      );
       
   }
 
@@ -424,13 +510,19 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
      //map quantity with variant.id
      this.quantity[variant.id] = this.quantity[variant.id] ? this.quantity[variant.id] - 1 : 0;
      console.log(this.quantity,'quantity');
-  /*    if(this.quantity[variant.id] > 0){
-     this.addToCart(variant);
-     }
-     else{
-      this.deleteItem(variant.id, this.selectedStore);
-     } */
-     
+     this.logService.logActivity(
+      {
+        activity: 'Decrease quantity in cart button clicked.',
+        page: 'product-detail',
+        payload: {
+          recipeId: this.id,
+          productId: variant.id,
+          productTitle: variant.title,
+          store: this.selectedStore,
+          module: "shopify"
+        }
+      }
+    );
       
   }
 
@@ -448,11 +540,36 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
           loadingEl.dismiss();
        //   this.logService.logActivity('cart', `removed-${productId}-${store}`)
           console.log("Item deleted and cart updated successfully");
+          this.logService.logActivity(
+            {
+              activity: 'Delete item from cart button clicked.',
+              page: 'product-detail',
+              payload: {
+                  productId: productId,
+                    store: store,
+                    module: "shopify",
+                    recipeId: this.id
+              }
+            }
+          );
         })
         .catch((error) => {
           loadingEl.dismiss();
           console.error("Error updating cart:", error);
           this.alsertService.showFirebaseAlert(error);
+          this.logService.logError(
+            {
+              error: error,
+              activity: 'Error deleting item from cart.',
+              page: 'product-detail',
+              payload: {
+                productId: productId,
+                store: store,
+                module: "shopify",
+                recipeId: this.id
+              }
+            }
+          );
         });
     });
   }
@@ -522,8 +639,31 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
    this.favoritesService.addFavoriteItem(favObj).subscribe((res:any) => {
       console.log(res,'res');
       this.commonService.showSuccessToast('Added to favorites',3000);
+      this.logService.logActivity(
+        {
+          activity: 'Add to favorites button clicked.',
+          page: 'product-detail',
+          payload: {
+            recipeId: this.id,
+            recipeTitle: recipe.title,
+            type: 'justmove-recipe',
+          }
+        }
+      );
     },(err:any) => {
       console.log(err,'err');
+      this.logService.logError(
+        {
+          error: err,
+          activity: 'Add to favorites button clicked.',
+          page: 'product-detail',
+          payload: {
+            recipeId: this.id,
+            recipeTitle: recipe.title,
+            type: 'justmove-recipe',
+          }
+        }
+      );
     });
   }
 
@@ -533,9 +673,32 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
     console.log(favorite,'favorite');
     this.favoritesService.deleteFavoriteItem(favorite.id).subscribe((res:any) => {
       console.log(res,'res');
+      this.logService.logActivity(
+        {
+          activity: 'Remove from favorites button clicked.',
+          page: 'product-detail',
+          payload: {
+            recipeId: this.id,
+            recipeTitle: recipe.title,
+            type: 'justmove-recipe',
+          }
+        }
+      );
       this.commonService.showSuccessToast('Removed from favorites',3000);
     },(err:any) => {
       console.log(err,'err');
+      this.logService.logError(
+        {
+          error: err,
+          activity: 'Remove from favorites button clicked.',
+          page: 'product-detail',
+          payload: {
+            recipeId: this.id,
+            recipeTitle: recipe.title,
+            type: 'justmove-recipe',
+          }
+        }
+      );
     });
   }
 
@@ -549,6 +712,14 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
       this.favorites = res;
     },(err:any) => {
       console.log(err,'getFavorites error');
+      this.logService.logError(
+        {
+          error: err,
+          activity: 'Error loading favorites.',
+          page: 'product-detail',
+          payload: {}
+        }
+      );
     });
   }
   async viewDescription(description: string) {
@@ -558,5 +729,14 @@ export class ProductDetailPage implements OnInit, AfterViewInit, OnDestroy {
       cssClass: 'view-description-modal'
     });
     await modal.present();
+  }
+
+  onVariantChange(item: any, event: any) {
+    const variantId = event.detail?.value;
+    if (!variantId || !item?.variants) return;
+    const variant = item.variants.find((v: any) => v.id === variantId);
+    if (variant) {
+      this.selectedVariantByProductId[item.id] = variant;
+    }
   }
 }

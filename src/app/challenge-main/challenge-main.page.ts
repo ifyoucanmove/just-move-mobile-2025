@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Challenges } from '../services/challenges';
 import { Customer } from '../services/customer';
 import { MainHeaderComponent } from '../shared/main-header/main-header.component';
+import { Logging } from '../services/logging';
 
 @Component({
   selector: 'app-challenge-main',
@@ -25,7 +26,8 @@ export class ChallengeMainPage implements OnInit {
   isPaused : boolean = false;
   constructor(public route:ActivatedRoute,public router:Router,
     public customerService:Customer,
-    public challengeService:Challenges) { }
+    public challengeService:Challenges,
+    public logService: Logging) { }
 
   ngOnInit() {
    console.log("changes")
@@ -40,6 +42,10 @@ export class ChallengeMainPage implements OnInit {
       } else if (res['category'] == "past") {
         this.loadChallengeData("_statusSuper");
       }
+    });
+    this.logService.logActivity({
+      activity: 'Challenge main page loaded.',
+      page: 'challenge-main'
     });
   }
 
@@ -101,6 +107,7 @@ export class ChallengeMainPage implements OnInit {
   }
 
   async challengeClicked(challenge:any) {
-    this.router.navigateByUrl("challenge/challenge-home");
+    console.log("challenge", challenge);
+    this.router.navigateByUrl("challenge/challenge-home/" + challenge.id);
   }
 }

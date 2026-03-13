@@ -15,6 +15,7 @@ import { CardFooterComponent } from '../card-footer/card-footer.component';
 import { IonInfiniteScroll } from '@ionic/angular/standalone';
 import { IonInfiniteScrollContent } from '@ionic/angular/standalone';
 import { ToastService } from '../services/toast.service';
+import { Logging } from '../services/logging';
 
 @Component({
   selector: 'app-collection-details',
@@ -42,7 +43,8 @@ export class CollectionDetailsPage implements OnInit {
     private loadingCtrl : LoadingController,
     private alertService : Alert,
     public customerService : Customer,
-    private toastService : ToastService
+    private toastService : ToastService,
+    public logService: Logging
   ) { }
 
   ngOnInit() {
@@ -57,8 +59,33 @@ export class CollectionDetailsPage implements OnInit {
       let products = await this.shopifyService.getCollection(this.collectionId);
       console.log("Collection products", products);
       this.products = products;
+      this.logService.logActivity({
+        activity: 'Collection details page loaded.',
+        page: 'collection-details',
+        payload: {
+          collectionId: this.collectionId,
+          collectionName: this.collectionName,
+          module: "shopify"
+        }
+      });
       this.isLoading = false;
+    },(err:any) => {
+      console.log(err);
+      this.logService.logError(
+        {
+          error: err,
+          activity: 'Error loading collection details.',
+          page: 'collection-details',
+          payload: {
+            collectionId: this.collectionId,
+            collectionName: this.collectionName,
+            module: "shopify"
+          }
+        }
+      );
     });
+
+    
   }
 
   onIonInfinite(ev:any) {
@@ -114,6 +141,18 @@ export class CollectionDetailsPage implements OnInit {
   productClicked(product: any) {
     if (product.availableForSale) this.shopifyService.stateData = product;
     this.router.navigate(["/shopify-details"], { state: product });
+    this.logService.logActivity(
+      {
+        activity: 'Product clicked.',
+        page: 'collection-details',
+        payload: {
+          collectionId: this.collectionId,
+          collectionName: this.collectionName,
+          productId: product.id,
+          module: "shopify"
+        }
+      }
+    );
   }
 
 
@@ -269,9 +308,36 @@ async  addToCart(product : any, event : Event) {
      this.shopifyService.setCart(this.store, cartItems);
      this.shopifyService.addToCartsFb(cartItems, this.store).then(() => {
        loadingEl.dismiss();
+       this.logService.logActivity(
+        {
+          activity: 'Add to cart button clicked.',
+          page: 'collection-details',
+          payload: {
+            collectionId: this.collectionId,
+            collectionName: this.collectionName,
+            productId: product.id,
+            store: this.store,
+            module: "shopify"
+          }
+        }
+      );
       }).catch(error => {
        console.error('Error updating cart:', error);
        this.alertService.showFirebaseAlert(error);
+       this.logService.logError(
+        {
+          error: error,
+          activity: 'Add to cart button clicked.',
+          page: 'collection-details',
+          payload: {
+            collectionId: this.collectionId,
+            collectionName: this.collectionName,
+            productId: product.id,
+            store: this.store,
+            module: "shopify"
+          }
+        }
+      );
      });
     })
    }

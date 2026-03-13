@@ -17,6 +17,7 @@ import { checkmarkCircle, chevronBackOutline, chevronForwardOutline, closeCircle
 import { CalendarComponent } from 'src/app/shared/calendar/calendar.component';
 import { doc, Firestore, updateDoc } from '@angular/fire/firestore';
 import { MainHeaderComponent } from 'src/app/shared/main-header/main-header.component';
+import { Logging } from 'src/app/services/logging';
 
 @Component({
   selector: 'app-calendar',
@@ -124,6 +125,7 @@ export class CalendarPage implements OnInit {
     private firestore: Firestore,
     private modalCtrl: ModalController,
     private userService: User, 
+    public logService: Logging
   ) { 
     // Initialize icons
     addIcons({
@@ -179,6 +181,15 @@ export class CalendarPage implements OnInit {
         console.log('ngOnInit() Error: ', error);
       }
     }) 
+
+    this.logService.logActivity({
+      activity: 'Calendar page loaded.',
+      page: 'calendar',
+      payload: {
+        challengeId: this.challengeId || '',
+        module: "challenge"
+      }
+    });
     
   }
   getChallenge(){
@@ -427,7 +438,17 @@ export class CalendarPage implements OnInit {
         if (data.data) {
           console.log(data.data,"data.data")
           this.saveCustomStartDate(data.data);
-            // this.measurementForm.get('date')?.patchValue(data.data);
+          this.logService.logActivity(
+            {
+              activity: 'calendar start date changed.',
+              page: 'calendar',
+              module: "challenge",
+              payload: {
+                challengeId: this.challengeId,
+                date: data.data,
+              },
+            }
+          );
         }
         this.isCalendarShowing = false;
       });
@@ -556,7 +577,14 @@ export class CalendarPage implements OnInit {
           let payload = {
             resource :"challenge-calendar", type:"reset-watch-data" , challengeId:this.challengeId , module :"challenge"
           }
-       //   this.logService.logActivity("challenge-calendar", `reset-watch-data - ${this.challengeData[0].dashTitle}`, ' ', payload);
+         this.logService.logActivity(
+          {
+            activity: 'reset watch data.',
+            page: 'calendar',
+            payload: payload,
+            module: "challenge"
+          }
+         );
         });
    
 

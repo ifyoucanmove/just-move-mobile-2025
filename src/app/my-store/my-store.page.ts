@@ -14,6 +14,7 @@ import { swapVertical } from 'ionicons/icons';
 import { ArrayToCommaSeparatedPipe } from '../pipes/array-to-comma-separated.pipe';
 import { CardFooterComponent } from '../card-footer/card-footer.component';
 import { ToastService } from '../services/toast.service';
+import { Logging } from '../services/logging';
 @Component({
   selector: 'app-my-store',
   templateUrl: './my-store.page.html',
@@ -45,7 +46,8 @@ export class MyStorePage implements OnInit {
     private loadingCtrl: LoadingController,
     private cdr : ChangeDetectorRef,
     private toastService : ToastService,
-    public customerService : Customer
+    public customerService : Customer,
+    public logService: Logging
   ) {
     addIcons({swapVertical})
   }
@@ -63,7 +65,6 @@ export class MyStorePage implements OnInit {
       console.log("Store", this.shopifyService.selectedStore);
 
       this.shopifyService.updateStoreFrontClinet(this.store);
-    //  this.logService.logActivity("store", `${this.store}-accessed`);
 
       if (this.store == "sayItLoud") {
         this.isLoading = false;
@@ -89,6 +90,15 @@ export class MyStorePage implements OnInit {
       //   this.isLoading = false;
       //   this.products = [];
       // }));
+    });
+
+    this.logService.logActivity({
+      activity: 'My store page loaded.',
+      page: 'my-store',
+      payload: {
+        store: this.store,
+        module: "shopify"
+      }
     });
   }
 
@@ -125,6 +135,17 @@ export class MyStorePage implements OnInit {
   productClicked(product: any) {
     if (product.availableForSale) this.shopifyService.stateData = product;
     this.router.navigate(["/shopify-details"], { state: product });
+    this.logService.logActivity(
+      {
+        activity: 'Product clicked.',
+        page: 'my-store',
+        payload: {
+          productId: product.id,
+          store: this.store,
+          module: "shopify"
+        }
+      }
+    );
   }
 
   // Not used as of now so commenting, update after function is added with paginations
@@ -354,6 +375,18 @@ export class MyStorePage implements OnInit {
 
   collectionClicked(id: string, name: string) {
     this.router.navigate([`/collection-details`], { queryParams: { name, id } });
+    this.logService.logActivity(
+      {
+        activity: 'Collection clicked.',
+        page: 'my-store',
+        payload: {
+          collectionId: id,
+          collectionName: name,
+          store: this.store,
+          module: "shopify"
+        }
+      }
+    );
   }
 
   async addToCart(product: any, event: Event) {
@@ -399,11 +432,33 @@ export class MyStorePage implements OnInit {
         .then(() => {
           console.log("Cart updated successfully");
           loadingEl.dismiss();
-         
+          this.logService.logActivity(
+            {
+              activity: 'Add to cart button clicked.',
+              page: 'my-store',
+              payload: {
+                productId: product.id,
+                store: this.store,
+                module: "shopify"
+              }
+            }
+          );
        //  this.router.navigate(['/my-cart/'], {queryParams : {store : this.store}});
         })
         .catch((error) => {
           console.error("Error updating cart:", error);
+          this.logService.logError(
+            {
+              error: error,
+              activity: 'Add to cart button clicked.',
+              page: 'my-store',
+              payload: {
+                productId: product.id,
+                store: this.store,
+                module: "shopify"
+              }
+            }
+          );
        //   this.alertService.showFirebaseAlert(error);
         });
     });

@@ -7,6 +7,7 @@ import { ModalController } from '@ionic/angular/standalone';
 import { FirestoreService } from 'src/app/services/firestore';
 import { MoodCaptureComponent } from '../mood-capture/mood-capture.component';
 import { MainHeaderComponent } from '../main-header/main-header.component';
+import { Logging } from 'src/app/services/logging';
 
 @Component({
   selector: 'app-completed-history',
@@ -41,6 +42,7 @@ export class CompletedHistoryComponent  implements OnInit {
   constructor(private completedService : Completed,
      private alertController : AlertController,
       private loadingCtrl : LoadingController, 
+      public logService: Logging,
       private firestore : FirestoreService, 
       private modalCtrl : ModalController ) { }
 
@@ -175,8 +177,8 @@ export class CompletedHistoryComponent  implements OnInit {
 
 
 
-    async deleteClicked(itemId : any){
-      console.log("deletiung item", itemId);
+    async deleteClicked(completed : any){
+      console.log("deletiung item", completed);
       
       const alert = await this.alertController.create({
         header: "Warning",
@@ -192,10 +194,7 @@ export class CompletedHistoryComponent  implements OnInit {
           {
             text: "Yes",
             handler: () => {
-              this.loadingCtrl.create().then((loadingEl) => {
-                loadingEl.present();
-                this.firestore.deleteDocument("completed", itemId)
-              });
+              this.deleteData(completed);
             },
           }, 
         ],
@@ -203,4 +202,38 @@ export class CompletedHistoryComponent  implements OnInit {
       await alert.present();
     }
 
+     deleteData(data : any){
+      
+      this.firestore.deleteDocument("completed", data.id).subscribe((res:any) => {
+        console.log("res", res);
+        this.logService.logActivity({
+          activity: 'completed data deleted.',
+          page: 'completed-history',
+          payload: {
+            resource: 'completed-data',
+            type: 'delete',
+            title: data.title,
+            category: data.category,
+            challengeId: data.challengeId,
+            energyData: data.energyData
+          }
+        });
+      }, (err:any) => {
+        console.log("err", err);
+        this.logService.logError({
+          error: err,
+          activity: 'completed data deleted.',
+          page: 'completed-history',
+          payload: {
+            resource: 'completed-data',
+            type: 'delete',
+            title: data.title,
+            category: data.category,
+            challengeId: data.challengeId,
+            energyData: data.energyData
+          }
+        });
+      });
+      
+    }
 }

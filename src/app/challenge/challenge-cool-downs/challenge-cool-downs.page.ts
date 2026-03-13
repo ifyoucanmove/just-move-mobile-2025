@@ -10,6 +10,7 @@ import { SharedModule } from 'src/app/shared/shared/shared-module';
 import { MoodCaptureComponent } from 'src/app/shared/mood-capture/mood-capture.component';
 import { CompletedHistoryComponent } from 'src/app/shared/completed-history/completed-history.component';
 import { MainHeaderComponent } from 'src/app/shared/main-header/main-header.component';
+import { Logging } from 'src/app/services/logging';
 
 
 @Component({
@@ -38,7 +39,8 @@ export class ChallengeCoolDownsPage implements OnInit {
     private customerService : Customer,
     private userService: User,
     private modalCtrl : ModalController,
-    private alertController: AlertController
+    private alertController: AlertController,
+    public logService: Logging
   ) {}
 
   ngOnInit() {
@@ -49,8 +51,17 @@ export class ChallengeCoolDownsPage implements OnInit {
       this.challengeId = this.challengeService.challengeDatas[selectedIndex].id;
       this.watchDataLoaded = false;
       this.loadVideoWatchData();
+      this.logService.logActivity({
+        activity: 'Calendar page loaded.',
+        page: 'calendar',
+        payload: {
+          challengeId: this.challengeId || '',
+          module: "challenge"
+        }
+      });
     });
     this.userId = this.userService.email;
+  
   }
 
   ionViewWillEnter() {
@@ -148,10 +159,27 @@ export class ChallengeCoolDownsPage implements OnInit {
                   let payload = {
                     resource :"challenge-cooldown", type:"completed", challengeId:this.challengeId, cooldownvideo: videoName  , numberOfCompletion: data.watchCount, module :"challenge"
                   }
-               
+                  this.logService.logActivity(
+                    {
+                      activity: 'completed cool down video.',
+                      page: 'challenge-cool-downs',
+                      payload: payload,
+                    }
+                  );
                 },
                 (err) => {
-                 
+                  this.logService.logError(
+                    {
+                      error: err,
+                      activity: 'Mark video as complete button clicked.',
+                      page: 'challenge-cool-downs',
+                      payload: {
+                        challengeId: this.challengeId,
+                        cooldownvideo: videoName,
+                        module: "challenge"
+                      }
+                    }
+                  );
                 }
               );
             },
@@ -165,8 +193,27 @@ export class ChallengeCoolDownsPage implements OnInit {
         let payload = {
           resource :"challenge-cooldown", type:"completed", challengeId:this.challengeId, cooldownvideo: videoName  , numberOfCompletion: data.watchCount, module :"challenge"
         }
+        this.logService.logActivity(
+          {
+            activity: 'completed cool down video.',
+            page: 'challenge-cool-downs',
+            payload: payload,
+          }
+        );
       },
       (err) => {
+        this.logService.logError(
+          {
+            error: err,
+            activity: 'Mark video as complete button clicked.',
+            page: 'challenge-cool-downs',
+            payload: {
+              challengeId: this.challengeId,
+              cooldownvideo: videoName,
+              module: "challenge"
+            }
+          }
+        );
       }
     );
     }

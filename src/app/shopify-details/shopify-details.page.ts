@@ -11,6 +11,7 @@ import { remove, add, cart } from 'ionicons/icons';
 import { ShopifyStorePipe } from '../pipes/shopify-store.pipe';
 import { IonSelect } from '@ionic/angular/standalone';
 import { IonSelectOption } from '@ionic/angular/standalone';
+import { Logging } from '../services/logging';
 
 @Component({
   selector: 'app-shopify-details',
@@ -34,7 +35,8 @@ export class ShopifyDetailsPage implements OnInit {
     private shopifyService: Shopify,
     private loadingCtrl : LoadingController,
     private alsertService : Alert,
-    public customerService : Customer
+    public customerService : Customer,
+    public logService: Logging
   ) {
     addIcons({remove, add, cart})
   }
@@ -48,12 +50,22 @@ export class ShopifyDetailsPage implements OnInit {
       if(!state) this.router.navigate(['/my-store'])
       this.product = state;
     console.log(this.product);
-    
       this.selectedVariant = this.product?.variants[0];
       console.log(this.selectedVariant)
       this.checkProductInCart();
 
   
+    });
+    this.logService.logActivity({
+      activity: 'Shopify details page loaded.',
+      page: 'shopify-details',
+      payload: {
+        store: this.selectedStore,
+        module: "shopify",
+        productId: this.product?.id || '',
+        productTitle: this.product?.title || '',
+        variantId: this.selectedVariant?.id || '',
+      }
     });
   }
 
@@ -136,14 +148,51 @@ export class ShopifyDetailsPage implements OnInit {
     this.shopifyService.setCart(this.selectedStore, cartItems);
     this.shopifyService.addToCartsFb(cartItems, this.selectedStore).then(() => {
       console.log('Cart updated successfully');
+      this.logService.logActivity(
+        {
+          activity: 'Add to cart button clicked.',
+          page: 'shopify-details',
+          payload: {
+            productId: this.product.id,
+            productTitle: this.product.title,
+            variantId: this.selectedVariant.id,
+            store: this.selectedStore,
+            module: "shopify",
+          }
+        }
+      );
       loadingEl.dismiss();
      }).catch(error => {
       console.error('Error updating cart:', error);
+      this.logService.logError(
+        {
+          error: error,
+          activity: 'Add to cart button clicked.',
+          page: 'shopify-details',
+          payload: {
+            store: this.selectedStore,
+            module: "shopify",
+            productId: this.product.id,
+            productTitle: this.product.title,
+            variantId: this.selectedVariant.id,
+          },
+        }
+      );
       this.alsertService.showFirebaseAlert(error);
     });
    })
   }
-
+  increaseQuantity() {
+    console.log('came here to increaseQuantity');
+    
+    this.quantity++;
+  }
+  
+  decreaseQuantity() {
+    if (this.quantity > 0) {
+      this.quantity--;
+    }
+  }
 
   increaseQuantityInCart(){
     console.log('came here to increaseQuantityInCart =========>');
@@ -159,9 +208,36 @@ export class ShopifyDetailsPage implements OnInit {
         .addToCartsFb(cartItems, this.selectedStore)
         .then(() => {
           console.log('Cart updated successfully');
+          this.logService.logActivity(
+            {
+              activity: 'Increase quantity in cart button clicked.',
+              page: 'shopify-details',
+              payload: {
+                productId: item.parentProductId,
+                productTitle: item.parentProductTitle,
+                variantId: this.selectedVariant.id,
+                store: this.selectedStore,
+                module: "shopify"
+              }
+            }
+          );
         })
         .catch((error) => {
           console.error('Error updating cart:', error);
+          this.logService.logError(
+            {
+              error: error,
+              activity: 'Increase quantity in cart button clicked.',
+              page: 'shopify-details',
+              payload: {
+                productId: item.parentProductId,
+                productTitle: item.parentProductTitle,
+                variantId: this.selectedVariant.id,
+                store: this.selectedStore,
+                module: "shopify"
+              }
+            }
+          );
         });
       }
   }
@@ -187,9 +263,36 @@ export class ShopifyDetailsPage implements OnInit {
             this.quantity = 0;
             this.variantInCart = null;
             console.log('Item deleted and cart updated successfully');
+            this.logService.logActivity(
+              {
+                activity: 'Decrease quantity in cart button clicked.',
+                page: 'shopify-details',
+                payload: {
+                  productId: item.parentProductId,
+                  productTitle: item.parentProductTitle,
+                  variantId: this.selectedVariant.id,
+                  store: this.selectedStore,
+                  module: "shopify"
+                }
+              }
+            );
           })
           .catch((error) => {
             console.error('Error updating cart:', error);
+            this.logService.logError(
+              {
+                error: error,
+                activity: 'Decrease quantity in cart button clicked.',
+                page: 'shopify-details',
+                payload: {
+                  productId: item.parentProductId,
+                  productTitle: item.parentProductTitle,
+                  variantId: this.selectedVariant.id,
+                  store: this.selectedStore,
+                  module: "shopify"
+                }
+              }
+            );
           });
       }else{
         this.shopifyService.setCart(this.selectedStore, cartItems);
@@ -197,27 +300,40 @@ export class ShopifyDetailsPage implements OnInit {
         .addToCartsFb(cartItems, this.selectedStore)
         .then(() => {
           console.log('Cart updated successfully');
+          this.logService.logActivity(
+            {
+              activity: 'Decrease quantity in cart button clicked.',
+              page: 'shopify-details',
+              payload: {
+                productId: item.parentProductId,
+                productTitle: item.parentProductTitle,
+                variantId: this.selectedVariant.id,
+                store: this.selectedStore,
+                module: "shopify"
+              }
+            }
+          );
         })
         .catch((error) => {
           console.error('Error updating cart:', error);
+          this.logService.logError(
+            {
+              error: error,
+              activity: 'Decrease quantity in cart button clicked.',
+              page: 'shopify-details',
+              payload: {
+                productId: item.parentProductId,
+                productTitle: item.parentProductTitle,
+                variantId: this.selectedVariant.id,
+                store: this.selectedStore,
+                module: "shopify"
+              }
+            }
+          );
           });
         }
       }
-  }
-
-  
-  increaseQuantity() {
-    console.log('came here to increaseQuantity');
-    
-    this.quantity++;
-  }
-  
-  decreaseQuantity() {
-    if (this.quantity > 0) {
-      this.quantity--;
-    }
-  }
-
+  } 
 
   cartClicked(){
     this.router.navigate(['/my-cart/'], {queryParams : {store : this.selectedStore}});

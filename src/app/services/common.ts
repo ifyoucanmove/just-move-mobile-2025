@@ -11,6 +11,70 @@ export class Common {
   private alertController = inject(AlertController);
 
   /**
+   * Resolves whether the user's current location is in California (US).
+   * Uses GPS + Nominatim reverse geocoding, or IP-based location as fallback.
+   * @returns Promise<true> if state is California (or CA), otherwise Promise<false>
+   */
+  async isUserInCalifornia(): Promise<boolean> {
+    try {
+      const { country, state } = await this.getLocation();
+      console.log('Current location:', `${country}, ${state}`, { country, state });
+      return this.isCalifornia(state);
+    } catch {
+      return false;
+    }
+  }
+
+  private getLocation(): Promise<{ country: string; state: string }> {
+    if (typeof navigator !== 'undefined' && navigator.geolocation) {
+      return new Promise((resolve, reject) => {
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            this.reverseGeocodeWithNominatim(position.coords.latitude, position.coords.longitude)
+              .then(resolve)
+              .catch(() => this.getLocationFromIp().then(resolve).catch(reject));
+          },
+          () => this.getLocationFromIp().then(resolve).catch(reject),
+          { enableHighAccuracy: false, timeout: 10000, maximumAge: 300000 }
+        );
+      });
+    }
+    return this.getLocationFromIp();
+  }
+
+  private async reverseGeocodeWithNominatim(lat: number, lon: number): Promise<{ country: string; state: string }> {
+   const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json`;
+    const res = await fetch(url, {
+      headers: {
+        'Accept': 'application/json',
+        'Accept-Language': 'en',
+        'User-Agent': 'JustMoveSupplement/1.0 (Product Detail; Angular)'
+      }
+    });
+    const data = await res.json() as { address?: { country?: string; state?: string; region?: string } };
+    const addr = data?.address || {};
+    return {
+      country: addr.country || 'Unknown',
+      state: addr.state || addr.region || 'Unknown'
+    };
+  }
+
+  private async getLocationFromIp(): Promise<{ country: string; state: string }> {
+    const res = await fetch('https://ipapi.co/json/');
+    const data = await res.json() as { country_name?: string; region?: string };
+    return {
+      country: data.country_name || 'Unknown',
+      state: data.region || 'Unknown'
+    };
+  }
+
+  private isCalifornia(state: string): boolean {
+    if (!state) return false;
+    const s = state.trim().toLowerCase();
+    return s === 'california' || s === 'ca';
+  }
+
+  /**
    * Show success toast message in top right
    * @param message - Success message to display
    * @param duration - Duration in milliseconds (default: 3000)

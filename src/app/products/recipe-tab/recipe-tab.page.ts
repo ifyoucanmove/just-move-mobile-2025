@@ -16,6 +16,7 @@ import { Customer } from 'src/app/services/customer';
 import { Challenges } from 'src/app/services/challenges';
 import { Common } from 'src/app/services/common';
 import { Favorites } from 'src/app/services/favorites';
+import { Logging } from 'src/app/services/logging';
 
 @Component({
   selector: 'app-recipe-tab',
@@ -68,7 +69,8 @@ export class RecipeTabPage implements OnInit {
     private platform: Platform,
     public favoritesService: Favorites,
     private navCtrl: NavController,
-    private modalController: ModalController) { 
+    private modalController: ModalController,
+    public logService: Logging) { 
       addIcons({
         trophyOutline,
         cartOutline,
@@ -78,6 +80,11 @@ export class RecipeTabPage implements OnInit {
     }
 
   ngOnInit() {
+    this.logService.logActivity({
+      activity: 'Recipe tab page loaded.',
+      page: 'recipe-tab'
+    });
+
     this.getFavorites();
     this.recipeService.getRecipes().subscribe((res:any) => {
       console.log(res);
@@ -87,6 +94,14 @@ export class RecipeTabPage implements OnInit {
       this.searchByText();
     },(err:any) => {
       console.log(err);
+      this.logService.logError(
+        {
+          error: err,
+          activity: 'Error loading recipes.',
+          page: 'recipe-tab',
+          payload: {}
+        }
+      );
     });
  console.log(this.authService.userDetails)
     console.log(this.authService.currentUser,"s")
@@ -168,6 +183,16 @@ export class RecipeTabPage implements OnInit {
 
   goToProductDetail(id:string) {
     this.router.navigate(['/product-detail', id]);
+    this.logService.logActivity(
+      {
+        activity: 'Go to product detail page.',
+        page: 'recipe-tab',
+        payload: {
+          recipeId: id,
+
+        }
+      }
+    );
     }
   async openFilterDialog() {
     //open filter dialog using modal controller
@@ -194,6 +219,7 @@ export class RecipeTabPage implements OnInit {
     this.router.navigate(['/products/recipe-tab'], {
         queryParams: { search: this.searchText.trim() }
       });
+     
     } else {
       this.router.navigate(['/products/recipe-tab']);
     }
@@ -203,7 +229,15 @@ export class RecipeTabPage implements OnInit {
      this.router.navigate(['/products/recipe-tab'], {
       queryParams: { search: this.searchText.trim() }
     });
-   // this.filterRecipes();
+    if(this.searchText.trim().length > 3) {
+    this.logService.logActivity(
+      {
+        activity: 'Search clicked.',
+        searchText: this.searchText.trim(),
+        page: 'recipe-tab'
+      }
+    );
+  }
   }
 
   onSearchClear() {
@@ -230,8 +264,31 @@ export class RecipeTabPage implements OnInit {
    this.favoritesService.addFavoriteItem(favObj).subscribe((res:any) => {
       console.log(res,'res');
       this.common.showSuccessToast('Added to favorites',3000);
+      this.logService.logActivity(
+        {
+          activity: 'Add to favorites button clicked.',
+          page: 'recipe-tab',
+          payload: {
+            recipeId: recipe.id,
+            recipeTitle: recipe.title,
+            type: 'justmove-recipe',
+          },
+        }
+      );
     },(err:any) => {
       console.log(err,'err');
+      this.logService.logError(
+        {
+          error: err,
+          activity: 'Add to favorites button clicked.',
+          page: 'recipe-tab',
+          payload: {
+            recipeId: recipe.id,
+            recipeTitle: recipe.title,
+            type: 'justmove-recipe',
+          }
+        }
+      );
     });
   }
 
@@ -242,8 +299,33 @@ export class RecipeTabPage implements OnInit {
     this.favoritesService.deleteFavoriteItem(favorite.id).subscribe((res:any) => {
       console.log(res,'res');
       this.common.showSuccessToast('Removed from favorites',3000);
+      this.logService.logActivity(
+        {
+          activity: 'Remove from favorites button clicked.',
+          page: 'recipe-tab',
+          payload: {
+            favoriteId: favorite.id,
+            recipeId: recipe.id,
+            recipeTitle: recipe.title,
+            type: 'justmove-recipe',
+          },
+        }
+      );
     },(err:any) => {
       console.log(err,'err');
+      this.logService.logError(
+        {
+          error: err,
+          activity: 'Remove from favorites button clicked.',
+          page: 'recipe-tab',
+          payload: {
+            favoriteId: favorite.id,
+            recipeId: recipe.id,
+            recipeTitle: recipe.title,
+            type: 'justmove-recipe',
+          }
+        }
+      );
     });
   }
 
@@ -257,6 +339,14 @@ export class RecipeTabPage implements OnInit {
       this.favorites = res;
     },(err:any) => {
       console.log(err,'getFavorites error');
+      this.logService.logError(
+        {
+          error: err,
+          activity: 'Error loading favorites.',
+          page: 'recipe-tab',
+          payload: {}
+        }
+      );
     });
   }
  

@@ -70,6 +70,7 @@
   display: flex;
   gap: 8px;
   margin-bottom: 16px;
+  flex-wrap: wrap;
 }
 
 .tag {
@@ -173,6 +174,7 @@
   align-items: center;
 }
 
+
 .variant-container{
   display: flex;
   flex-direction: row;
@@ -195,38 +197,34 @@
     flex: 1;
     min-width: 0;
   }
-  .variant-chips-row{
+  .variant-select-row {
     margin-bottom: 10px;
   }
-  .variant-chips{
-    display: flex;
-    flex-wrap: wrap;
-   /*  overflow-x: auto;
-    width: 100%; */
-    gap: 8px;
-  }
-  .variant-chip{
-    padding: 4px 10px;
-    border-radius: 20px;
-    border: 1px solid var(--ion-color-medium);
-    background: var(--ion-background-color);
-    color: var(--ion-text-color);
-    font-size: 12px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background 0.2s, border-color 0.2s, color 0.2s;
-    white-space: nowrap;
-    &:hover{
-      border-color: var(--primary-color);
+  .variant-select {
+    width: 100%;
+    max-width: 100%;
+    --padding-start: 12px;
+    --padding-end: 12px;
+    font-size: 14px;
+    border: 1px solid var(--primary-color);
+    border-radius: 0px;
+    min-height: 32px;
+    color: var(--primary-color);
+    --color: var(--primary-color);
+    justify-content: space-between;
+    &::part(icon) {
       color: var(--primary-color);
+      margin-inline-start: auto;
+      margin-inline-end: 0;
+      position: absolute;
+      right: 8px;
     }
-    &.selected{
-      background: linear-gradient(90deg, var(--primary-color) 0%, var(--secondary-color) 100%);
-      border-color: transparent;
-      color: #ffffff;
+    &::part(select-icon) {
+      color: var(--primary-color);
+      margin-inline-start: auto;
+      margin-inline-end: 0;
     }
   }
-
 }
 .price-quantity-row{
   margin-bottom: 8px;
@@ -244,6 +242,8 @@
     --padding-end: 7px;
     --padding-top: 7px;
     --padding-bottom: 7px;
+    height: 40px;
+    width: 40px;
   --background-color: linear-gradient(to right, #01b6d8 0, #01c8c3 25%, #02d8b0 50%, #02d9b0 75%, #02e6a0 100%);
   --background: linear-gradient(to right, #01b6d8 0, #01c8c3 25%, #02d8b0 50%, #02d9b0 75%, #02e6a0 100%);
   color: #ffffff;
@@ -500,6 +500,7 @@
 .add-to-cart-button{
   display: flex;
   justify-self: center;
+  height: 40px;
 }
 .description-text{
   font-size: 14px;

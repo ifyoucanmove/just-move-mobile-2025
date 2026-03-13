@@ -19,6 +19,7 @@ import { Alert } from '../services/alert';
 import * as _ from 'lodash';
 import { ShopifyStorePipe } from '../pipes/shopify-store.pipe';
 import { AuthService } from '../services/auth';
+import { Logging } from '../services/logging';
 @Component({
   selector: 'app-my-orders',
   templateUrl: './my-orders.page.html',
@@ -52,12 +53,17 @@ export class MyOrdersPage implements OnInit {
     private userService: User,
     public customerService : Customer,
     private alertService: Alert,
-    private authService: AuthService
+    private authService: AuthService,
+    public logService: Logging
   ) {
     addIcons({remove, add, trash})
   }
 
   ngOnInit() {
+    this.logService.logActivity({
+      activity: 'My orders page loaded.',
+      page: 'my-orders'
+    });
     this.userService.userDetails$.subscribe((res)=> {
       if(res){
         this.userDetails = res;
@@ -120,6 +126,16 @@ export class MyOrdersPage implements OnInit {
             console.log("error", err);
 
             this.orders = [];
+            this.logService.logError(
+              {
+                error: err,
+                activity: 'Error loading orders.',
+                page: 'my-orders',
+                payload: {
+                  module: "shopify"
+                }
+              }
+            );
           }
         );
       });
@@ -185,117 +201,6 @@ export class MyOrdersPage implements OnInit {
     this.selectedSegment = event.detail.value;
   }
 
-  increaseQuantity(productId: string, store:any) {
-    const cartItems = this.shopifyService.getCart(store);
-    const item = cartItems.find((item) => item.id === productId);
-
-    if (item) {
-      item.quantity++;
-      this.shopifyService.setCart(store, cartItems);
-      this.shopifyService
-        .addToCartsFb(cartItems, store)
-        .then(() => {
-          console.log("Cart updated successfully");
-        })
-        .catch((error) => {
-          console.error("Error updating cart:", error);
-        });
-    }
-  }
-
-  decreaseQuantity(productId: string, store: string) {
-    const cartItems = this.shopifyService.getCart(store);
-    const item = cartItems.find((item) => item.id === productId);
-
-    if (item && item.quantity > 1) {
-      item.quantity--;
-      this.shopifyService.setCart(store, cartItems);
-      this.shopifyService
-        .addToCartsFb(cartItems, store)
-        .then(() => {
-          console.log("Cart updated successfully");
-        })
-        .catch((error) => {
-          console.error("Error updating cart:", error);
-        });
-    }
-  }
-
-  async confirmDelete(productId: string, store: string) {
-    const alert = await this.alertController.create({
-      header: "Confirm",
-      mode: "ios",
-      message: "This action will remove the item from your cart. Do you wish to proceed?",
-      buttons: [
-        {
-          text: "Cancel",
-          role: "cancel",
-          handler: (blah) => {},
-        },
-        {
-          text: "Yes",
-          handler: () => {
-            this.deleteItem(productId, store);
-          },
-        },
-      ],
-    });
-    await alert.present();
-  }
-
-  deleteItem(productId: string, store: string) {
-    this.loadingCtrl.create().then((loadingEl) => {
-      loadingEl.present();
-      const cartItems = this.shopifyService.getCart(store);
-      const updatedCartItems = cartItems.filter((item) => item.id !== productId);
-
-      this.shopifyService.setCart(store, cartItems);
-      this.shopifyService
-        .addToCartsFb(updatedCartItems, store)
-        .then(() => {
-          loadingEl.dismiss();
-          console.log("Item deleted and cart updated successfully");
-        })
-        .catch((error) => {
-          loadingEl.dismiss();
-          console.error("Error updating cart:", error);
-         });
-    });
-  }
-
-  checkout(store: string) {
-    this.loadingCtrl.create().then(async (loadingEl) => {
-      loadingEl.present();
-      try {
-        this.shopifyService.updateStoreFrontClinet(store);
-        let items: any[] = [];
-        _.each(this.shopifyService.getCart(store), (item) => {
-          items.push({
-            quantity: item.quantity,
-            merchandiseId: item.id,
-          });
-        });
-
-        let email = this.authService.userDetails.email;
-        await this.shopifyService.updateShopifyCustomer(email, store, this.customerService.customerSubscribed$.value) // temp call
-        let data = await this.shopifyService.createCheckoutId(items, email);
-
-        loadingEl.dismiss();
-        if (data && !data.errors && data.cartCreate.cart.id) {
-          const webUrl = data.cartCreate.cart.checkoutUrl;
-          console.log("OPENINIG URL", webUrl);
-
-          Browser.open({ url: webUrl });
-        } else {
-          console.log(data);
-          if (data.errors) this.alertService.showFirebaseAlert(data.errors);
-        }
-      } catch (error) {
-        loadingEl.dismiss();
-        this.alertService.showFirebaseAlert(error);
-      }
-    });
-  }
 
   accordionChange(event: any) {
     this.selectedStore = event.detail.value;

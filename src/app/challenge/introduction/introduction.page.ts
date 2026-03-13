@@ -9,6 +9,7 @@ import { cog, fileTrayFull, hourglass, image, informationCircle, logoFacebook, r
 import { addIcons } from 'ionicons';
 import { AlertController } from '@ionic/angular/standalone';
 import { AuthService } from 'src/app/services/auth';
+import { Logging } from 'src/app/services/logging';
 
 @Component({
   selector: 'app-introduction',
@@ -32,12 +33,21 @@ export class IntroductionPage implements OnInit {
     private alertController: AlertController,
     private customerService: Customer,
     private userService: User,
+    public logService: Logging,
     private authService: AuthService
   ) {
     addIcons({informationCircle, logoFacebook, hourglass, cog, image, fileTrayFull, reader})
   }
 
   ngOnInit() {
+    this.logService.logActivity({
+      activity: 'Introduction page loaded.',
+      page: 'introduction',
+      payload: {
+        challengeId: this.challengeService.challengeDatas[this.challengeService.selectedChallengeIndex].id || '',
+        module: "challenge"
+      }
+    });
     this.userDetails = this.authService.userDetails;
     console.log("User Details ", this.authService.userDetails);
     

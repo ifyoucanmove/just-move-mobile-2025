@@ -7,6 +7,7 @@ import { AuthService } from '../services/auth';
 import { Common } from '../services/common';
 import { Challenges } from '../services/challenges';
 import { IonSpinner } from '@ionic/angular/standalone';
+import { Logging } from '../services/logging';
 
 @Component({
   selector: 'app-signup',
@@ -26,6 +27,7 @@ export class SignupPage implements OnInit {
     public common:Common,
     public authService:AuthService,
     public location:Location,
+    public logService:Logging,
     private challengeService: Challenges) { 
       this.signupForm = this.fb.group({
         fname: ['', [Validators.required]],
@@ -34,6 +36,12 @@ export class SignupPage implements OnInit {
         password: ['', [Validators.required, Validators.minLength(6)]],
         confirmPassword: ['', [Validators.required, this.passwordMatchValidator.bind(this)]]
       });
+      this.logService.logActivity(
+        {
+          page: 'signup',
+          activity: 'Sign up page loaded.'
+        }
+      );
     }
 
  async ngOnInit() {
@@ -119,9 +127,32 @@ export class SignupPage implements OnInit {
           // Load challenge data after successful signup
           this.challengeService.loadAllChallengeData();
           this.router.navigate(['/products/home-tab'], { replaceUrl: true });
+          this.logService.logActivity(
+            {
+              activity: 'Sign up successful.',
+              page: 'signup',
+              payload: {
+                email: this.signupForm.value.email,
+                fname: this.signupForm.value.fname,
+                lname: this.signupForm.value.lname,
+              },
+            }
+          );
         }
       }catch(error:any){
          this.handleRegisterError(error);
+         this.logService.logError(
+          {
+            error: error,
+            activity: 'Sign up button clicked.',
+            page: 'signup',
+            payload: {
+              email: this.signupForm.value.email,
+              fname: this.signupForm.value.fname,
+              lname: this.signupForm.value.lname,
+            },
+          }
+        );
       } finally {
         this.isLoading = false;
       }

@@ -8,6 +8,7 @@ import { SidebarComponent } from 'src/app/shared/sidebar/sidebar.component';
 import { Favorites } from 'src/app/services/favorites';
 import { AuthService } from 'src/app/services/auth';
 import { Router } from '@angular/router';
+import { Logging } from 'src/app/services/logging';
 
 @Component({
   selector: 'app-fav-tab',
@@ -23,10 +24,15 @@ export class FavTabPage implements OnInit {
   constructor(public common:Common,
      public favoritesService: Favorites,
      public authService: AuthService,
+     public logService: Logging,
      public router: Router) { }
 
   ngOnInit() {
     this.getFavorites();
+    this.logService.logActivity({
+      activity: 'Favorites tab page loaded.',
+      page: 'fav-tab'
+    });
   }
   getFavorites() {
     this.favoritesService.getFavorites(this.authService.userDetails.email).subscribe((res:any) => {
@@ -37,6 +43,14 @@ export class FavTabPage implements OnInit {
     },(err:any) => {
       console.log(err,'getFavorites error');
       this.isLoading = false;
+      this.logService.logError(
+        {
+          error: err,
+          activity: 'Error loading favorites.',
+          page: 'fav-tab',
+          payload: {}
+        }
+      );
     });
   }
 
@@ -45,6 +59,15 @@ export class FavTabPage implements OnInit {
   }
   goToProductDetail(id:string) {
     this.router.navigate(['/product-detail', id]);
+    this.logService.logActivity(
+      {
+        activity: 'Go to product detail page.',
+        page: 'fav-tab',
+        payload: {
+          recipeId: id,
+        }
+      }
+    );
   }
 
 
@@ -53,8 +76,33 @@ export class FavTabPage implements OnInit {
     this.favoritesService.deleteFavoriteItem(fav.id).subscribe((res:any) => {
       console.log(res,'res');
       this.common.showSuccessToast('Removed from favorites',3000);
+      this.logService.logActivity(
+        {
+          activity: 'Remove from favorites button clicked.',
+          page: 'fav-tab',
+          payload: {
+            favoriteId: fav.id,
+            recipeId: fav.postId,
+            recipeTitle: fav.title,
+            type: 'justmove-recipe',
+          },
+        }
+      );
     },(err:any) => {
       console.log(err,'err');
+      this.logService.logError(
+        {
+          error: err,
+          activity: 'Remove from favorites button clicked.',
+          page: 'fav-tab',
+          payload: {
+            favoriteId: fav.id,
+            recipeId: fav.postId,
+            recipeTitle: fav.title,
+            type: 'justmove-recipe',
+          }
+        }
+      );
     });
   }
 
