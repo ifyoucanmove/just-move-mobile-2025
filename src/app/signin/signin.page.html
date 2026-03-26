@@ -74,13 +74,13 @@ Products with all amazing recipes
           <ion-text>Sign in with the following:</ion-text>
         </div>
         <div class="d-flex align-items-center justify-content-center gap-2">
-          <a href="javascript:void(0)" (click)="signInWithFacebook()" [class.disabled]="isSocialLoading.facebook">
+        <!--   <a href="javascript:void(0)" (click)="signInWithFacebook()" [class.disabled]="isSocialLoading.facebook">
             @if(isSocialLoading.facebook) {
               <ion-spinner name="crescent" class="social-spinner"></ion-spinner>
             } @else {
               <ion-img src="assets/images/icons/fb.png" class="social-icon"></ion-img>
             }
-          </a>
+          </a> -->
           <a href="javascript:void(0)" (click)="signInWithGoogle()" [class.disabled]="isSocialLoading.google">
             @if(isSocialLoading.google) {
               <ion-spinner name="crescent" class="social-spinner"></ion-spinner>
