@@ -4,10 +4,10 @@ const config: CapacitorConfig = {
   appId: 'com.justmove.supplement',
   appName: 'Just Move Supplement',
   webDir: 'www',
- /*   server: {
-     url: 'https://justmove-2eb09.web.app/',
+   server: {
+     url: 'https://just-move-mobile-2025.netlify.app',
     cleartext: true
-   }, */
+   },
   plugins: {
     SplashScreen: {
       // how long to show the launch splash (ms)
