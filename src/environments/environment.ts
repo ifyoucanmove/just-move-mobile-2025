@@ -2,6 +2,10 @@
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
+import { Capacitor } from '@capacitor/core';
+import { initializeApp } from 'firebase/app';
+import { Auth, browserLocalPersistence, getAuth, indexedDBLocalPersistence, initializeAuth, setPersistence } from 'firebase/auth';
+
 export const environment = {
   production: false,
   firebaseConfig: {
@@ -53,6 +57,24 @@ export const environment = {
   appleClientId: 'com.justmove.supplement',
   appleRedirectUri: 'https://ifyoucanmove-dev.firebaseapp.com/__/auth/handler',
 };
+
+export function initializeFirebaseApp() {
+  const app = initializeApp(environment.firebaseConfig);
+
+  let auth: Auth;
+
+  if (Capacitor.isNativePlatform()) {
+    auth = initializeAuth(app, {
+      persistence: indexedDBLocalPersistence
+    });
+  } else {
+    auth = getAuth(app);
+    setPersistence(auth, browserLocalPersistence).catch((error) => {
+    });
+  }
+
+  return { app, auth };
+}
 
 /*
  * For easier debugging in development mode, you can import the following file
