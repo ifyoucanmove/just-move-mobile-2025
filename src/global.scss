@@ -130,10 +130,12 @@ ion-app {
     contain: layout style paint;
   }
   ion-toolbar{
-    --padding-top: 20px;
+    // --padding-top: 20px;
+    min-height: 71px;
   }
   
-  /* Fix for devices with dynamic island or punch hole cameras */
+  /* Fix for de
+  vices with dynamic island or punch hole cameras */
   @supports (padding: env(safe-area-inset-top)) {
     .dynamic-island-safe {
       padding-top: env(safe-area-inset-top);
@@ -368,7 +370,7 @@ ion-footer{
   ion-toolbar {
     --background: #FFD300 !important;
     --color: #000000;
-    padding: 0; 
+    // padding: 0; 
   }
 }
 
@@ -383,8 +385,8 @@ ion-footer{
   font-size: 22px;
   font-weight: bold;
   color: #000000;
-  margin: 0;
-  padding: 0;
+  // margin: 0;
+  // padding: 0;
 }
 
 .menu-button {

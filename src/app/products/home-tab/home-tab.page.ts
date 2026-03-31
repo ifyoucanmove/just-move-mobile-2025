@@ -69,6 +69,8 @@ export class HomeTabPage implements OnInit {
 
   
   toggleSidebar() {
+    console.log("toggleSidebar");
+    
     this.common.isSidebarOpen = !this.common.isSidebarOpen;
   }
 

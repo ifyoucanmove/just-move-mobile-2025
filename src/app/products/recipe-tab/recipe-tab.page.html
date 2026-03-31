@@ -12,27 +12,30 @@
       </div>
 
       <ion-button fill="clear" class="menu-button position-relative"
-      style="--background:transparent;"
+      style="--background:transparent; --border-radius: 0;"
       [routerLink]="['/my-cart']">
       @if(shopifyService.cartTotalQuantity$.value > 0) {
         <span class="cart-count">{{shopifyService.cartTotalQuantity$.value}}</span> }
         <ion-icon name="cart-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
       </ion-button>
     </div>
+  </ion-toolbar>
     @if(authService.isAdmin) {
       <div class="search-container">
         <ion-searchbar 
+        mode="md"
         placeholder="Search Recipes" 
         class="search-bar"
         [(ngModel)]="searchText"
         [showClearButton]="true"
         (ionInput)="onSearchInput()"
+        style="margin-top: 8px;"
         (ionClear)="onSearchClear()">
       </ion-searchbar> 
       </div>
     
   }
-  </ion-toolbar>
+ 
 </ion-header>
 <!-- filter button float right-->
 <div class="filter-button-container">

@@ -7,12 +7,12 @@
         (click)="toggleSidebar()">
           <ion-icon name="menu-outline" style="font-size: 30px;" slot="icon-only"></ion-icon>
         </ion-button>
-      <ion-title class="header-title">Home</ion-title>
+      <ion-title style=" text-align: center;" class="header-title">Home</ion-title>
      
       </div>
 
       <ion-button fill="clear" class="menu-button position-relative"
-      style="--background:transparent;"
+      style="--background:transparent; --border-radius: 0;"
       [routerLink]="['/my-cart']">
       @if(shopifyService.cartTotalQuantity$.value > 0) {
         <span class="cart-count">{{shopifyService.cartTotalQuantity$.value}}</span> }
