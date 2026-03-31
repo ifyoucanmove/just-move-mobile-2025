@@ -17,12 +17,13 @@ const config: CapacitorConfig = {
       // background color used behind the splash image (#RRGGBB or #RRGGBBAA)
       backgroundColor: '#004FFF'
     },
-    GoogleAuth: {
-      scopes: ['profile', 'email'],
-      serverClientId: '975192045133-dhu413ebr9m0d1i3s7sbecvk8acnnha9.apps.googleusercontent.com',
-      iosClientId: '975192045133-iq95sofj1atd132kagg3l2r3bgih05ql.apps.googleusercontent.com',
-      forceCodeForRefreshToken: true
-    },
+    // @codetrix-studio/capacitor-google-auth removed — restore when adding Google Sign-In back:
+    // GoogleAuth: {
+    //   scopes: ['profile', 'email'],
+    //   serverClientId: '975192045133-dhu413ebr9m0d1i3s7sbecvk8acnnha9.apps.googleusercontent.com',
+    //   iosClientId: '975192045133-iq95sofj1atd132kagg3l2r3bgih05ql.apps.googleusercontent.com',
+    //   forceCodeForRefreshToken: true
+    // },
     FacebookLogin: {
       // Permissions to request from Facebook
       permissions: ['email', 'public_profile']

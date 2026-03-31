@@ -4,7 +4,7 @@ import { collection, collectionSnapshots, doc, Firestore, query, setDoc, where }
 import { firstValueFrom, map } from 'rxjs';
 import { Customer } from './customer';
 import { environment } from 'src/environments/environment';
-import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth';
+// import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth'; // removed for App Store
 import { FacebookLogin } from '@capacitor-community/facebook-login';
 import { SignInWithApple, SignInWithAppleOptions, SignInWithAppleResponse } from '@capacitor-community/apple-sign-in';
 import { Capacitor } from '@capacitor/core';
@@ -20,12 +20,11 @@ export class AuthService {
   private authStateResolver?: (user: User | null) => void;
   userDetails: any;
   isAdmin: boolean = false;
-  private googleAuthInitialized = false;
+  // private googleAuthInitialized = false; // with @codetrix-studio/capacitor-google-auth removed
   constructor(private customerService: Customer){
     console.log('[AuthService] Constructor started');
 
-    // Initialize Google Auth once at startup for native platforms
-    this.initGoogleAuth();
+    // this.initGoogleAuth(); // disabled — Codetrix Google Auth plugin removed
 
     // Create a promise that resolves when auth state is determined
     this.authStateReady = new Promise((resolve) => {
@@ -199,19 +198,18 @@ export class AuthService {
 
   // ============ SOCIAL SIGN-IN METHODS ============
 
+  /*
   private async initGoogleAuth() {
     if (this.googleAuthInitialized || !Capacitor.isNativePlatform()) return;
     try {
       const platform = Capacitor.getPlatform();
       if (platform === 'android') {
-        // Android: pass web clientId explicitly
         await GoogleAuth.initialize({
           clientId: environment.googleClientId,
           scopes: ['profile', 'email'],
           grantOfflineAccess: true
         });
       } else {
-        // iOS: let the plugin read CLIENT_ID from GoogleService-Info.plist
         await GoogleAuth.initialize({
           scopes: ['profile', 'email'],
           grantOfflineAccess: true
@@ -223,29 +221,22 @@ export class AuthService {
       console.error('[AuthService] GoogleAuth init failed:', error);
     }
   }
+  */
 
   async signInWithGoogle() {
     try {
       let userCredential;
 
       if (Capacitor.isNativePlatform()) {
-        // Native: use Capacitor GoogleAuth plugin
-        const googleUser = await GoogleAuth.signIn();
-        console.log('[Google] Full response:', JSON.stringify(googleUser));
-        const idToken = googleUser.authentication.idToken;
-        console.log('[Google] idToken present:', !!idToken, 'length:', idToken?.length);
-        if (!idToken) {
-          throw new Error('Google sign-in failed - no ID token returned');
-        }
-        const credential = GoogleAuthProvider.credential(idToken);
-        userCredential = await signInWithCredential(this.auth, credential);
-      } else {
-        // Web: use Firebase popup
-        const provider = new GoogleAuthProvider();
-        provider.addScope('profile');
-        provider.addScope('email');
-        userCredential = await signInWithPopup(this.auth, provider);
+        // Codetrix Google Auth plugin removed — native Google sign-in disabled until plugin is restored
+        throw new Error('Google sign-in is not available in the app right now. Use email sign-in.');
       }
+
+      // Web: use Firebase popup
+      const provider = new GoogleAuthProvider();
+      provider.addScope('profile');
+      provider.addScope('email');
+      userCredential = await signInWithPopup(this.auth, provider);
 
       console.log('Firebase user:', userCredential.user);
       await this.createOrUpdateSocialUser(
