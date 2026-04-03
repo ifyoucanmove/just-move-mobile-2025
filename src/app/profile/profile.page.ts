@@ -121,7 +121,14 @@ export class ProfilePage implements OnInit {
         inputs: [
           {
             name: "email",
+            type: "email",
             placeholder: "Email",
+            attributes: {
+              autocapitalize: "none",
+              autocorrect: "off",
+              autocomplete: "email",
+              spellcheck: "false",
+            },
           },
         ],
         buttons: [
