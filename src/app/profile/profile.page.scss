@@ -1,0 +1,66 @@
+.profile-content {
+  --padding-start: 20px;
+  --padding-end: 20px;
+  --padding-top: 16px;
+}
+
+.profile-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 24px 16px 8px;
+}
+
+.avatar-wrap {
+  margin-bottom: 16px;
+}
+
+.profile-photo {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid var(--ion-color-light-shade);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.avatar-placeholder {
+  width: 112px;
+  height: 112px;
+  border-radius: 50%;
+  background: var(--ion-color-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 3px solid var(--ion-color-light-shade);
+
+  ion-icon {
+    font-size: 48px;
+    color: var(--ion-color-medium);
+  }
+}
+
+.profile-name {
+  margin: 0 0 8px;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: var(--ion-color-secondary);
+}
+
+.profile-email {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--ion-color-medium-shade);
+}
+
+.delete-section {
+  margin-top: 32px;
+  padding-bottom: 24px;
+}
+
+.btn-spinner {
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+}

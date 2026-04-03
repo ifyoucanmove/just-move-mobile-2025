@@ -1,13 +1,16 @@
 import { Injectable, inject } from '@angular/core';
 import { Auth, createUserWithEmailAndPassword, sendEmailVerification, sendPasswordResetEmail, signInWithEmailAndPassword, signOut, User, GoogleAuthProvider, FacebookAuthProvider, OAuthProvider, signInWithCredential, signInWithPopup } from '@angular/fire/auth';
 import { collection, collectionSnapshots, doc, Firestore, query, setDoc, where } from '@angular/fire/firestore';
-import { firstValueFrom, map } from 'rxjs';
+import { firstValueFrom, from, map } from 'rxjs';
 import { Customer } from './customer';
 import { environment } from 'src/environments/environment';
 // import { GoogleAuth } from '@codetrix-studio/capacitor-google-auth'; // removed for App Store
 import { FacebookLogin } from '@capacitor-community/facebook-login';
 import { SignInWithApple, SignInWithAppleOptions, SignInWithAppleResponse } from '@capacitor-community/apple-sign-in';
 import { Capacitor } from '@capacitor/core';
+import { HttpClient } from '@angular/common/http';
+import { LoadingController } from '@ionic/angular';
+
 
 @Injectable({
   providedIn: 'root',
@@ -21,7 +24,8 @@ export class AuthService {
   userDetails: any;
   isAdmin: boolean = false;
   // private googleAuthInitialized = false; // with @codetrix-studio/capacitor-google-auth removed
-  constructor(private customerService: Customer){
+  constructor(private customerService: Customer, private http: HttpClient, 
+    private loadingCtrl: LoadingController){
     console.log('[AuthService] Constructor started');
 
     // this.initGoogleAuth(); // disabled — Codetrix Google Auth plugin removed
@@ -41,10 +45,12 @@ export class AuthService {
     }, 10000); // 10 second timeout
 
     // Listen to auth state changes
-    this.auth.onAuthStateChanged((user) => {
+    this.auth.onAuthStateChanged(async (user) => {
       console.log('[AuthService] onAuthStateChanged fired:', user ? 'User found' : 'No user');
       if(user){
-        console.log('User found', user);
+        let token:any =  await user.getIdToken();
+        localStorage.setItem("token", token);
+        console.log('User found', user,token);
        this.isAdmin = environment.adminpeople.includes(user.uid);
 
         this.currentUser = user;
@@ -151,6 +157,7 @@ export class AuthService {
     try {
       await signOut(this.auth);
       this.currentUser = null;
+      localStorage.removeItem("token");
       //clear auth state resolver
       this.authStateResolver = undefined;
       //reload page
@@ -430,4 +437,54 @@ export class AuthService {
     return h.map(v => (v >>> 0).toString(16).padStart(8, '0')).join('');
   }
 
+  async generateLink(page : string) : Promise<string>{
+
+    return new Promise<string>((resolve,reject)=>{
+      this.loadingCtrl.create().then(loadingEl=>{
+        loadingEl.present();
+        let uid = this.userDetails.uid;
+        this.generateToken(uid).subscribe((res : any)=>{
+          console.log("gen token", res);
+          let user_email = this.userDetails.email;
+          loadingEl.dismiss();
+          resolve(`https://ifyoucanmove.com/login-from-mobile?email=${user_email}&page=${page}&token=${res.token}`)
+        },(err=>{
+          console.log("Err token", err);
+          loadingEl.dismiss();
+          reject(err);
+        }))
+      })
+    })
+
+      
+
+    // let user = await this.afAuth.currentUser;
+    // let token = await user.getIdToken();
+  
+    
+  }
+  generateToken(uid:string) {
+    //
+    return this.http.post(
+      'https://us-central1-ifyoucanmove-dev.cloudfunctions.net/createCustomToken',
+      {uid : uid},
+      {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
+      }
+    );
+  }
+
+ 
+  deleteUser(uid: string) {
+    //pass bearer token in the header
+    return this.http.post("https://us-central1-ifyoucanmove-dev.cloudfunctions.net/deleteUser", {
+      uid: uid,
+    }, {
+      headers: {
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
+    });
+  }
 }
